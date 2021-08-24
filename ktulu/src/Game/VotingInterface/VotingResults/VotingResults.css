@@ -1,0 +1,14 @@
+.votingResults {
+
+    margin:20px 200px;
+    
+}
+.closeButton {
+    float: right;
+}
+.notVisible {
+    visibility: hidden;
+}
+.verdict {
+    padding: 20px;
+}

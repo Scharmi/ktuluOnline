@@ -1,0 +1,17 @@
+.ButtonWrapper {
+    margin: 10px;
+    display: inline-block;
+}
+.interfaceClosed {
+    visibility: hidden;
+}
+.interfaceWrapper {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    vertical-align: middle;
+}
+.ButtonWrapperAbstain {
+    margin: 15px;
+}
+

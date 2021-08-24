@@ -1,0 +1,36 @@
+
+.requestAlertWrapper {
+    border: 1px solid rgba(116, 115, 115, 0.397);
+    border-radius: 15px;
+    display: inline-flex;
+    padding: 5px;
+    margin: 10px;
+    max-width: 350px;
+    min-height: 200px;
+
+}
+
+.buttonWrapper {
+    display: inline-flex;
+    margin: 10px;  
+}
+.buttonsWrapper {
+    justify-content: center;
+    padding: 5px;
+}
+
+.buttonText {
+    margin: 5px;
+}
+.closeButton {
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+
+
+}
+
+.closeButtonInner {
+    float: right;
+    margin-right: 10px;
+}

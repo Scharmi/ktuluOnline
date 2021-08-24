@@ -1,0 +1,27 @@
+.dialogContent {
+    display: inline-block;
+    padding: 20px;
+}
+.closeButtonWrapper {
+    float: right;
+    margin: 0px;
+
+}
+.dialogTitle {
+    margin-right: 0px;
+    width: 100%
+}
+.dialogTitleWrapper{
+    margin: 40px;
+}
+.optionsWrapper {
+    display: inline-block;
+}
+.select {
+    display: inline-block;
+    margin: 10px;
+}
+.confirmButtonWrapper {
+    float: right;
+    margin-top: 60px;
+}

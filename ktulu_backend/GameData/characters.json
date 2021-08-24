@@ -1,0 +1,140 @@
+[
+    {
+        "characterName" : "szeryf",
+        "characterId" : 1,
+        "team": "miastowi"
+    },
+    {
+        "characterName" : "dziwka",
+        "characterId" : 2,
+        "team": "miastowi"
+    },
+    {
+        "characterName" : "pastor",
+        "characterId" : 3,
+        "team": "miastowi"
+    },
+    {
+        "characterName" : "dobry rewolwerowiec",
+        "characterId" : 4,
+        "team": "miastowi"
+    },
+    {
+        "characterName" : "burmistrz",
+        "characterId" : 5,
+        "team": "miastowi"
+    },
+    {
+        "characterName" : "opój",
+        "characterId" : 7,
+        "team": "miastowi"
+    },
+    {
+        "characterName" : "sędzia",
+        "characterId" : 8,
+        "team": "miastowi"
+    },
+    {
+        "characterName" : "hazardzista",
+        "characterId" : 9,
+        "team": "miastowi"
+    },
+    {
+        "characterName" : "poborca podatków",
+        "characterId" : 10,
+        "team": "miastowi"
+    },
+    {
+        "characterName" : "krystaliczny obywatel",
+        "characterId" : 11,
+        "team": "miastowi"
+    },
+    {
+        "characterName" : "uwodziciel",
+        "characterId" : 12,
+        "team": "miastowi"
+    },
+    {
+        "characterName" : "kat",
+        "characterId" : 13,
+        "team": "miastowi"
+    },
+    {
+        "characterName" : "gazownik",
+        "characterId" : 14,
+        "team": "miastowi"
+    },
+    {
+        "characterName" : "herszt",
+        "characterId" : 101,
+        "team": "bandyci"
+    },
+    {
+        "characterName" : "mściciel",
+        "characterId" : 102,
+        "team": "bandyci"
+    },
+    {
+        "characterName" : "złodziej",
+        "characterId" : 103,
+        "team": "bandyci"
+    },
+    {
+        "characterName" : "zły rewolwerowiec",
+        "characterId" : 104,
+        "team": "bandyci"
+    },
+    {
+        "characterName" : "szantażysta",
+        "characterId" : 105,
+        "team": "bandyci"
+    },
+    {
+        "characterName" : "szuler",
+        "characterId" : 106,
+        "team": "bandyci"
+    },
+    {
+        "characterName" : "wódz",
+        "characterId" : 201,
+        "team": "bandyci"
+    },
+    {
+        "characterName" : "szaman",
+        "characterId" : 202,
+        "team": "bandyci"
+    },
+    {
+        "characterName" : "szamanka",
+        "characterId" : 203,
+        "team": "bandyci"
+    },
+    {
+        "characterName" : "wojownik",
+        "characterId" : 204,
+        "team": "bandyci"
+    },
+    {
+        "characterName" : "samotny kojot",
+        "characterId" : 205,
+        "team": "bandyci"
+    },
+    {
+        "characterName" : "płonący szał",
+        "characterId" : 206,
+        "team": "bandyci"
+    },
+    {
+        "characterName" : "lornecie oko",
+        "characterId" : 207,
+        "team": "bandyci"
+    },
+    {
+        "characterName" : "cicha stopa",
+        "characterId" : 208,
+        "team": "bandyci"
+    }
+    
+
+
+]

@@ -1,0 +1,10 @@
+
+.actionInterfaceWrapper {
+    margin:10px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+.innerContentWrapper {
+    padding:5px;
+}

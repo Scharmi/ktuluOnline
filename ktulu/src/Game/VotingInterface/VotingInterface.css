@@ -1,0 +1,12 @@
+.votingInterface {
+    background: hsl(0, 1%, 74%);
+    background: linear-gradient(270deg, rgba(201,201,201,0.25) 0%, rgba(205,205,205,0.25) 50%, rgba(220,220,220,0.25) 72%);
+}
+.closeButton {
+    float: right;
+}
+.votingInterfaceHidden {
+    visibility: hidden;
+    height: 0px;
+    width: 0px;
+}
