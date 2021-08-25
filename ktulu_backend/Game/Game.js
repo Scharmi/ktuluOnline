@@ -30,7 +30,6 @@ exports.game = function(socket, io, gameData, reconnect) {
     socket.basicData.isAlive = true;
     if(!reconnect(socket.name))
     gameData.playersArray.push(socket.basicData);
-    console.log(gameData.chosenCharacters[socket.basicData.id]);
     socket.myData = new Object();
     socket.myData.name = socket.name;
     socket.myData.id = socket.basicData.id;

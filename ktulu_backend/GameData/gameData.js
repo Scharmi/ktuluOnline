@@ -2,9 +2,9 @@ var characters = require('./characters.json')
 exports.gameDataGenerator = function() {
     let gameData = new Object();
     gameData.gameStages = [
+        "duelsTurn",
         "dziwka",
         "szantazysta",
-        "duelsTurn",
         "uwodziciel",
         "szeryf", 
         "pastor", 
@@ -48,6 +48,7 @@ exports.gameDataGenerator = function() {
     gameData.activeChat = [];
     gameData.duelsLimit = 2;
     gameData.voteResults = [];
+    gameData.disclosed = [];
     gameData.duel = false;
     gameData.members = function(team) {
         let newArr = [];
@@ -127,18 +128,7 @@ exports.gameDataGenerator = function() {
         gameData.drunkPlayer = "";
         gameData.opojOnce = false;
 
-        gameData.setStatueTeam = function(characterName) {
-            gameData.statue = characterName;
-            io.to("everyone").emit("alert", {type: "default", header: gameData.capitalizeFirstLetter(gameData.statueTeam()) + " przejęli posążek"})
-            if(gameData.statueTeam() === "indianie") {
-                gameData.shiftTurn("indianieKilling")
-                gameData.shiftTurn("plonacySzal")
-            }
-            if(gameData.statueTeam() !== "miastowi") {
-                gameData.gameStages.splice(gameData.counter + 1, 0 , gameData.statueTeam() + "Statue");
-                gameData.gameStages.splice(gameData.counter + 1, 0 , gameData.statueTeam() + "SendInfo");
-            }
-        }
+
         gameData.shiftTurn = function(turn) {
             gameData.gameStages.splice(gameData.counter + 1, 0 , turn);
         }
@@ -171,6 +161,35 @@ exports.gameDataGenerator = function() {
             cichaStopa: "cicha stopa",
             lornecieOko: "lornecie oko"
         }
+        gameData.turnInfo = {
+          dziwka: "dziwka",
+          pastor: "pastor",
+          szeryf: "szeryf",
+          opoj: "opój",
+          kat: "kat",
+          uwodziciel: "uwodziciel",
+          hazardzista: "hazardzista",
+          hazardzistaKilling: "hazardzista",
+          pijanySedzia: "pijany sędzia",
+          bandyciSendInfo: "bandyci",
+          bandyciStatue: "bandyci wybierają kto ma mieć posążek",
+          bandyciInspection: "bandyci wybierają kogo przeszukać",
+          msciciel: "mściciel",
+          zlodziej: "złodziej",
+          szuler: "szuler",
+          szantazysta: "szantażysta",
+          indianieSendInfo: "indianie",
+          indianieStatue: "indianie wybierają kto ma mieć posążek",
+          indianieKilling: "indianie wybierają kogo zabić",
+          szaman: "szaman",
+          szamanka: "szamanka",
+          wojownik: "wojownik",
+          samotnyKojot: "samotny kojot",
+          plonacySzal: "płonący szał",
+          cichaStopa: "cicha stopa",
+          lornecieOko: "lornecie oko",
+          duelsTurn: "Tura pojedynków"
+      }
         gameData.isCharacter = function(text) {
             for(let i = 0; i < gameData.characters.length; i++) {
                 if(text === gameData.characters[i].characterName) return true;

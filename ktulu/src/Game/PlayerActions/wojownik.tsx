@@ -13,7 +13,7 @@ export function wojownik(socket: any, io: any, gameData: any) {
                     gameData.setVoteProps({
                         type: "killing",
                         optionList: [],
-                        votedObjects: gameData.aliveExceptMe(),
+                        votedObjects: gameData.killableExceptTeam(),
                         votes: 0,
                         allVotes: 0,
                         minChosen: 1,

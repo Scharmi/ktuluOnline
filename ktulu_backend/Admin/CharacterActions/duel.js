@@ -2,17 +2,19 @@
 const { callVote } = require('./callVote') 
 exports.duel = function(socket, io, gameData, player1, player2) {  
     gameData.duel = true;
+    gameData.usedDuels++;
     gameData.deleteDuel(player1, player2);
     let allowedPlayers = [];
     let voteOptions = [];
     let playersToKill = [];
     for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
-        if((gameData.allFullInfoPlayers[i].name !== player1) && (gameData.allFullInfoPlayers[i].name !== player2)) {
+        if((gameData.allFullInfoPlayers[i].name !== player1) && (gameData.allFullInfoPlayers[i].name !== player2) && (gameData.allFullInfoPlayers[i].isAlive === true)) {
             allowedPlayers.push(gameData.allFullInfoPlayers[i].characterName);
         }
     }
     voteOptions.push({name: player1, id: gameData.playerProps(player1).id});
     voteOptions.push({name: player2, id: gameData.playerProps(player2).id});
+    io.to("everyone").emit("turnInfo", "Pojedynek między graczami " + player1 + " i " + player2)
     callVote(socket, io, gameData, "duel", allowedPlayers, voteOptions);
     function voteEndFunction(id) {
         if(gameData.voteId === id) {
@@ -71,7 +73,7 @@ exports.duel = function(socket, io, gameData, player1, player2) {
                 }
             }
             for(let i = 0; i < sendVotes.length; i++) {
-                console.log(sendVotes[i].isChosen)
+
                 if(sendVotes[i].isChosen === 1) {   
                     playersToKill.push(gameData.playerProps(sendVotes[i].optionName).characterName);
                 }
@@ -116,11 +118,18 @@ exports.duel = function(socket, io, gameData, player1, player2) {
             socket.once("disclose", discloseAction);
             io.to("admin").emit("alert", {type: "duelEnd", p1: player1, p2: player2});
             socket.once("duelEnd", () => {
+                if(gameData.usedDuels === gameData.duelsLimit)
+                io.to("admin").emit("end", "duelsTurn")
+                else
+                io.to("everyone").emit("turnInfo", "Tura pojedynków")
                 gameData.duel = false;
                 for(let i = 0; i < playersToKill.length; i++) {
                     gameData.kill(playersToKill[i]);
                 }
             })
+        }
+        else {
+            socket.once("voteEnd", voteEndFunction)
         }
     }
     socket.once("voteEnd", voteEndFunction);

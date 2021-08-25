@@ -71,6 +71,18 @@ exports.admin = function(socket, io, gameData) {
             gameData.gameStages.splice(gameData.counter + 1, 0 , gameData.stageName);
         }
     }
+    gameData.setStatueTeam = function(characterName) {
+        gameData.statue = characterName;
+        io.to("everyone").emit("statueTeam", gameData.statueTeam())
+        io.to("everyone").emit("alert", {type: "default", header: gameData.capitalizeFirstLetter(gameData.statueTeam()) + " przejęli posążek"})
+        if(gameData.statueTeam() === "indianie") {
+            gameData.shiftTurn("plonacySzal")
+        }
+        if(gameData.statueTeam() !== "miastowi") {
+            gameData.gameStages.splice(gameData.counter + 1, 0 , gameData.statueTeam() + "Statue");
+            gameData.gameStages.splice(gameData.counter + 1, 0 , gameData.statueTeam() + "SendInfo");
+        }
+    }
     function runStage(counter, gameData) {
         if(counter < gameData.gameStages.length) {
             socket.removeAllListeners("action");
@@ -127,6 +139,7 @@ exports.admin = function(socket, io, gameData) {
                 runStage(counter, gameData);
             }
             else {
+                io.to("everyone").emit("turnInfo", gameData.turnInfo[stageName])
                 function endListener(arg) {
                     if(arg === stageName) {
                         if(stageName === "duelTurn") {

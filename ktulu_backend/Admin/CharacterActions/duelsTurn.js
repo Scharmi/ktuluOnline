@@ -1,5 +1,6 @@
 const { duel } = require('./duel')
 exports.duelsTurn = function(socket, io, gameData) {
+    io.to("admin").emit("alert", { type: "duelsTurnEnd" })
     gameData.pendingDuels = [];
     gameData.duelInvites = [];
     gameData.duel = false;
@@ -39,7 +40,7 @@ exports.duelsTurn = function(socket, io, gameData) {
                         
                     }
                     else {
-                        console.log(gameData.inviteExists(player1, player2))
+                    
                         if((player1Props.isAlive) && (player2Props.isAlive)) {
                             gameData.duelInvites.push([player1,player2]);
                             io.to(player2Props.characterName).emit("alert", {type: "duelInvite", player: player1})

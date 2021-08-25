@@ -1,14 +1,16 @@
 exports.callVote = function(socket, io, gameData, type, allowedPlayers, voteOptions) {
     gameData.voteId++;
-    console.log("VOTE CALLED")
     for(let i = 0; i < allowedPlayers.length; i++) {
         io.to(allowedPlayers[i]).emit("callVote", gameData.voteId, type, voteOptions);
     }
+    io.to("admin").emit("callVote", gameData.voteId, type, voteOptions);
     let playersVoted = [];
     let votes = [];
+    gameData.voteResults[gameData.voteId] = [];
     for(let i = 0; i < voteOptions.length; i++) {
         votes.push({option: voteOptions[i], voters: []});   
     }
+    gameData.voteResults[gameData.voteId] = [...votes];
     if(type === "duel") votes.push({option: {text: "Wstrzymuję się od głosu", id: 2050}, voters: []});
     let voteFunction = function(user, sentID, chosenOptions) {
         if(sentID === gameData.voteId) {
@@ -26,9 +28,8 @@ exports.callVote = function(socket, io, gameData, type, allowedPlayers, voteOpti
                             }
                         }
                     }
-                    console.log(votes);
+                    gameData.voteResults[gameData.voteId] = [...votes];
                     if(playersVoted.length === allowedPlayers.length) {
-                        gameData.voteResults[gameData.voteId] = [...votes];
                         socket.emit("voteEnd", gameData.voteId)
                     }
                 }

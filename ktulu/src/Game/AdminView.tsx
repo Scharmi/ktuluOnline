@@ -94,6 +94,19 @@ export function AdminView(props:Props) {
         })
     }, [gameData])
     useEffect(() => {
+        socket.on("end", (turn:string) => {
+            if(turn === "duelsTurn") {
+                setAlertArray((prevArr) => {
+                    let newArr = [...prevArr];
+                    for(let i = 0; i < newArr.length; i++) {
+                        if(newArr[i].type === "duelsTurnEnd") newArr.splice(i,1);
+                    }
+                    return newArr;
+                });
+            }
+        })
+    })
+    useEffect(() => {
         socket.on("fullInfoPlayers", (fullInfoArr: any) => {
             setPlayers((prevFull:any) => {
                 let newArr = [...prevFull];
@@ -142,6 +155,14 @@ export function AdminView(props:Props) {
     }, [])
     useEffect(() => {
         props.socket.on("alert", (props: any) => {
+            if(props.type === "duelEnd")
+                setAlertArray((prevArr) => {
+                    let newArr = [...prevArr];
+                    for(let i = 0; i < newArr.length; i++) {
+                        if(newArr[i].type === "voteEnd") newArr.splice(i,1);
+                    }
+                    return newArr;
+                });
             setAlertArray((prevArr) => {
                 let newArr = [...prevArr];
                 newArr.push(props);
@@ -171,7 +192,19 @@ export function AdminView(props:Props) {
         return () => {
             socket.off("voteResults");
         }
-    })
+    }, [])
+    useEffect(() => {
+        socket.on("callVote", (id: number, type: string, votedObjects: any) => {
+            setAlertArray((prevArr) => {
+                let newArr = [...prevArr];
+                newArr.push({type: "voteEnd", callback: () => {socket.emit("voteEnd", id)}, voteType: type, votedObjects: votedObjects});
+                return newArr;
+            });
+        })
+        return () => {
+            socket.off("callVote")
+        }
+    }, [])
 
 
 

@@ -18,13 +18,13 @@ exports.transmitter = function(socket, io, gameData) {
         else console.log("TRANSMISSION BLOCKED")
     })
     socket.on("duelAccept", (p1, p2) => {
-        if((p1 === socket.myData.name) && (gameData.turn === "duelsTurn") && (p1 !== p2)) {
+        if((p1 === socket.myData.name) && (gameData.turn === "duelsTurn") && (p1 !== p2) && (!gameData.duel)) {
             io.to("admin").emit("duelAccept", p1, p2);
         }
         else console.log("TRANSMISSION BLOCKED")
     })
     socket.on("duelDecline", (p1, p2) => {
-        if((p1 === socket.myData.name) && (gameData.turn === "duelsTurn") && (p1 !== p2)) {
+        if((p1 === socket.myData.name) && (gameData.turn === "duelsTurn") && (p1 !== p2) && (!gameData.duel)) {
             io.to("admin").emit("duelDecline", p1, p2);
         }
         else console.log("TRANSMISSION BLOCKED")
@@ -36,7 +36,7 @@ exports.transmitter = function(socket, io, gameData) {
         else console.log("TRANSMISSION BLOCKED", socket.myData.characterName, name, id, options)
     })
     socket.on("disclose", (name) => {
-        if(name === socket.myData.characterName) {
+        if((name === socket.myData.characterName) && (!gameData.disclosed.includes(characterName))) {
             io.to("admin").emit("disclose", name);
         }
         else console.log("TRANSMISSION BLOCKED", socket.myData.characterName, name, id, options)

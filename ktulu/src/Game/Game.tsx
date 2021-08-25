@@ -114,6 +114,9 @@ export function Game(props:Props) {
     const [prison, setPrison] = useState("")
     const [drunk, setDrunk] = useState("")
     const [szulered, setSzulered] = useState("")
+    const [whoseTurn, setWhoseTurn] = useState("");
+    const [gameTime, setGameTime] = useState({dayTime: "night", dayNumber: 2})
+    const [statueTeam, setStatueTeam] = useState("bandyci")
     const [voteProps, setVoteProps] = useState({
         type: "duel",
         optionList: [],
@@ -146,7 +149,7 @@ export function Game(props:Props) {
                 }]
             }
         ]
-        if((myData.characterName === "sędzia") || (myData.characterName === "pijany sędzia")) {
+        if((myData.characterName === "sędzia") || (myData.characterName === "pijany sędzia") || (myData.characterName === "burmistrz")) {
             specialButtons[0].extraButtons.push(
                 {
                     text: "Ujawnij się",
@@ -157,7 +160,32 @@ export function Game(props:Props) {
         }
         return specialButtons;
     }
-
+    function killableExceptTeam() {
+        let newArr = [];
+        for(let i = 0; i < allPlayers.length; i++) {
+            let team = "X"
+            for(let j = 0; j < fullInfoPlayers.length; j++) {
+                if(fullInfoPlayers[j].name === allPlayers[i].name) {
+                    team = fullInfoPlayers[j].team;
+                }
+            }
+            if((team !== myData.team) && (prison !== allPlayers[i].name) && (allPlayers[i].isAlive === true)) newArr.push(allPlayers[i]);
+        }
+        return newArr;
+    }
+    function aliveExceptTeam() {
+        let newArr = [];
+        for(let i = 0; i < allPlayers.length; i++) {
+            let team = ""
+            for(let j = 0; j < fullInfoPlayers.length; j++) {
+                if(fullInfoPlayers[j].name === allPlayers[i].name) {
+                    team = fullInfoPlayers[j].team;
+                }
+            }
+            if((team !== myData.team) && (allPlayers[i].isAlive === true)) newArr.push(allPlayers[i]);
+            return newArr;
+        }
+    }
     let gameData = {
         myData: myData,
         setMyData: setMyData,
@@ -178,6 +206,8 @@ export function Game(props:Props) {
         setVoteFunctionName: setVoteFunctionName,
         turn: "",
         turnPlayer: "",
+        killableExceptTeam: killableExceptTeam,
+        aliveExceptTeam: aliveExceptTeam,
         actionCallBack: (arg:any) => {},
     }
 
@@ -189,27 +219,26 @@ export function Game(props:Props) {
         }
         gameData.setIsVote(false);
     }
-
-    function alertClicked (clickedArray:Array<any>) {
-        console.log(clickedArray);
-        socket.emit("hello", {playerName});
-    }
-
     useEffect(() => {
         socket.emit("Game loaded")
         props.socket.on("Player data", (data: FullInfoPlayer) => {
             setMyData(data);
         })
-        socket.on("test", () => {
-            console.log("test")
-        })
         return () => {
-            socket.off("test");
             socket.off("Player data")
         }
     }, [])
     useEffect(() => {
         socket.on("callVote", (id: string, type: string, voteData: any) => {
+            if(type === "duel") {
+                setAlertArray((prevArr) => {
+                    let newArr = [...prevArr];
+                    for(let i = 0; i < newArr.length; i++) {
+                        if(newArr[i].type === "duelInvite") newArr.splice(i,1);
+                    }
+                    return newArr;
+                })
+            }
             function voteCallBack(options:any) {
                 socket.emit("vote", gameData.myData.characterName, id, options);
                 gameData.setIsVote(false);
@@ -232,6 +261,23 @@ export function Game(props:Props) {
             socket.off("callVote")
         }
     })
+    useEffect(() => {
+        socket.on("turnInfo", (arg:string) => {
+            if(arg.substring(0,15) !== "Tura pojedynków") {
+                setAlertArray((prevArr) => {
+                    let newArr = [...prevArr];
+                    for(let i = 0; i < newArr.length; i++) {
+                        if(newArr[i].type === "duelInvite") newArr.splice(i,1);
+                    }
+                    return newArr;
+                })
+            }
+            setWhoseTurn(arg);
+        })
+        return () => {
+            socket.off("turnInfo")
+        }
+    }, [])
     useEffect(() => {
         socket.on("fullInfoPlayers", (fullInfoArr: any) => {
             setFullInfoPlayers((prevFull:any) => {
@@ -326,6 +372,14 @@ export function Game(props:Props) {
         }
     }, [])
     useEffect(() => {
+        socket.on("statueTeam", (team: string) => {
+            setStatueTeam(team);
+        })
+        return () => {
+            socket.off("statueTeam");
+        }
+    }, [])
+    useEffect(() => {
         socket.on("szulered", (player: string) => {
             setSzulered(player);
         })
@@ -371,6 +425,8 @@ export function Game(props:Props) {
         if(voteFunctionName === "myTeamFree") s = myTeamFree()
         if(voteFunctionName === "voteProps") s = voteProps.votedObjects
         if(voteFunctionName === "aliveExceptMe") s = aliveExceptMe()
+        if(voteFunctionName === "killableExceptTeam") s = killableExceptTeam();
+        if(voteFunctionName === "aliveExceptTeam") s = aliveExceptTeam();
         if(voteState === true) return (
             <VotingInterface 
                 optionList = {voteProps.optionList}
@@ -391,15 +447,9 @@ export function Game(props:Props) {
             return <></>
         }
     }
-    const [playerName, setPlayerName] = useState("Mariusz");
-    function setALERT(arg: any) {
-        console.log("DATA SET!", arg)
-        setAlertArray(arg)
-    }
-
     return (
         <div className="game">
-                {GameState(templateGameState)}
+                <GameState whoseTurn={whoseTurn} gameTime={gameTime} whoHasStatue={statueTeam}/>
                 <RequestAlertList socket={socket} alertArray={alertArray} setAlertArray={setAlertArray} gameData={gameData}/>
                 {vote(isVote)}
                 <PlayerTable

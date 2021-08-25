@@ -2,7 +2,6 @@ import './GameState.css'
 interface Time {
     dayTime: string;
     dayNumber: number;
-
 }
 interface Props {
     gameTime: Time;
@@ -15,8 +14,7 @@ export function GameState(props: Props) {
         return props.gameTime.dayNumber + ". " + dayTimeMessage;
     }
     function whoseTurn() {
-        if(props.gameTime.dayTime === "night") return "W tym momencie gra/grają " + props.whoseTurn;
-        return props.whoseTurn;
+        return "Aktualna tura: " + props.whoseTurn;
     }
     function whoHasStatue() {
         if(props.whoHasStatue === "indianie") return "Posążek mają indianie";

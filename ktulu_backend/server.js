@@ -59,6 +59,7 @@ function removePlayer(player) {
       }
   }
 }
+console.log(gameStage)
 io.on("connection", (socket) => {
   socket.join("everyone")
   console.log("connected", socket.id);
@@ -71,7 +72,7 @@ io.on("connection", (socket) => {
     );
   }
   else {
-    console.log("Reconnection Attempt")
+    console.log("Reconnection Attempt", gameStage)
     socket.on("isTaken",  (name, callback) => {
       callback({
         status: !gameData.disconnectedPlayers.includes(name)
