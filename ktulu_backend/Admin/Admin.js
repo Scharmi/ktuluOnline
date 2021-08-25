@@ -23,6 +23,8 @@ const { lornecieOko } = require("./CharacterActions/lornecieOko");
 const { szantazysta } = require("./CharacterActions/szantazysta");
 const { plonacySzal } = require("./CharacterActions/plonacySzal");
 const { duelsTurn } = require("./CharacterActions/duelsTurn");
+const { chooseVoted } = require("./CharacterActions/chooseVoted");
+const { inspection } = require("./CharacterActions/inspection");
 exports.admin = function(socket, io, gameData) {
     let playerActions = {
         dziwka: dziwka,
@@ -50,6 +52,8 @@ exports.admin = function(socket, io, gameData) {
         lornecieOko: lornecieOko,
         plonacySzal: plonacySzal,
         duelsTurn: duelsTurn,
+        chooseVoted: chooseVoted,
+        inspection: inspection,
     }
     gameData.kill = function(characterName) {
         if(characterName !== gameData.prison) {

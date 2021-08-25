@@ -26,4 +26,7 @@ export function transmitter(socket: any, gameData?: any) {
     socket.on("disclose", (name: string) => {
         socket.emit("disclose", name);
     })
+    socket.on("inspectionEnd", () => {
+        socket.emit("inspectionEnd");
+    })
 }

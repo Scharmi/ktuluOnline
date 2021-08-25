@@ -440,8 +440,7 @@ export function Game(props:Props) {
                 fullInfoPlayers={fullInfoPlayers}
                 setIsVote={setIsVote}
                 voteState={voteProps.voteState}
-
-        />
+            />
         )
         else {
             return <></>

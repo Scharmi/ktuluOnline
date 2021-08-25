@@ -2,6 +2,8 @@ var characters = require('./characters.json')
 exports.gameDataGenerator = function() {
     let gameData = new Object();
     gameData.gameStages = [
+        "chooseVoted",
+        "inspection",
         "duelsTurn",
         "dziwka",
         "szantazysta",
@@ -46,7 +48,9 @@ exports.gameDataGenerator = function() {
     gameData.voteId = 0;
     gameData.playingCharacter = "";
     gameData.activeChat = [];
+    gameData.inspected = [];
     gameData.duelsLimit = 2;
+    gameData.inspectedNumber = 2;
     gameData.voteResults = [];
     gameData.disclosed = [];
     gameData.duel = false;
@@ -188,7 +192,9 @@ exports.gameDataGenerator = function() {
           plonacySzal: "płonący szał",
           cichaStopa: "cicha stopa",
           lornecieOko: "lornecie oko",
-          duelsTurn: "Tura pojedynków"
+          duelsTurn: "Tura pojedynków",
+          chooseVoted: "wybór graczy nad których przeszukaniem będzie głosowanie",
+          inspection: "głosowanie nad przeszukanymi"
       }
         gameData.isCharacter = function(text) {
             for(let i = 0; i < gameData.characters.length; i++) {
@@ -205,7 +211,9 @@ exports.gameDataGenerator = function() {
         gameData.isTurnPlaying = function(turnName) {
             if((turnName === "samotnyKojot") && (!gameData.isSamotnyKojot())) return "skip";
             if((turnName === "bandyciSendInfo")) return "nonActionTurn"
+            if((turnName === "inspection")) return "nonActionTurn"
             if((turnName === "indianieSendInfo")) return "nonActionTurn"
+            if((turnName === "chooseVoted")) return "nonActionTurn"
             if((turnName === "duelsTurn")) return "nonActionTurn"
             if((turnName === "bandyciInspection") && (gameData.statueTeam() === "bandyci")) return "skip";
             if((turnName === "bandyciStatue") && (gameData.statueTeam() !== "bandyci")) return "skip";

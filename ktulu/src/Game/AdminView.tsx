@@ -64,7 +64,7 @@ export function AdminView(props:Props) {
         setVoteFunctionName: setVoteFunctionName,
         turn: "",
         turnPlayer: "",
-        actionCallBack: (arg:any) => {},
+        actionCallBack: (arg:any) => {socket.emit("votedPlayers", arg)},
     }
     useEffect(() => {
         socket.emit("Game loaded")
@@ -81,6 +81,14 @@ export function AdminView(props:Props) {
 
     }, [])
     useEffect(() => {
+        socket.on("chooseVoted", () => {
+
+        })
+        return () => {
+            socket.off("chooseVoted")
+        }
+    }, [])
+    useEffect(() => {
         transmitter(socket);
         return (() => {
             socket.off("action");
@@ -91,6 +99,7 @@ export function AdminView(props:Props) {
             socket.off("vote");
             socket.off("voteEnd");
             socket.off("disclose");
+            socket.off("inspectionEnd")
         })
     }, [gameData])
     useEffect(() => {
@@ -186,7 +195,27 @@ export function AdminView(props:Props) {
                 minChosen: 1,
                 maxChosen: 1,
                 voteState: "gotResults",
-                callBack: (arg:any) => {}
+                callBack: (arg:any) => {socket.emit("votedPlayers", arg)},
+            })
+        })
+        return () => {
+            socket.off("voteResults");
+        }
+    }, [])
+    useEffect(() => {
+        socket.on("chooseVoted", () => {
+            setIsVote(true)
+            setVoteFunctionName("allPlayers")
+            setVoteProps({
+                type: "inspection",
+                optionList: [],
+                votedObjects: [],
+                votes: 0,
+                allVotes: 0,
+                minChosen: 1,
+                maxChosen: 500,
+                voteState: "choosing",
+                callBack: (arg:any) => {socket.emit("votedPlayers", arg)},
             })
         })
         return () => {
@@ -211,9 +240,36 @@ export function AdminView(props:Props) {
     function timeChangeCallback(arg: Object) {
         console.log(arg);
     }
+    function vote(voteState: boolean) {
+        let s:any = []        
+        if(voteFunctionName === "voteProps") s = voteProps.votedObjects
+        if(voteFunctionName === "allPlayers") {
+            s = players;
+            console.log("FUNC", s)
+        } 
+        if(voteState === true) return (
+            <VotingInterface 
+                optionList = {voteProps.optionList}
+                votedObjects = {s}
+                type={voteProps.type}
+                votes={voteProps.votes}
+                allVotes={voteProps.allVotes}
+                minChosen={voteProps.minChosen}
+                maxChosen={voteProps.maxChosen}
+                callBack={voteProps.callBack}
+                fullInfoPlayers={players}
+                setIsVote={setIsVote}
+                voteState={voteProps.voteState}
+            />
+        )
+        else {
+            return <></>
+        }
+    }
     return (
         <div className="adminView">
             <Paper elevation={4}>
+                {vote(isVote)}
                 <RequestAlertList socket={socket} alertArray={alertArray} setAlertArray={setAlertArray} gameData={gameData}/>
                 <h2>Gracze biorący udział w rozgrywce:</h2>
                 <PlayerTable
@@ -231,6 +287,7 @@ export function AdminView(props:Props) {
                     szulered={szulered}
                 />
             </Paper>
+            
             <GameStateSetter gameState={templateGameState} callBack={timeChangeCallback}/>
         </div>
     )
