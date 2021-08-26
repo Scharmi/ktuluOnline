@@ -48,5 +48,4 @@ exports.game = function(socket, io, gameData, reconnect) {
     io.to("allPlayers").emit("All players", gameData.playersArray);
     io.to("admin").emit("Full Players Info", gameData.allFullInfoPlayers, gameData.namesArray);
     transmitter(socket, io, gameData);
-
 }

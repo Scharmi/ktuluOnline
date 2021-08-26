@@ -2,9 +2,7 @@ var characters = require('./characters.json')
 exports.gameDataGenerator = function() {
     let gameData = new Object();
     gameData.gameStages = [
-        "chooseVoted",
-        "inspection",
-        "duelsTurn",
+        "setNight",
         "dziwka",
         "szantazysta",
         "uwodziciel",
@@ -26,8 +24,40 @@ exports.gameDataGenerator = function() {
         "szamanka", 
         "wojownik",
         "samotnyKojot",
-        "lornecieOko"
+        "lornecieOko",
+        "setDay",
+        "duelsTurn",
+        "chooseVoted",
+        "inspection",
+        "isHanging",
     ];
+    gameData.stageCycle = [
+      "setDay",
+      "duelsTurn",
+      "chooseVoted",
+      "inspection",
+      "isHanging",
+      "setNight",
+      "szeryf", 
+      "pastor", 
+      "opoj", 
+      "kat",
+      "hazardzista",
+      "bandyciSendInfo", 
+      "bandyciInspection", 
+      "bandyciStatue", 
+      "msciciel", 
+      "zlodziej",
+      "szuler", 
+      "indianieSendInfo",
+      "indianieStatue",
+      "indianieKilling",
+      "szaman",
+      "szamanka", 
+      "wojownik",
+      "samotnyKojot",
+      "lornecieOko"
+    ]
     gameData.statue = "herszt"
     gameData.namesArray = [];
     gameData.idsArray = [];
@@ -50,6 +80,8 @@ exports.gameDataGenerator = function() {
     gameData.activeChat = [];
     gameData.inspected = [];
     gameData.duelsLimit = 2;
+    gameData.dayNumber = 0;
+    gameData.dayTime = "night";
     gameData.inspectedNumber = 2;
     gameData.voteResults = [];
     gameData.disclosed = [];
@@ -194,7 +226,11 @@ exports.gameDataGenerator = function() {
           lornecieOko: "lornecie oko",
           duelsTurn: "Tura pojedynków",
           chooseVoted: "wybór graczy nad których przeszukaniem będzie głosowanie",
-          inspection: "głosowanie nad przeszukanymi"
+          inspection: "głosowanie nad przeszukanymi",
+          isHanging: "głosowanie nad tym czy wieszamy",
+          hanging: "głosowanie nad tym kogo wieszamy", 
+          setNight: "",
+          setDay: ""
       }
         gameData.isCharacter = function(text) {
             for(let i = 0; i < gameData.characters.length; i++) {
@@ -209,29 +245,37 @@ exports.gameDataGenerator = function() {
             if(text === "ufoki") return true;
         }
         gameData.isTurnPlaying = function(turnName) {
-            if((turnName === "samotnyKojot") && (!gameData.isSamotnyKojot())) return "skip";
-            if((turnName === "bandyciSendInfo")) return "nonActionTurn"
-            if((turnName === "inspection")) return "nonActionTurn"
-            if((turnName === "indianieSendInfo")) return "nonActionTurn"
-            if((turnName === "chooseVoted")) return "nonActionTurn"
-            if((turnName === "duelsTurn")) return "nonActionTurn"
-            if((turnName === "bandyciInspection") && (gameData.statueTeam() === "bandyci")) return "skip";
-            if((turnName === "bandyciStatue") && (gameData.statueTeam() !== "bandyci")) return "skip";
-            if((turnName === "indianieStatue") && (gameData.statueTeam() !== "indianie")) return "skip";
-            let playingCharacter = gameData.turnCharacter[turnName];
-            gameData.playingCharacter = playingCharacter;
-            if(gameData.isCharacter(playingCharacter)) {
-                if(gameData.isActive(playingCharacter) === "dead") return "skip";
-                if(gameData.isActive(playingCharacter) === "simulate") return "simulatePrison";
-                if(gameData.usedSkills.includes(playingCharacter)) return "simulateUsedSkill"
-                if(gameData.isActive(playingCharacter) === "active") return "play";
-            }
-            if(gameData.isTeam(playingCharacter)) {
-                if(gameData.isActive(playingCharacter) === "dead") return "skip";
-                if(gameData.isActive(playingCharacter) === "simulate") return "simulatePrison";
-                if(gameData.isActive(playingCharacter) === "active") return "play";
-            }
-            return "skip";
+          let nonActionTurns = [
+            "bandyciSendInfo", 
+            "isHanging", 
+            "hanging", 
+            "inspection", 
+            "indianieSendInfo", 
+            "chooseVoted", 
+            "duelsTurn",
+            "setDay", 
+            "setNight"
+          ]
+          if(nonActionTurns.includes(turnName)) return "nonActionTurn"
+          if((turnName === "samotnyKojot") && (!gameData.isSamotnyKojot())) return "skip";
+          if((turnName === "hazardzista") && (gameData.dayNumber < 2)) return "skip";
+          if((turnName === "bandyciInspection") && (gameData.statueTeam() === "bandyci")) return "skip";
+          if((turnName === "bandyciStatue") && (gameData.statueTeam() !== "bandyci")) return "skip";
+          if((turnName === "indianieStatue") && (gameData.statueTeam() !== "indianie")) return "skip";
+          let playingCharacter = gameData.turnCharacter[turnName];
+          gameData.playingCharacter = playingCharacter;
+          if(gameData.isCharacter(playingCharacter)) {
+              if(gameData.isActive(playingCharacter) === "dead") return "skip";
+              if(gameData.isActive(playingCharacter) === "simulate") return "simulatePrison";
+              if(gameData.usedSkills.includes(playingCharacter)) return "simulateUsedSkill"
+              if(gameData.isActive(playingCharacter) === "active") return "play";
+          }
+          if(gameData.isTeam(playingCharacter)) {
+              if(gameData.isActive(playingCharacter) === "dead") return "skip";
+              if(gameData.isActive(playingCharacter) === "simulate") return "simulatePrison";
+              if(gameData.isActive(playingCharacter) === "active") return "play";
+          }
+          return "skip";
         }
         gameData.activePlayer = function(characterName) {
             if(gameData.isCharacter(characterName)) return characterName;

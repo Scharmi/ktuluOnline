@@ -85,7 +85,7 @@ function server() {
       })
     }
     socket.once("Game loaded", () => {
-      io.off("reconnection", () => {})
+      console.log("GAME LOASDED")
       gameStage = "game";
       io.to("allPlayers").emit("All players", gameData.playersArray);
       io.to("admin").emit("Full Players Info", gameData.allFullInfoPlayers, gameData.namesArray);
@@ -119,9 +119,12 @@ function server() {
       io.to("admin").emit("Player names", namesArray);
   
     });
+
   })
   process.on('SIGINT', function() {
-    delete socket;
+    console.log("SERVER CLOSED")
+    httpServer.close()
+    io.removeAllListeners()
     process.exit();
   });
   httpServer.listen(8080);

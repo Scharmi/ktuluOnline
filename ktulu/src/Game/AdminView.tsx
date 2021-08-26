@@ -96,6 +96,7 @@ export function AdminView(props:Props) {
             socket.off("voteEnd");
             socket.off("disclose");
             socket.off("inspectionEnd")
+            socket.off("hangingEnd")
         })
     }, [gameData])
     useEffect(() => {
@@ -160,7 +161,8 @@ export function AdminView(props:Props) {
     }, [])
     useEffect(() => {
         props.socket.on("alert", (props: any) => {
-            if(props.type === "duelEnd")
+            if(props.type === "isHangingEnd") console.log("GOT HNG END")
+            if((props.type === "duelEnd") || (props.type === "nextVote"))
                 setAlertArray((prevArr) => {
                     let newArr = [...prevArr];
                     for(let i = 0; i < newArr.length; i++) {
@@ -171,6 +173,7 @@ export function AdminView(props:Props) {
             setAlertArray((prevArr) => {
                 let newArr = [...prevArr];
                 newArr.push(props);
+                console.log("NEW ARRY", newArr)
                 return newArr;
             });
         })
@@ -180,7 +183,13 @@ export function AdminView(props:Props) {
     }, [])
     useEffect(() => {
         socket.on("voteResults", (type: string, results: any) => {
-            console.log("GOT RESULTS")
+            setAlertArray((prevArr) => {
+                let newArr = [...prevArr];
+                for(let i = 0; i < newArr.length; i++) {
+                    if(newArr[i].type === "voteEnd") newArr.splice(i,1);
+                }
+                return newArr;
+            });
             setIsVote(true)
             setVoteProps({
                 type: type,
@@ -193,6 +202,7 @@ export function AdminView(props:Props) {
                 voteState: "gotResults",
                 callBack: (arg:any) => {socket.emit("votedPlayers", arg)},
             })
+            
         })
         return () => {
             socket.off("voteResults");

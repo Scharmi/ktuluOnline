@@ -25,6 +25,10 @@ const { plonacySzal } = require("./CharacterActions/plonacySzal");
 const { duelsTurn } = require("./CharacterActions/duelsTurn");
 const { chooseVoted } = require("./CharacterActions/chooseVoted");
 const { inspection } = require("./CharacterActions/inspection");
+const { isHanging } = require("./CharacterActions/isHanging");
+const { hanging } = require("./CharacterActions/hanging");
+const { setDay } = require("./CharacterActions/setDay");
+const { setNight } = require("./CharacterActions/setNight");
 exports.admin = function(socket, io, gameData) {
     let playerActions = {
         dziwka: dziwka,
@@ -54,6 +58,10 @@ exports.admin = function(socket, io, gameData) {
         duelsTurn: duelsTurn,
         chooseVoted: chooseVoted,
         inspection: inspection,
+        isHanging: isHanging,
+        hanging: hanging,
+        setDay: setDay,
+        setNight: setNight
     }
     gameData.kill = function(characterName) {
         if(characterName !== gameData.prison) {
@@ -89,6 +97,9 @@ exports.admin = function(socket, io, gameData) {
     }
     function runStage(counter, gameData) {
         if(counter < gameData.gameStages.length) {
+            if(counter === gameData.gameStages.length - 1) {
+                gameData.gameStages = [...gameData.gameStages, ...gameData.stageCycle]
+            }
             socket.removeAllListeners("action");
             socket.removeAllListeners("duelInvite");
             gameData.counter = counter;

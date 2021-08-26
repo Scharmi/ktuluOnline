@@ -64,26 +64,14 @@ export function ActionChoosingInterface (props: Props) {
         props.callBack(clickedQueue);
     }
     let items: Array<Item> = [];
-    if ((props.type === "isHanging") || (typeof(props.votedObjects) === "undefined")) {
-        items.push({
-            text: "Tak",
-            id: 1
-        });
-        items.push({
-            text: "Nie",
-            id: 0
-        })
-    }
-    else {
-        for(let i = 0; i < props.votedObjects.length; i++) {
-            if(typeof(props.votedObjects[i].name) !== undefined)
-            items.push(
-                {
-                    text: props.votedObjects[i].name,
-                    id: props.votedObjects[i].id
-                }
-            )
-        }
+    for(let i = 0; i < props.votedObjects.length; i++) {
+        if(typeof(props.votedObjects[i].name) !== undefined)
+        items.push(
+            {
+                text: props.votedObjects[i].name,
+                id: props.votedObjects[i].id
+            }
+        )
     }
     let maxChosen = 1;
     let minChosen = 1;
@@ -106,7 +94,7 @@ export function ActionChoosingInterface (props: Props) {
             if(type === "character") return "Czyją tożsamość chcesz sprawdzić?";
             if(type === "isHanging") return "Czy wieszamy dzisiaj?";
             if(type === "hanging") return "Kogo wieszamy?";
-            if(type === "dailyinspection") return "Kogo przeszukujemy?";
+            if(type === "dailyInspection") return "Kto ma zostać dzisiaj przeszukany?";
             if(type === "dailyinspectionPropositions") return "Czyją kandydaturę do przeszukania chcesz zgłosić?";
             if(type === "killing") return "Kogo chcesz zabić?";
             if(type === "inspection") return "Kogo chcesz przeszukać?";

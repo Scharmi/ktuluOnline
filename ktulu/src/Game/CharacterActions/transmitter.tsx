@@ -6,6 +6,7 @@ export function transmitter(socket: any, gameData?: any) {
         socket.emit("turnSkip", turn, player)
     })
     socket.on("end", (arg: any) => {
+        console.log("END", arg)
         socket.emit("end", arg)
     })
     socket.on("duelInvite", (p1: string, p2: string) => {

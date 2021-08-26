@@ -11,6 +11,7 @@ exports.inspection = function(socket, io, gameData) {
     console.log(votedPlayers)
     inspectionVote(socket, io, gameData, voteOptions)
     socket.once("inspectionEnd", () => {
+        io.to("admin").emit("end", "inspection")
         console.log("INSPECTION:", gameData.inspected)
     })
 

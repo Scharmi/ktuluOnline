@@ -246,7 +246,7 @@ export function Game(props:Props) {
             setIsVote(true);
             setVoteFunctionName("voteProps")
             let chosen = 1;
-            if(type === "inspection") chosen = chosenNumber;
+            if(type === "dailyInspection") chosen = chosenNumber;
             gameData.setVoteProps({
                 type: type,
                 optionList: [],
@@ -303,7 +303,14 @@ export function Game(props:Props) {
             socket.off("fullInfoPlayers")
         }
     }, [])
-
+    useEffect (() => {
+        socket.on("setTime", (number:number, time: "time") => {
+            setGameTime({dayTime: time, dayNumber: number});
+        })
+        return () => {
+            socket.off("setTime");
+        }
+    })
     useEffect(() => {
         socket.on("manualSkip", (turn:any, player:any) => {
             console.log("MANUAL SKIP")
