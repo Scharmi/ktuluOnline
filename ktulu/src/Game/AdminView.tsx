@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { Player, FullInfoPlayer } from '../interfaces/interfaces'
+import { FullInfoPlayer } from '../interfaces/interfaces'
 import { 
         templateCrewmates, 
         templateAdminActionButtons,
@@ -11,7 +11,7 @@ import { VotingInterface } from './VotingInterface/VotingInterface'
 import { PlayerTable } from './PlayerTable/PlayerTable'
 import { RequestAlertList } from './RequestAlert/RequestAlertList'
 import { GameState } from './GameState/GameState'
-import { Paper, Divider } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 import { Button } from '@material-ui/core'
 import { GameStateSetter } from './AdminViewComponents/GameStateSetter/GameStateSetter'
 import './AdminView.css'
@@ -75,7 +75,7 @@ export function AdminView(props:Props) {
             socket.emit("reconnection", player)
         })
 
-    }, [])
+    }, [socket])
     useEffect(() => {
         socket.on("chooseVoted", () => {
 
@@ -83,7 +83,7 @@ export function AdminView(props:Props) {
         return () => {
             socket.off("chooseVoted")
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
         transmitter(socket);
         return (() => {
@@ -95,8 +95,9 @@ export function AdminView(props:Props) {
             socket.off("vote");
             socket.off("voteEnd");
             socket.off("disclose");
-            socket.off("inspectionEnd")
-            socket.off("hangingEnd")
+            socket.off("inspectionEnd");
+            socket.off("hangingEnd");
+            socket.off("herbsKill");
         })
     }, [gameData])
     useEffect(() => {
@@ -111,7 +112,22 @@ export function AdminView(props:Props) {
                 });
             }
         })
-    })
+    }, [socket])
+    useEffect(() => {
+        socket.on("herbsKill", () => {
+            setAlertArray((prevArr) => {
+                let newArr = [...prevArr];
+                for(let i = 0; i < newArr.length; i++) {
+                    if(newArr[i].type === "herbsKill") newArr.splice(i,1);
+                }
+                return newArr;
+            });
+            socket.emit("herbsKill");
+        })
+        return () => {
+            socket.off("herbsKill")
+        }
+    }, [socket])
     useEffect(() => {
         socket.on("fullInfoPlayers", (fullInfoArr: any) => {
             setPlayers((prevFull:any) => {
@@ -134,7 +150,7 @@ export function AdminView(props:Props) {
         return () => {
             socket.off("fullInfoPlayers")
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
         socket.on("prison", (player: string) => {
             setPrison(player);
@@ -142,7 +158,7 @@ export function AdminView(props:Props) {
         return () => {
             socket.off("prison");
         }
-    }, [prison, setPrison])
+    }, [prison, setPrison, socket])
     useEffect(() => {
         socket.on("drunk", (player: string) => {
             setDrunk(player);
@@ -150,7 +166,7 @@ export function AdminView(props:Props) {
         return () => {
             socket.off("drunk");
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
         socket.on("szulered", (player: string) => {
             setSzulered(player);
@@ -158,7 +174,7 @@ export function AdminView(props:Props) {
         return () => {
             socket.off("szulered");
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
         props.socket.on("alert", (props: any) => {
             if(props.type === "isHangingEnd") console.log("GOT HNG END")
@@ -180,7 +196,7 @@ export function AdminView(props:Props) {
         return () => {
             props.socket.off("alert")
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
         socket.on("voteResults", (type: string, results: any) => {
             setAlertArray((prevArr) => {
@@ -207,7 +223,7 @@ export function AdminView(props:Props) {
         return () => {
             socket.off("voteResults");
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
         socket.on("chooseVoted", () => {
             setIsVote(true)

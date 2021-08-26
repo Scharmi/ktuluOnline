@@ -124,6 +124,7 @@ exports.duel = function(socket, io, gameData, player1, player2) {
                 io.to("everyone").emit("turnInfo", "Tura pojedynków")
                 gameData.duel = false;
                 for(let i = 0; i < playersToKill.length; i++) {
+                    if(playersToKill[i] === gameData.statue) gameData.gameOver("miastowi")
                     gameData.kill(playersToKill[i]);
                 }
             })

@@ -4,6 +4,7 @@ exports.inspectionVote = function(socket, io, gameData, voteOptions) {
     function inspectionVote(socket, io, gameData, voteOptions) {
         console.log(voteOptions);
         let numberOfChosen = gameData.inspectedNumber - gameData.inspected.length;
+        if(numberOfChosen > voteOptions.length) numberOfChosen = voteOptions.length
         let allowedPlayers = [];
         let nextVoteOptions = [];
         if(numberOfChosen === voteOptions.length) {

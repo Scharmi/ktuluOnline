@@ -29,6 +29,7 @@ export function RequestAlertList(props: Props) {
         return (
             <div className="alert">
                 <RequestAlert 
+                    key = {item}
                     socket={props.socket} 
                     alertProps={item} 
                     alertArray={alertArray} 

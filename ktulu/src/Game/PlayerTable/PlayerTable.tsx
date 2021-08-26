@@ -80,6 +80,7 @@ export function PlayerTable (props: Props) {
     }
     let listPlayers = players.map((item) =>
         <PlayerCard 
+            key = {item.name}
             socket={props.socket}
             prison={isPrison(item.name)} 
             drunk={isDrunk(item.name)} 

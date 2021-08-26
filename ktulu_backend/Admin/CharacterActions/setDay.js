@@ -1,7 +1,12 @@
 exports.setDay = function(socket, io, gameData) {  
     gameData.dayNumber++;
     gameData.dayTime = "day";
+    if((gameData.dayNumber >= gameData.banditsWin) && (gameData.statueTeam() === "bandyci")) gameData.gameOver("bandyci");
+    if(gameData.statueTeam() === "miastowi") gameData.gameOver("miastowi");
     io.to("everyone").emit("setTime", gameData.dayNumber, gameData.dayTime)
+    if(gameData.herbs !== "") {
+        io.to("admin").emit("alert", {type: "herbsKill", player: gameData.characterNick(gameData.herbs)});
+    }
     gameData.drunk = []; 
     gameData.prison = "";
     gameData.drunkPlayer = "";

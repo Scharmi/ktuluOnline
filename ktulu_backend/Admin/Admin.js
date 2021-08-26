@@ -63,6 +63,16 @@ exports.admin = function(socket, io, gameData) {
         setDay: setDay,
         setNight: setNight
     }
+    gameData.gameOver = function(team) {
+        if(gameData.isGameOver === false) {
+            io.to("everyone").emit("alert", {type:"default", header: team + " wygrali"})
+            gameData.isGameOver = true;
+            io.removeAllListeners()
+            io.close();
+            process.exit();
+        }
+
+    }
     gameData.kill = function(characterName) {
         if(characterName !== gameData.prison) {
             for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
@@ -78,6 +88,11 @@ exports.admin = function(socket, io, gameData) {
                 }
               }
               io.to(characterName).emit("fullInfoPlayers", gameData.allFullInfoPlayers)
+              let indiansWon = true;
+              for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
+                if((gameData.allFullInfoPlayers[i].team !== "indianie") && (gameData.allFullInfoPlayers[i].isAlive)) indiansWon = false;
+              }
+              if(indiansWon) gameData.gameOver("indianie")
         }
         else {
             gameData.gameStages.splice(gameData.counter + 1, 0 , gameData.stageName);
@@ -95,6 +110,11 @@ exports.admin = function(socket, io, gameData) {
             gameData.gameStages.splice(gameData.counter + 1, 0 , gameData.statueTeam() + "SendInfo");
         }
     }
+    socket.on("disclose", (character) => {
+        let name = gameData.characterNick(character);
+        let player = gameData.playerProps(name);
+        io.to("everyone").emit("fullInfoPlayers", [player])
+    })
     function runStage(counter, gameData) {
         if(counter < gameData.gameStages.length) {
             if(counter === gameData.gameStages.length - 1) {

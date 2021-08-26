@@ -7,6 +7,11 @@ exports.szamanka = function(socket, io, gameData) {
         }
         let characterName = gameData.allFullInfoPlayers[playerIndex].characterName
         gameData.herbs = characterName;
+        socket.once("herbsKill", () => {
+            if(gameData.herbs === gameData.statue) gameData.gameOver("miastowi")
+            gameData.kill(gameData.herbs);
+            gameData.herbs = "";
+        })
         gameData.usedSkills.push(gameData.playingCharacter);
         if(characterName === gameData.statue) {
             gameData.setStatueTeam(gameData.playingCharacter)

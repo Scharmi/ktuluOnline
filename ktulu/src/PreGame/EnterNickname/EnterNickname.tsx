@@ -38,7 +38,6 @@ export function EnterNickname(props: Props) {
                 setName("");
             }
         });
-
     }
     return (
         <div className="enterNickname">

@@ -4,10 +4,7 @@ import { Game } from './Game/Game'
 import { Paper } from '@material-ui/core'
 import { PreGame } from './PreGame/PreGame'
 import { AdminView } from './Game/AdminView'
-import { ChoosingInterface } from './Game/VotingInterface/ActionChoosingInterface/ChoosingInterface'
 import { io } from 'socket.io-client';
-import { FullInfoPlayer } from './interfaces/interfaces'
-import { templateFullInfoPlayer } from './Game/templates/templates'
 const socket = io("http://localhost:8080",{
   query: {
     name: '1242'

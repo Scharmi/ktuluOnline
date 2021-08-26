@@ -1,6 +1,7 @@
 
 export function szamanka(socket: any, io: any, gameData: any) {
         gameData.setAlertArray((prevArray: any) => {
+            console.log("SZAMANKA")
             let newArr = [...prevArray];
             newArr.push({
                 type:"isAction", 
@@ -14,6 +15,7 @@ export function szamanka(socket: any, io: any, gameData: any) {
                         type: "herbs",
                         optionList: [],
                         votedObjects: gameData.aliveExceptMe(),
+                        voteState: "choosing",
                         votes: 0,
                         allVotes: 0,
                         minChosen: 1,

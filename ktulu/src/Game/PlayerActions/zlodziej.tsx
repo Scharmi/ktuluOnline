@@ -16,7 +16,7 @@ export function zlodziej(socket: any, io: any, gameData: any) {
                         votes: 0,
                         allVotes: 0,
                         minChosen: 1,
-                        maxChosen: 1,
+                        voteState: "choosing",
                         callBack: gameData.actionCallBack
                     })
                 }

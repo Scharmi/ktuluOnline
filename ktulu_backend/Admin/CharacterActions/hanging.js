@@ -9,7 +9,7 @@ exports.hanging = function(socket, io, gameData) {
     io.to("everyone").emit("turnInfo", "Wybieranie kogo powiesić")
     hangingVote(socket, io, gameData, voteOptions)
     socket.once("hangingEnd", () => {
-        console.log("HANGING:", gameData.hanged)
+        if(gameData.hanged !== "") gameData.kill(gameData.playerProps(gameData.hanged).characterName);
         io.to("admin").emit("end", "hanging")
     })
 

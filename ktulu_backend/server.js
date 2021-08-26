@@ -125,6 +125,7 @@ function server() {
     console.log("SERVER CLOSED")
     httpServer.close()
     io.removeAllListeners()
+    io.close();
     process.exit();
   });
   httpServer.listen(8080);

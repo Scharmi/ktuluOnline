@@ -8,23 +8,11 @@ exports.gameDataGenerator = function() {
         "uwodziciel",
         "szeryf", 
         "pastor", 
-        "opoj", 
-        "kat",
-        "hazardzista",
         "bandyciSendInfo", 
         "bandyciInspection", 
         "bandyciStatue", 
-        "msciciel", 
-        "zlodziej",
-        "szuler", 
         "indianieSendInfo",
         "indianieStatue",
-        "indianieKilling",
-        "szaman",
-        "szamanka", 
-        "wojownik",
-        "samotnyKojot",
-        "lornecieOko",
         "setDay",
         "duelsTurn",
         "chooseVoted",
@@ -32,11 +20,6 @@ exports.gameDataGenerator = function() {
         "isHanging",
     ];
     gameData.stageCycle = [
-      "setDay",
-      "duelsTurn",
-      "chooseVoted",
-      "inspection",
-      "isHanging",
       "setNight",
       "szeryf", 
       "pastor", 
@@ -56,7 +39,12 @@ exports.gameDataGenerator = function() {
       "szamanka", 
       "wojownik",
       "samotnyKojot",
-      "lornecieOko"
+      "lornecieOko",
+      "setDay",
+      "duelsTurn",
+      "chooseVoted",
+      "inspection",
+      "isHanging"
     ]
     gameData.statue = "herszt"
     gameData.namesArray = [];
@@ -82,10 +70,12 @@ exports.gameDataGenerator = function() {
     gameData.duelsLimit = 2;
     gameData.dayNumber = 0;
     gameData.dayTime = "night";
+    gameData.banditsWin = 3;
     gameData.inspectedNumber = 2;
     gameData.voteResults = [];
     gameData.disclosed = [];
     gameData.duel = false;
+    gameData.isGameOver = false;
     gameData.members = function(team) {
         let newArr = [];
         for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
@@ -115,7 +105,13 @@ exports.gameDataGenerator = function() {
           if(gameData.allFullInfoPlayers[i].characterName === characterName) return gameData.allFullInfoPlayers[i].name;
         }
       }
-      
+      gameData.alivePlayers = function() {
+        let newArr = [];
+        for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
+          if(gameData.allFullInfoPlayers[i].isAlive === true) newArr.push(gameData.allFullInfoPlayers[i]);
+        }
+        return newArr;
+      }
       gameData.isActive = function(name){
           for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
             if(gameData.allFullInfoPlayers[i].characterName === name) {

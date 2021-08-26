@@ -43,6 +43,7 @@ import { samotnyKojot } from './PlayerActions/samotnyKojot'
 import { lornecieOko } from './PlayerActions/lornecieOko'
 import { plonacySzal } from './PlayerActions/plonacySzal'
 import { sedzia } from './PlayerActions/sedzia'
+import { burmistrz } from './PlayerActions/burmistrz'
 interface Props {
 
     socket: any;
@@ -72,7 +73,8 @@ export function Game(props:Props) {
         szantazysta: szantazysta,
         uwodziciel: uwodziciel,
         kat: kat,
-        sedzia: sedzia
+        sedzia: sedzia,
+        burmistrz: burmistrz
     }  
     let socket = props.socket;
     function alivePlayers() {

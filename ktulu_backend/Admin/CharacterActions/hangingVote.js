@@ -6,8 +6,41 @@ exports.hangingVote = function(socket, io, gameData, voteOptions) {
         let numberOfChosen = 1;
         let allowedPlayers = [];
         let nextVoteOptions = [];
+        function discloseAction(character) {
+            if(character !== "burmistrz") {
+                console.log("WRONG DISCLOSE")
+                socket.once("diclose", discloseAction);
+            }
+            else {
+                function burmistrzAction(name, obj) {
+                    console.log("OBJ:", obj)
+                    if(name === "burmistrz") {
+                        if(obj.player.id === 1) gameData.hanged = "";
+                    }
+                    else {
+                        console.log("WRONG NAME");
+                        socket.once("action", burmistrzAction);
+                    }
+                }
+                io.to(character).emit("start", "burmistrz", "burmistrz", [
+                    {
+                        name: "Ułaskaw",
+                        id: 1
+                    },
+                    {
+                        name: "Nie ułaskawiaj",
+                        id: 0
+                    }
+                ]);
+                socket.once("action", burmistrzAction);
+                socket.once("hangingEnd", () => {
+                    socket.off("action", burmistrzAction);
+                })
+            }
+        }
         if(numberOfChosen === voteOptions.length) {
             gameData.hanged = voteOptions[0].name;
+            socket.once("disclose", discloseAction);
             io.to("admin").emit("alert", {type: "hangingEnd", p1: gameData.hanged});
         }
         else {
@@ -72,11 +105,12 @@ exports.hangingVote = function(socket, io, gameData, voteOptions) {
                         })
                     }
                     else {
+                        socket.once("disclose", discloseAction);
                         io.to("admin").emit("alert", {type: "hangingEnd", p1: gameData.hanged});
                     }
                 }
                 else {
-                    socket.once("voteEnd", voteEndFunction)
+                    socket.once("voteEnd", voteEndFunction);
                 }
             }
             socket.once("voteEnd", voteEndFunction);

@@ -99,6 +99,7 @@ export function ActionChoosingInterface (props: Props) {
             if(type === "killing") return "Kogo chcesz zabić?";
             if(type === "inspection") return "Kogo chcesz przeszukać?";
             if(type === "herbs") return "Komu chcesz podać ziółka?";
+            if(type === "burmistrz") return "Czy chcesz ułaskawić wieszanego gracza?";
             if(type === "drinking") return "Kogo chcesz upić?";
             if(type === "playing") return "Z kim chcesz zagrać";
             if(type === "dziwka") return "Kogo chcesz zdziwić?";
