@@ -42,6 +42,7 @@ export function RequestAlert(props: Props) {
         if(props.alertProps.type === "turnSkip") return "Gracz " + props.alertProps.name + " został upity lub zamknięty w więzieniu";
         if(props.alertProps.type === "szeryfPassive") return "Zostałeś zamknięty w więzieniu";
         if(props.alertProps.type === "isAction") return "Czy chcesz użyć swojej umiejętności?";
+        if(props.alertProps.type === "nextVote") return "Zakończyło się głosowanie";
         if(props.alertProps.type === "duelsTurnEnd") return "Jeśli chcesz zakończyć turę pojedynków kliknij przycisk poniżej";
         if(props.alertProps.type === "duelEnd") return "Zakończył się pojedynek graczy " + props.alertProps.p1 + " i " + props.alertProps.p2;
         if(props.alertProps.type === "voteEnd") {
@@ -62,13 +63,14 @@ export function RequestAlert(props: Props) {
         if(props.alertProps.type === "szeryfPassive") return "Nie możesz wykonywać akcji w tej nocy, ale nie możesz też być zabity";
         if(props.alertProps.type === "duelEnd") return "Kliknij żeby zakończyć zapoznawanie się graczy z wynikami głosowania oraz 5 sekund dla sędziego"
         if(props.alertProps.type === "voteEnd") return "Jeśli chcesz wymusić jego koniec kliknij poniższy przycisk";
+        if(props.alertProps.type === "nextVote") return "Nie dało ono jedna ostatecznego rozstrzygnięcie, więc potrzebne będzie kolejne z pewnym podzbiorem opcji. Daj graczom czas na zapoznanie się z wynikiem głosowania a następnie przejdź do 'dogrywki'";
         if(props.alertProps.type === "duelsTurnEnd") return "Zrób to jeśli gracze nie chcą wykorzystać dziennego limitu pojedynków, w innym wypadku tura skończy się automatycznie po jego wyczrpaniu";
         if(props.alertProps.type === "default") return props.alertProps.bottomText;
         if(props.alertProps.type === "nonClosing") return props.alertProps.bottomText;
         return ""
     }
     function closeAlert() {
-        let notClosing = ["nonClosing", "duelInvite", "isAction", "duelEnd"]
+        let notClosing = ["nonClosing", "duelInvite", "isAction", "duelEnd", "nextVote"]
         if(!notClosing.includes(props.alertProps.type))
         return (<Button onClick={() => {
             props.setAlertArray(props.id)
@@ -140,6 +142,21 @@ export function RequestAlert(props: Props) {
                     <div className="buttonsWrapper">
                         <div className="buttonWrapper">
                             <Button variant="contained" color="primary" onClick={() => callback()}>Wymuś zakończenie głosowania</Button>
+                        </div>
+                    </div>
+                </div>
+            ) 
+        }
+        if(props.alertProps.type === "nextVote") {
+            const callback = () => {
+                props.setAlertArray(props.id)
+                props.socket.emit("nextVote");
+            }
+            return (
+                <div className="buttonsWrapper2">
+                    <div className="buttonsWrapper">
+                        <div className="buttonWrapper">
+                            <Button variant="contained" color="primary" onClick={() => callback()}>Przejdź do kolejnego głosowania</Button>
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 exports.callVote = function(socket, io, gameData, type, allowedPlayers, voteOptions) {
     gameData.voteId++;
     for(let i = 0; i < allowedPlayers.length; i++) {
-        io.to(allowedPlayers[i]).emit("callVote", gameData.voteId, type, voteOptions);
+        io.to(allowedPlayers[i]).emit("callVote", gameData.voteId, type, voteOptions, gameData.inspectedNumber - gameData.inspected.length);
     }
     io.to("admin").emit("callVote", gameData.voteId, type, voteOptions);
     let playersVoted = [];

@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react'
 
 import { Player, FullInfoPlayer } from '../interfaces/interfaces'
-import { templatePlayers, 
-        templateVoteResult, 
-        templatePlayer, 
+import { 
         templateCrewmates, 
-        templateDisclosed, 
         templateAdminActionButtons,
-        templateSpecialButtons,
         templateGameState,
         templateAdminData
 } from './templates/templates'
@@ -215,7 +211,7 @@ export function AdminView(props:Props) {
                 minChosen: 1,
                 maxChosen: 500,
                 voteState: "choosing",
-                callBack: (arg:any) => {socket.emit("votedPlayers", arg)},
+                callBack: (arg:any) => {socket.emit("votedPlayers", arg); setIsVote(false)},
             })
         })
         return () => {
@@ -234,7 +230,6 @@ export function AdminView(props:Props) {
             socket.off("callVote")
         }
     }, [])
-
 
 
     function timeChangeCallback(arg: Object) {

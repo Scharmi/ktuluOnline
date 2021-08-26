@@ -18,7 +18,7 @@ exports.inspectionVote = function(socket, io, gameData, voteOptions) {
                     allowedPlayers.push(gameData.allFullInfoPlayers[i].characterName);
                 }
             }
-            callVote(socket, io, gameData, "dailyInspection", allowedPlayers, voteOptions);
+            callVote(socket, io, gameData, "inspection", allowedPlayers, voteOptions);
             function voteEndFunction(id) {
                 if(gameData.voteId === id) {
                     function sortFunction(a,b) {
@@ -58,7 +58,7 @@ exports.inspectionVote = function(socket, io, gameData, voteOptions) {
                     }
                     else {
                         for(let i = 0; i < numberOfChosen; i++) {
-                            gameData.inspected.push(results[i].options);
+                            gameData.inspected.push(results[i].option);
                             sendVotes[i].isChosen = 1;
                         }
                         for(let i = numberOfChosen; i < results.length; i++) {
@@ -68,7 +68,10 @@ exports.inspectionVote = function(socket, io, gameData, voteOptions) {
                     io.to("everyone").emit("voteResults", "inspection", sendVotes);
                     console.log(nextVoteOptions)
                     if((nextVoteOptions.length !== 0) && (nextVoteOptions.length !== voteOptions.length)) {
-                        inspectionVote(socket, io, gameData, nextVoteOptions)
+                        io.to("admin").emit("alert", {type: "nextVote"});
+                        socket.once("nextVote", () => {
+                            inspectionVote(socket, io, gameData, nextVoteOptions)
+                        })
                     }
                     else {
                         io.to("admin").emit("inspectionEnd");

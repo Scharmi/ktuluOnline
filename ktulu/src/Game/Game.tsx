@@ -229,7 +229,7 @@ export function Game(props:Props) {
         }
     }, [])
     useEffect(() => {
-        socket.on("callVote", (id: string, type: string, voteData: any) => {
+        socket.on("callVote", (id: string, type: string, voteData: any, chosenNumber?: any) => {
             if(type === "duel") {
                 setAlertArray((prevArr) => {
                     let newArr = [...prevArr];
@@ -245,14 +245,16 @@ export function Game(props:Props) {
             }
             setIsVote(true);
             setVoteFunctionName("voteProps")
+            let chosen = 1;
+            if(type === "inspection") chosen = chosenNumber;
             gameData.setVoteProps({
                 type: type,
                 optionList: [],
                 votedObjects: voteData,
                 votes: 0,
                 allVotes: 0,
-                minChosen: 1,
-                maxChosen: 1,
+                minChosen: chosen,
+                maxChosen: chosen,
                 voteState: "choosing",
                 callBack: voteCallBack
             })
