@@ -98,6 +98,7 @@ export function AdminView(props:Props) {
             socket.off("inspectionEnd");
             socket.off("hangingEnd");
             socket.off("herbsKill");
+            socket.off("GAME OVER")
         })
     }, [gameData])
     useEffect(() => {

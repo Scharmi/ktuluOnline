@@ -1,0 +1,31 @@
+.chat {
+    border: 1px solid rgba(116, 115, 115, 0.397);
+    border-radius: 15px;
+    display: inline-flex;
+    padding: 5px;
+    margin: 10px;
+    width: 60%;
+    height: 200px;
+    overflow-y: auto;
+}
+.chatWrapper {
+    justify-content: center;
+    align-items: center;
+    display: inline-flex;
+    max-width: 200px;
+    word-wrap: break-word;
+}
+
+.listItem {
+    max-width: 100%;
+}
+.wrapper {
+    display: block;
+}
+.textField {
+    width: 60%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    margin-left: 20%;
+}

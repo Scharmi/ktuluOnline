@@ -42,4 +42,8 @@ exports.transmitter = function(socket, io, gameData) {
         }
         else console.log("TRANSMISSION BLOCKED", socket.myData.characterName, name)
     })
+    socket.on("message", (sender, text) => {
+        if(socket.myData.characterName === sender)
+        io.to("everyone").emit("message", gameData.characterNick(sender), text)
+    })
 }

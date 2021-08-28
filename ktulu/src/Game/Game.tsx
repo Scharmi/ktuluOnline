@@ -44,6 +44,7 @@ import { lornecieOko } from './PlayerActions/lornecieOko'
 import { plonacySzal } from './PlayerActions/plonacySzal'
 import { sedzia } from './PlayerActions/sedzia'
 import { burmistrz } from './PlayerActions/burmistrz'
+import { Chat } from './Chat/Chat'
 interface Props {
 
     socket: any;
@@ -114,6 +115,7 @@ export function Game(props:Props) {
     }
     const [isVote, setIsVote] = useState(false)
     const [prison, setPrison] = useState("")
+    const [messages, setMessages] = useState<Array<any>>([]);
     const [drunk, setDrunk] = useState("")
     const [szulered, setSzulered] = useState("")
     const [whoseTurn, setWhoseTurn] = useState("");
@@ -228,6 +230,18 @@ export function Game(props:Props) {
         })
         return () => {
             socket.off("Player data")
+        }
+    }, [])
+    useEffect(() => {
+        props.socket.on("message", (sender: string, text:string) => {
+            setMessages((prevMessages) => {
+                let newArr = [...prevMessages];
+                newArr.push({sender: sender, text: text});
+                return newArr;
+            })
+        })
+        return () => {
+            socket.off("message")
         }
     }, [])
     useEffect(() => {
@@ -400,6 +414,7 @@ export function Game(props:Props) {
     }, [])
     useEffect(() => {
         props.socket.on("alert", (props: any) => {
+            console.log("ALERT", props)
             setAlertArray((prevArr) => {
                 let newArr = [...prevArr];
                 newArr.push(props);
@@ -461,6 +476,7 @@ export function Game(props:Props) {
         <div className="game">
                 <GameState whoseTurn={whoseTurn} gameTime={gameTime} whoHasStatue={statueTeam}/>
                 <RequestAlertList socket={socket} alertArray={alertArray} setAlertArray={setAlertArray} gameData={gameData}/>
+                <div><Chat messageList={messages} socket={socket} myName={myData.characterName}/></div>
                 {vote(isVote)}
                 <PlayerTable
                     socket={socket}

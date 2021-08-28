@@ -11,6 +11,7 @@ import { templatePlayers,
 } from '../Game/templates/templates'
 import { ConnectedPlayers } from './ConnectedPlayers/ConnectedPlayers'
 import { VotingInterface } from '../Game/VotingInterface/VotingInterface'
+import { Chat } from '../Game/Chat/Chat'
 import { Button } from '@material-ui/core'
 
 import { useEffect, useState } from 'react'

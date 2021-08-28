@@ -30,4 +30,7 @@ export function transmitter(socket: any, gameData?: any) {
     socket.on("inspectionEnd", () => {
         socket.emit("inspectionEnd");
     })
+    socket.on("GAME OVER", () => {
+        socket.emit("GAME OVER");
+    })
 }

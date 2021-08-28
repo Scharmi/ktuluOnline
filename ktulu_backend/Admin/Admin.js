@@ -29,7 +29,7 @@ const { isHanging } = require("./CharacterActions/isHanging");
 const { hanging } = require("./CharacterActions/hanging");
 const { setDay } = require("./CharacterActions/setDay");
 const { setNight } = require("./CharacterActions/setNight");
-exports.admin = function(socket, io, gameData) {
+exports.admin = function(socket, io, gameData, server) {
     let playerActions = {
         dziwka: dziwka,
         pastor: pastor,
@@ -64,12 +64,12 @@ exports.admin = function(socket, io, gameData) {
         setNight: setNight
     }
     gameData.gameOver = function(team) {
+        console.log("GAME OVER1", team)
         if(gameData.isGameOver === false) {
+            console.log("GAME OVER", team)
             io.to("everyone").emit("alert", {type:"default", header: team + " wygrali"})
             gameData.isGameOver = true;
-            io.removeAllListeners()
-            io.close();
-            process.exit();
+            io.to("admin").emit("GAME OVER")
         }
 
     }
@@ -116,6 +116,8 @@ exports.admin = function(socket, io, gameData) {
         io.to("everyone").emit("fullInfoPlayers", [player])
     })
     function runStage(counter, gameData) {
+
+
         if(counter < gameData.gameStages.length) {
             if(counter === gameData.gameStages.length - 1) {
                 gameData.gameStages = [...gameData.gameStages, ...gameData.stageCycle]
@@ -211,5 +213,11 @@ exports.admin = function(socket, io, gameData) {
             }
 
         })
+    })
+    socket.once("GAME OVER", () => {
+        console.log("GAME OVER")
+        io.removeAllListeners()
+        io.close();
+        process.exit();
     })
 }

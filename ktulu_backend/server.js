@@ -51,7 +51,7 @@ function server() {
   console.log(gameStage)
   io.on("connection", (socket) => {
     socket.join("everyone")
-    console.log("connected", socket.id);
+    console.log("connected", socket.id, io.engine.clientsCount);
     if(gameStage === "preGame") {
       preGame.preGame(
         socket, 
@@ -61,7 +61,7 @@ function server() {
       );
     }
     else {
-      console.log("Reconnection Attempt", gameStage)
+      console.log("Reconnection Attempt", gameStage, socket.id)
       socket.on("isTaken",  (name, callback) => {
         callback({
           status: !gameData.disconnectedPlayers.includes(name)
@@ -101,7 +101,8 @@ function server() {
         admin.admin(
           socket,
           io,
-          gameData
+          gameData,
+          server
         )
       }
         
@@ -121,6 +122,14 @@ function server() {
     });
 
   })
+  process.on("uncaughtException", error => {
+    console.log(error)
+    httpServer.close()
+    io.removeAllListeners()
+    io.close();
+    server();
+    process.exit()
+  })
   process.on('SIGINT', function() {
     console.log("SERVER CLOSED")
     httpServer.close()
@@ -128,6 +137,7 @@ function server() {
     io.close();
     process.exit();
   });
+
   httpServer.listen(8080);
 }
 server();
