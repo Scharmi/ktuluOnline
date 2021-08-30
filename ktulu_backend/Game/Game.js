@@ -1,7 +1,7 @@
 const { transmitter } = require("./PlayerActions/transmitter")
-exports.game = function(socket, io, gameData, reconnect) {
+exports.game = function(socket, io, gameData) {
 
-    function removePlayer(player) {
+    /*function removePlayer(player) {
         for( var i = 0; i < gameData.playersArray.length; i++){                
             if ( playersArray[i].id === player) { 
                 playersArray.splice(i,1);
@@ -23,12 +23,12 @@ exports.game = function(socket, io, gameData, reconnect) {
                 i--; 
             }
         }
-    }
+    }*/
     socket.basicData = new Object();
     socket.basicData.name = socket.name
     socket.basicData.id = gameData.namesArray.indexOf(socket.name);
     socket.basicData.isAlive = true;
-    if(!reconnect(socket.name))
+    if(!socket.reconnect)
     gameData.playersArray.push(socket.basicData);
     socket.myData = new Object();
     socket.myData.name = socket.name;
@@ -41,7 +41,7 @@ exports.game = function(socket, io, gameData, reconnect) {
     socket.join(socket.myData.characterName);
     socket.join(socket.myData.team);
     io.to("admin").emit("reconnection", socket.name);
-    if(!reconnect(socket.name))
+    if(!socket.reconnect)
     gameData.allFullInfoPlayers.push(socket.myData)
     io.to(socket.myData.id).emit("Player data", socket.myData)
     io.to(socket.myData.id).emit("prison", gameData.prison)

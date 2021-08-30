@@ -3,6 +3,7 @@ function server() {
   var preGame= require ('./Pregame/Pregame.js');
   var game = require('./Game/Game.js');
   var admin = require('./Admin/Admin')
+  const { reconnectDataSend } = require('./reconnect/reconnectDataSend')
   const gameDataGenerator = require('./GameData/gameData.js')
   const e = require('cors');
   const httpServer = require("http").createServer();
@@ -14,13 +15,10 @@ function server() {
   });
   let gameData = gameDataGenerator.gameDataGenerator();
   let namesArray = [];
-  let gameStage = "preGame"
+
   io.setMaxListeners(100);
   function reconnect(name) {
-    
-    for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
-        if(gameData.allFullInfoPlayers[i].name === name) return true;
-    }
+    if(gameData.disconnectedPlayers.includes(name)) return true;
     return false;
   }
   gameData.capitalizeFirstLetter = function(string) {
@@ -42,17 +40,29 @@ function server() {
       for( var i = 0; i < gameData.disconnectedPlayers.length; i++){                
         if ( gameData.disconnectedPlayers[i] === name) { 
             gameData.disconnectedPlayers.splice(i, 1);
-            gameData.disconnectedPlayers.splice(i, 1);
             i--; 
         }
       }
     }
   } 
-  console.log(gameStage)
+  gameData.hash = function(arg) {
+    var hash = 0, i, chr;
+    if (arg.length === 0) return hash;
+    for (i = 0; i < arg.length; i++) {
+      chr   = arg.charCodeAt(i);
+      hash  = ((hash << 5) - hash) + chr;
+      hash |= 0;
+    }
+    console.log("HASH:", hash)
+    return hash;
+  };
+  //hash: 3174880
+  console.log(gameData.gameStage)
   io.on("connection", (socket) => {
+    socket.reconnect = false;
     socket.join("everyone")
     console.log("connected", socket.id, io.engine.clientsCount);
-    if(gameStage === "preGame") {
+    if(gameData.gameStage === "preGame") {
       preGame.preGame(
         socket, 
         io, 
@@ -61,41 +71,52 @@ function server() {
       );
     }
     else {
-      console.log("Reconnection Attempt", gameStage, socket.id)
+      console.log("Reconnection Attempt", gameData.gameStage, socket.id)
       socket.on("isTaken",  (name, callback) => {
+        console.log("DISCONNECTED:", gameData.disconnectedPlayers)
         callback({
           status: !gameData.disconnectedPlayers.includes(name)
         });
       });
-      socket.once("enterName", (name, isAdmin) => {
-        socket.join("allPlayers");
-        socket.emit("Game started")
-        socket.admin = false;
+      socket.once("enterName", (name, isAdmin, password) => {
+        if(gameData.hash(password) !== 3174880) isAdmin = false;
         socket.name = name;
-        if(reconnect(name) && (isAdmin === false)) {
-          console.log("RECONNECT")
-          removeDisconnectedName(name);
-          game.game(
-            socket,
-            io,
-            gameData,
-            reconnect
-          )    
+        console.log("RECONNECT NAME", reconnect(name))
+        if(reconnect(name)) {
+          socket.reconnect = true;
+          socket.admin = isAdmin;
+          if(!isAdmin) {
+            socket.join("allPlayers");
+            socket.join("everyone");
+            console.log("RECONNECT")
+            removeDisconnectedName(name);
+            socket.emit("Game started")
+          }
+          else {
+            socket.once("GAME OVER", () => {
+              console.log("GAME OVER")
+              io.removeAllListeners()
+              io.close();
+              process.exit();
+            })
+            socket.join("everyone");
+            socket.join("admin");
+            console.log("RECONNECT")
+            removeDisconnectedName(name);
+            socket.emit("Game started")
+          }
         }
       })
     }
     socket.once("Game loaded", () => {
-      console.log("GAME LOASDED")
-      gameStage = "game";
-      io.to("allPlayers").emit("All players", gameData.playersArray);
-      io.to("admin").emit("Full Players Info", gameData.allFullInfoPlayers, gameData.namesArray);
+      console.log("GAME LOADED");
       if(socket.admin === false) {
         game.game(
           socket,
           io,
-          gameData,
-          reconnect
+          gameData
         )
+        if(socket.reconnect) reconnectDataSend(socket, io, gameData);
       }
       else {
         admin.admin(
@@ -104,30 +125,28 @@ function server() {
           gameData,
           server
         )
+        if(socket.reconnect) reconnectDataSend(socket, io, gameData);
       }
         
     })
     socket.once("disconnect", (reason) => {
       delete socket;
-      if(gameStage === "preGame") {
+      if(gameData.gameStage === "preGame") {
         removeName(socket.name);
         console.log("disconnected and removed name"+socket.name);     
       }
-      if(gameStage === "game") {
+      if(gameData.gameStage === "game") {
         gameData.disconnectedPlayers.push(socket.name)
       }
       io.to("allPlayers").emit("Player names", namesArray);
       io.to("admin").emit("Player names", namesArray);
-  
     });
-
   })
   process.on("uncaughtException", error => {
     console.log(error)
     httpServer.close()
     io.removeAllListeners()
     io.close();
-    server();
     process.exit()
   })
   process.on('SIGINT', function() {

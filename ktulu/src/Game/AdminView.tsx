@@ -34,6 +34,9 @@ export function AdminView(props:Props) {
     const [prison, setPrison] = useState("")
     const [drunk, setDrunk] = useState("")
     const [szulered, setSzulered] = useState("")
+    const [whoseTurn, setWhoseTurn] = useState("");
+    const [gameTime, setGameTime] = useState({dayTime: "night", dayNumber: 2})
+    const [statueTeam, setStatueTeam] = useState("XD");
     const [voteProps, setVoteProps] = useState({
         type: "duel",
         optionList: [],
@@ -76,6 +79,41 @@ export function AdminView(props:Props) {
         })
 
     }, [socket])
+    useEffect(() => {
+        socket.on("turnInfo", (arg:string) => {
+            if(arg.substring(0,15) !== "Tura pojedynków") {
+                setAlertArray((prevArr) => {
+                    let newArr = [...prevArr];
+                    for(let i = 0; i < newArr.length; i++) {
+                        if(newArr[i].type === "duelInvite") newArr.splice(i,1);
+                    }
+                    return newArr;
+                })
+            }
+            setWhoseTurn(arg);
+        })
+        return () => {
+            socket.off("turnInfo")
+        }
+    }, [])
+    useEffect (() => {
+        socket.on("setTime", (number:number, time: "time") => {
+            setGameTime({dayTime: time, dayNumber: number});
+        })
+        return () => {
+            socket.off("setTime");
+        }
+    })
+    useEffect(() => {
+        socket.on("statueTeam", (team: string) => {
+            const teams = ["bandyci", "indianie", "ufoki", "miastowi"]
+            if(!teams.includes(team))
+            setStatueTeam(team);
+        })
+        return () => {
+            socket.off("statueTeam");
+        }
+    }, [])
     useEffect(() => {
         socket.on("chooseVoted", () => {
 
@@ -291,6 +329,7 @@ export function AdminView(props:Props) {
     return (
         <div className="adminView">
             <Paper elevation={4}>
+                <GameState whoseTurn={whoseTurn} gameTime={gameTime} whoHasStatue={statueTeam}/>
                 {vote(isVote)}
                 <RequestAlertList socket={socket} alertArray={alertArray} setAlertArray={setAlertArray} gameData={gameData}/>
                 <h2>Gracze biorący udział w rozgrywce:</h2>
@@ -310,7 +349,7 @@ export function AdminView(props:Props) {
                 />
             </Paper>
             
-            <GameStateSetter gameState={templateGameState} callBack={timeChangeCallback}/>
+            <div className="endGame"><Button variant="contained" color="primary" onClick={() => {props.socket.emit("GAME OVER")}}>Wymuś koniec gry</Button></div>
         </div>
     )
 }

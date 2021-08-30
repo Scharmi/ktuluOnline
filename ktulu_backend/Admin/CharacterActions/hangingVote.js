@@ -42,6 +42,7 @@ exports.hangingVote = function(socket, io, gameData, voteOptions) {
             gameData.hanged = voteOptions[0].name;
             socket.once("disclose", discloseAction);
             io.to("admin").emit("alert", {type: "hangingEnd", p1: gameData.hanged});
+            gameData.alertHanging = true;
         }
         else {
             for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
@@ -100,13 +101,16 @@ exports.hangingVote = function(socket, io, gameData, voteOptions) {
                     console.log(nextVoteOptions)
                     if((nextVoteOptions.length !== 0) && (nextVoteOptions.length !== voteOptions.length)) {
                         io.to("admin").emit("alert", {type: "nextVote"});
+                        gameData.nextVote = true;
                         socket.once("nextVote", () => {
+                            gameData.nextVote = false;
                             hangingVote(socket, io, gameData, nextVoteOptions)
                         })
                     }
                     else {
                         socket.once("disclose", discloseAction);
                         io.to("admin").emit("alert", {type: "hangingEnd", p1: gameData.hanged});
+                        gameData.alertHanging = true;
                     }
                 }
                 else {

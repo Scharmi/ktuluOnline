@@ -46,7 +46,6 @@ import { sedzia } from './PlayerActions/sedzia'
 import { burmistrz } from './PlayerActions/burmistrz'
 import { Chat } from './Chat/Chat'
 interface Props {
-
     socket: any;
 }
 
@@ -120,7 +119,14 @@ export function Game(props:Props) {
     const [szulered, setSzulered] = useState("")
     const [whoseTurn, setWhoseTurn] = useState("");
     const [gameTime, setGameTime] = useState({dayTime: "night", dayNumber: 2})
-    const [statueTeam, setStatueTeam] = useState("bandyci")
+    const [statueTeam, setStatueTeam] = useState("bandyci");
+    const [chatActive, setChatActive] = useState(false);
+    function renderChat() {
+        if(chatActive) {
+            return <div><Chat messageList={messages} socket={socket} myName={myData.characterName}/></div>
+        }
+        else return <></>
+    }
     const [voteProps, setVoteProps] = useState({
         type: "duel",
         optionList: [],
@@ -134,6 +140,7 @@ export function Game(props:Props) {
     });
     const [alertArray, setAlertArray] = useState<Array<any>>([]);
     function actionButtons(){
+        if(whoseTurn === "Tura pojedynków")
         return (
             [{
                 text: "Wyzwij na pojedynek",
@@ -141,24 +148,25 @@ export function Game(props:Props) {
                 isEnabled: true
             }]
         )
+        return (
+            [{
+                text: "Wyzwij na pojedynek",
+                function: (name: string) => {socket.emit("duelInvite", myData.name, name); console.log("INVITE")},
+                isEnabled: false
+            }]
+        )
     } 
     function specialButtons()  {
-        let specialButtons = [
-            {
-                id: myData.id,
-                extraButtons: [{
-                    text: "JA",
-                    function: (name: string) => {console.log("Wyzwano na pojedynek gracza " + name)},
-                    isEnabled: true
-                }]
-            }
-        ]
+        let specialButtons = []
         if((myData.characterName === "sędzia") || (myData.characterName === "pijany sędzia") || (myData.characterName === "burmistrz")) {
-            specialButtons[0].extraButtons.push(
+            specialButtons.push(
                 {
-                    text: "Ujawnij się",
-                    function: (name: string) => {socket.emit("disclose", myData.characterName)},
-                    isEnabled: true
+                    id: myData.id,
+                    extraButtons: [{
+                        text: "Ujawnij się",
+                        function: (name: string) => {socket.emit("disclose", myData.characterName)},
+                        isEnabled: true
+                    }]
                 }
             )
         }
@@ -245,6 +253,14 @@ export function Game(props:Props) {
         }
     }, [])
     useEffect(() => {
+        props.socket.on("chatState", (state: boolean) => {
+            setChatActive(state);
+        })
+        return () => {
+            props.socket.off("chatState");
+        }
+    }, [])
+    useEffect(() => {
         socket.on("callVote", (id: string, type: string, voteData: any, chosenNumber?: any) => {
             if(type === "duel") {
                 setAlertArray((prevArr) => {
@@ -255,6 +271,7 @@ export function Game(props:Props) {
                     return newArr;
                 })
             }
+            
             function voteCallBack(options:any) {
                 socket.emit("vote", gameData.myData.characterName, id, options);
                 gameData.setIsVote(false);
@@ -274,6 +291,7 @@ export function Game(props:Props) {
                 voteState: "choosing",
                 callBack: voteCallBack
             })
+            if(type === "no") setIsVote(false)
         })
         return () => {
             socket.off("callVote")
@@ -476,7 +494,7 @@ export function Game(props:Props) {
         <div className="game">
                 <GameState whoseTurn={whoseTurn} gameTime={gameTime} whoHasStatue={statueTeam}/>
                 <RequestAlertList socket={socket} alertArray={alertArray} setAlertArray={setAlertArray} gameData={gameData}/>
-                <div><Chat messageList={messages} socket={socket} myName={myData.characterName}/></div>
+                {renderChat()}
                 {vote(isVote)}
                 <PlayerTable
                     socket={socket}

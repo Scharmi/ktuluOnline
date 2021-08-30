@@ -29,7 +29,19 @@ const { isHanging } = require("./CharacterActions/isHanging");
 const { hanging } = require("./CharacterActions/hanging");
 const { setDay } = require("./CharacterActions/setDay");
 const { setNight } = require("./CharacterActions/setNight");
+const { indianieChatEnable } = require("./CharacterActions/indianieChatEnable");
+const { bandyciChatEnable } = require("./CharacterActions/bandyciChatEnable");
+const { indianieChatDisable } = require("./CharacterActions/indianieChatDisable");
+const { bandyciChatDisable  } = require("./CharacterActions/bandyciChatDisable");
+
 exports.admin = function(socket, io, gameData, server) {
+    for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
+        if(gameData.allFullInfoPlayers[i].characterName === "pijany sędzia") {
+            console.log("SĘDZIA PIJANY")
+            gameData.turnCharacter.opoj = "pijany sędzia";
+            gameData.turnInfo.opoj = "pijany sędzia";
+        }
+    }
     let playerActions = {
         dziwka: dziwka,
         pastor: pastor,
@@ -61,7 +73,11 @@ exports.admin = function(socket, io, gameData, server) {
         isHanging: isHanging,
         hanging: hanging,
         setDay: setDay,
-        setNight: setNight
+        setNight: setNight,
+        bandyciChatEnable: bandyciChatEnable,
+        bandyciChatDisable: bandyciChatDisable,
+        indianieChatEnable: indianieChatEnable,
+        indianieChatDisable: indianieChatDisable,
     }
     gameData.gameOver = function(team) {
         console.log("GAME OVER1", team)
@@ -115,10 +131,13 @@ exports.admin = function(socket, io, gameData, server) {
         let player = gameData.playerProps(name);
         io.to("everyone").emit("fullInfoPlayers", [player])
     })
+    io.to("admin").emit("Full Players Info", gameData.allFullInfoPlayers, gameData.namesArray);
     function runStage(counter, gameData) {
-
-
+        if(gameData.isVote) {
+            io.to("everyone").emit("callVote", -1 , "no", []);
+        }
         if(counter < gameData.gameStages.length) {
+            io.to("admin").emit("statueTeam", gameData.statue)
             if(counter === gameData.gameStages.length - 1) {
                 gameData.gameStages = [...gameData.gameStages, ...gameData.stageCycle]
             }
@@ -129,6 +148,8 @@ exports.admin = function(socket, io, gameData, server) {
             console.log("STAGE", stageName, gameData.isTurnPlaying(stageName), "STATUE:", gameData.statue);
             let activePlayer = gameData.activePlayer(gameData.turnCharacter[stageName])
             let simulatePlayer = gameData.activePlayerSimulate(gameData.turnCharacter[stageName])
+            gameData.activePlayerName = "";
+            gameData.simulatePlayer = "";
             gameData.stageName = stageName
             gameData.turn = stageName;
             function listenToAction() {
@@ -156,15 +177,18 @@ exports.admin = function(socket, io, gameData, server) {
             }
  
             if(gameData.isTurnPlaying(stageName) === "play") {
+                gameData.activePlayerName = activePlayer;
                 io.to(activePlayer).emit("All players", gameData.playersArray);
                 io.to(activePlayer).emit("start", gameData.turn, activePlayer);
                 listenToAction();
             }
             if(gameData.isTurnPlaying(stageName) === "simulatePrison") {
+                gameData.simulatePlayer = simulatePlayer;
                 io.to(simulatePlayer).emit("manualSkip", gameData.turn, simulatePlayer);
                 listenToEnd();
             }
             if(gameData.isTurnPlaying(stageName) === "simulateUsedSkill") {
+                gameData.simulatePlayer = simulatePlayer;
                 io.to(simulatePlayer).emit("manualSkip", gameData.turn, simulatePlayer);
                 listenToEnd();
             }
@@ -178,6 +202,7 @@ exports.admin = function(socket, io, gameData, server) {
             else {
                 io.to("everyone").emit("turnInfo", gameData.turnInfo[stageName])
                 function endListener(arg) {
+                    console.log("END", arg)
                     if(arg === stageName) {
                         if(stageName === "duelTurn") {
                             socket.removeAllListeners("duelInvite");
@@ -194,11 +219,12 @@ exports.admin = function(socket, io, gameData, server) {
                 }
                 socket.once("end", endListener)
             }
-        }
+        }   
     }
     socket.emit("Full Players Info", gameData.allFullInfoPlayers, gameData.namesArray)
     socket.once("allPlayersConnected", () => {
-        runStage(0, gameData);
+        console.log("APC")
+        runStage(gameData.counter, gameData);
         socket.on("reconnection", (player) => {
             //Resend wyzwań do pojedynków
             //Resend ujawnionych ludzi (w tym tych z teamu)

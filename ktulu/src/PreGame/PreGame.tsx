@@ -11,10 +11,12 @@ import { templatePlayers,
 } from '../Game/templates/templates'
 import { ConnectedPlayers } from './ConnectedPlayers/ConnectedPlayers'
 import { VotingInterface } from '../Game/VotingInterface/VotingInterface'
+import { TextField } from '@material-ui/core'
 import { Chat } from '../Game/Chat/Chat'
 import { Button } from '@material-ui/core'
 
 import { useEffect, useState } from 'react'
+import { bandyciStatue } from '../Game/PlayerActions/bandyciStatue'
 interface Props {
     socket: any;
     setGameState: Function;
@@ -30,12 +32,28 @@ export function PreGame(props: Props) {
     const [enteredName, setEnteredName] = useState(false);
     const [adminSet, setAdminSet] = useState(false)
     const [adminState, setAdminState] = useState<boolean>(false);
+    const [pojedynki, setPojedynki] = useState("2");
+    const [bandyci, setBandyci] = useState("3");
+    const [przeszukania, setPrzeszukania] = useState("2");
+    const [password, setPassword] = useState("")
+    const handlePojedynkiChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setPojedynki(event.target.value);
+    };
+    const handleBandyciChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setBandyci(event.target.value);
+    };
+    const handlePrzeszukaniaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setPrzeszukania(event.target.value);
+    };
+    const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setPassword(event.target.value);
+    };
     console.log("PREGAME RENDER", adminState)
     function St(arg:any) {
         return JSON.stringify(arg);
     }
     function submitName(name:string, isAdmin: boolean) {
-        props.socket.emit("enterName", name, isAdmin);
+        props.socket.emit("enterName", name, isAdmin, password);
         setMyName(name);
         setEnteredName(true);
     }
@@ -76,12 +94,26 @@ export function PreGame(props: Props) {
 
     function choosePlayersCallback(players: any) {
         props.socket.emit("Chosen characters", players)
+        props.socket.emit("gameProps", pojedynki, bandyci, przeszukania)
         setAdminState(true);
+    }
+    function passwordRender() {
+        if(adminState) return   <TextField
+        fullWidth
+        variant="filled"
+        placeholder=""
+        type="password"
+        label="Hasło"
+        value={password}
+        onChange={handlePasswordChange}      
+        />
+        else return <></>
     }
     if(enteredName === false) {
         return (
             <div className="preGame">
                 <EnterNickname submitNickNameCallback={submitName} socket={props.socket} setAdmin={setAdminState}/>
+                {passwordRender()}
             </div>
         )
     }
@@ -111,6 +143,33 @@ export function PreGame(props: Props) {
                         fullInfoPlayers={[]}
                         voteState="choosing"
                         setIsVote={(arg:any) => {}}
+                    />
+                    <TextField
+                        fullWidth
+                        variant="filled"
+                        type="number"
+                        placeholder=""
+                        label="Liczba pojedynków w ciągu dnia"
+                        value={pojedynki}
+                        onChange={handlePojedynkiChange}     
+                    />
+                    <TextField
+                        fullWidth
+                        variant="filled"
+                        type="number"
+                        placeholder=""
+                        label="Poranek którego odpływają bandyci"
+                        value={bandyci}
+                        onChange={handleBandyciChange}     
+                    />
+                    <TextField
+                        fullWidth
+                        variant="filled"
+                        type="number"
+                        placeholder=""
+                        label="Liczba przeszukań w ciągu dnia"
+                        value={przeszukania}
+                        onChange={handlePrzeszukaniaChange}      
                     />
                 </div>
             )

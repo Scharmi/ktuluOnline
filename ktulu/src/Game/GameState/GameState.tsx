@@ -21,6 +21,7 @@ export function GameState(props: Props) {
         if(props.whoHasStatue === "bandyci") return "Posążek mają bandyci";
         if(props.whoHasStatue === "miastowi") return "Posążek mają dobrzy miastowi";
         if(props.whoHasStatue === "ufoki") return "Posążek mają ufoki";
+        return "Posążek ma " + props.whoHasStatue;
     }
     return (
         <div className="gameState">

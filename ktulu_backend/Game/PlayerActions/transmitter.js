@@ -43,7 +43,16 @@ exports.transmitter = function(socket, io, gameData) {
         else console.log("TRANSMISSION BLOCKED", socket.myData.characterName, name)
     })
     socket.on("message", (sender, text) => {
-        if(socket.myData.characterName === sender)
-        io.to("everyone").emit("message", gameData.characterNick(sender), text)
+        if(socket.myData.characterName === sender) {
+            if(socket.myData.team === gameData.chat) {
+                let activeMembers = gameData.activeMembers(socket.myData.team);
+                for(let i = 0; i < activeMembers.length; i++) {
+                    io.to(activeMembers[i].characterName).emit("message", gameData.characterNick(sender), text);
+                }
+                io.to("admin").emit("message", gameData.characterNick(sender), text);
+            }
+
+        }
+        
     })
 }

@@ -4,6 +4,7 @@ exports.duel = function(socket, io, gameData, player1, player2) {
     gameData.duel = true;
     gameData.usedDuels++;
     gameData.deleteDuel(player1, player2);
+    gameData.duelInvites = [];
     let allowedPlayers = [];
     let voteOptions = [];
     let playersToKill = [];
@@ -99,7 +100,7 @@ exports.duel = function(socket, io, gameData, player1, player2) {
                             socket.once("action", sedziaAction);
                         }
                     }
-                    io.to(character).emit("start", "sedzia", "sędzia", [
+                    io.to(character).emit("start", "sedzia", character, [
                         {
                             name: player1,
                             id: 1
@@ -115,11 +116,16 @@ exports.duel = function(socket, io, gameData, player1, player2) {
                     })
                 }
             }
+            gameData.duel1 = player1;
+            gameData.duel2 = player2;
             socket.once("disclose", discloseAction);
             io.to("admin").emit("alert", {type: "duelEnd", p1: player1, p2: player2});
             socket.once("duelEnd", () => {
-                if(gameData.usedDuels === gameData.duelsLimit)
-                io.to("admin").emit("end", "duelsTurn")
+                if(gameData.usedDuels === gameData.duelsLimit) {
+                    io.to("admin").emit("end", "duelsTurn")
+                    console.log(gameData.usedDuels, gameData.duelsLimit)
+                }
+                
                 else
                 io.to("everyone").emit("turnInfo", "Tura pojedynków")
                 gameData.duel = false;

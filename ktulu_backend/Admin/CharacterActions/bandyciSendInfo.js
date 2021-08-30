@@ -6,5 +6,6 @@ exports.bandyciSendInfo = function(socket, io, gameData) {
             if(!gameData.knowsTeammates.includes(bandyci[i].characterName)) gameData.knowsTeammates.push(bandyci[i].characterName);
         }
     }
+    io.to("admin").emit("end", "bandyciChatEnable")
     io.to("admin").emit("end", "bandyciSendInfo")
 }

@@ -22,8 +22,7 @@ export function Chat(props: Props) {
     };
     const handleKeyDown = (event:any) => {
         if (event.key === 'Enter') {
-            props.socket.emit("message", props.myName, text)
-            setText("")
+            sendMessage();
         }
     }
     function MessageList(messages: Array<Message>) {
@@ -31,6 +30,10 @@ export function Chat(props: Props) {
         return messages.map((item:any) => 
             <ListItem key = {item.sender + item.text}><span><b>{item.sender + ": "}</b>{item.text}</span></ListItem>
         );
+    }
+    function sendMessage() {
+        props.socket.emit("message", props.myName, text)
+        setText("")
     }
     console.log("XD", MessageList(props.messageList));
     return (
@@ -41,18 +44,17 @@ export function Chat(props: Props) {
                         {MessageList(props.messageList)}
                     </List>
                 </div>
-
             </div>
             <div className="textField">
-                <TextField 
-                    fullWidth 
-                    variant="filled" 
-                    placeholder="Wyślij wiadomość"
+                <TextField
+                    fullWidth
+                    variant="filled"
+                    placeholder="Wyślij wiadomość do członków swojej drużyny"
                     value={text}
-                    onChange={handleChange}
+                    onChange={handleChange}     
                     onKeyDown={handleKeyDown}
                 />
-                <Button>Wyślij</Button>
+                <Button onClick={sendMessage}>Wyślij</Button>
             </div>
         </div>
     )

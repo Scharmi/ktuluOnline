@@ -39,7 +39,7 @@ export function RequestAlert(props: Props) {
         if(props.alertProps.type === "dziwkaActive") return "Dziwisz gracza " + props.alertProps.player.name;
         if(props.alertProps.type === "dziwkaPassive") return "Zostałeś zdziwiony";
         if(props.alertProps.type === "pastor") return "Spasteryzowałeś gracza " + props.alertProps.name;
-        if(props.alertProps.type === "turnSkip") return "Gracz " + props.alertProps.name + " został upity lub zamknięty w więzieniu";
+        if(props.alertProps.type === "turnSkip") return "Gracz " + props.alertProps.name + " został upity, zamknięty w więzieniu lub zużył swoją umiejętność";
         if(props.alertProps.type === "szeryfPassive") return "Zostałeś zamknięty w więzieniu";
         if(props.alertProps.type === "isAction") return "Czy chcesz użyć swojej umiejętności?";
         if(props.alertProps.type === "isHangingEnd") return "Zakończyło się głosowanie dotyczące tego czy wieszamy";

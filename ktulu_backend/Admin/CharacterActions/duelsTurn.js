@@ -33,7 +33,6 @@ exports.duelsTurn = function(socket, io, gameData) {
                     if(gameData.inviteExists(player2, player1)) {
                         if((player1Props.isAlive) && (player2Props.isAlive)) {
                             if(gameData.usedDuels < gameData.duelsLimit) {
-                                gameData.usedDuels++;
                                 duel(socket, io, gameData, player1, player2)
                             }
                         }
@@ -73,7 +72,6 @@ exports.duelsTurn = function(socket, io, gameData) {
             if((player1Props.isAlive) && (player2Props.isAlive)) {
                 if(gameData.duel === false) {
                     if(gameData.usedDuels < gameData.duelsLimit) {
-                        gameData.usedDuels++;
                         duel(socket, io, gameData, player1, player2);
                     }
                     

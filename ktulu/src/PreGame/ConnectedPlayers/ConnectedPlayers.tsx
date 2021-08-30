@@ -31,6 +31,7 @@ export function ConnectedPlayers(props: Props) {
                 <h1>Dołączyli gracze:</h1>
                 <div>{list}</div>
                 <Button variant="contained" color="primary" onClick={() => {startGame()}}>Zacznij grę</Button>
+                <div className="endGame"><Button variant="contained" color="primary" onClick={() => {props.socket.emit("GAME OVER")}}>Wymuś koniec gry</Button></div>
             </div>
         )
     }

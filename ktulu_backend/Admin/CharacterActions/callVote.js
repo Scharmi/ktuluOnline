@@ -6,6 +6,11 @@ exports.callVote = function(socket, io, gameData, type, allowedPlayers, voteOpti
     }
     io.to("admin").emit("callVote", gameData.voteId, type, voteOptions);
     let playersVoted = [];
+    gameData.voteType = type;
+    gameData.allowedPlayers = allowedPlayers;
+    gameData.voteOptions = voteOptions;
+    gameData.playersVoted = playersVoted;
+    gameData.isVote = true;
     let votes = [];
     gameData.voteResults[gameData.voteId] = [];
     for(let i = 0; i < voteOptions.length; i++) {
@@ -48,6 +53,7 @@ exports.callVote = function(socket, io, gameData, type, allowedPlayers, voteOpti
     }
     function voteEndFunction(id) {
         if(id === gameData.voteId) {
+            gameData.isVote = false;
             socket.off("vote", voteFunction);
         }
         else {

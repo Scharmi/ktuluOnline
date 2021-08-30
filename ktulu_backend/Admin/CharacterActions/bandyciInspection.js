@@ -11,6 +11,8 @@ exports.bandyciInspection = function(socket, io, gameData) {
     else {
         io.to("bandyci").emit("alert", {type: "default", header: "Nie udało się przejąć posążka", bottomText: ""})
     }
+
     io.to("admin").emit("end", "bandyciInspection");
+    
     }
 }

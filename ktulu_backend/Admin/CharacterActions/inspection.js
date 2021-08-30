@@ -17,9 +17,12 @@ exports.inspection = function(socket, io, gameData) {
             let name = gameData.inspected[i].name;
             let player = gameData.playerProps(name);
             let characterName = player.characterName;
-            if(characterName === gameData.statue) gameData.gameOver("miastowi")
+            if(characterName === gameData.statue) {
+                gameData.gameOver("miastowi");
+                console.log("PRZESZUKANIE GAME OVER", characterName);
+            }
+            console.log("INSPECTION:", gameData.inspected)
         }
-        console.log("INSPECTION:", gameData.inspected)
     })
 
 }

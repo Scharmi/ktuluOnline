@@ -24,7 +24,11 @@ export function EnterNickname(props: Props) {
         setOpen(false);
     }
     function handleAdmin() {
-        setTickState(!tickState);
+        let s = tickState
+        props.setAdmin(!s);
+        setTickState((prevState) => {
+            return !prevState
+        });
     }
     function submitName(name: string, isAdmin: boolean) {
         let isTaken = true;
@@ -33,7 +37,7 @@ export function EnterNickname(props: Props) {
             if(isTaken === true) setOpen(true)
             else {
                 setOpen(false);
-                props.setAdmin(tickState);
+ 
                 props.submitNickNameCallback(name, isAdmin)
                 setName("");
             }

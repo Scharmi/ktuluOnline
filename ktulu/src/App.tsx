@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import { Game } from './Game/Game'
 import { Paper } from '@material-ui/core'
@@ -38,7 +38,10 @@ function App() {
         <AdminView adminGameState="started" socket={socket}/>
       </div>
     )
-  return <div></div>
-}
+    return <div></div>
+  }
+
+  
+
 
 export default App;

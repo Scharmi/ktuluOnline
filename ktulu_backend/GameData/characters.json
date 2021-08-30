@@ -40,16 +40,6 @@
         "team": "miastowi"
     },
     {
-        "characterName" : "poborca podatków",
-        "characterId" : 10,
-        "team": "miastowi"
-    },
-    {
-        "characterName" : "krystaliczny obywatel",
-        "characterId" : 11,
-        "team": "miastowi"
-    },
-    {
         "characterName" : "uwodziciel",
         "characterId" : 12,
         "team": "miastowi"
@@ -60,8 +50,8 @@
         "team": "miastowi"
     },
     {
-        "characterName" : "gazownik",
-        "characterId" : 14,
+        "characterName" : "pijany sędzia",
+        "characterId" : 15,
         "team": "miastowi"
     },
     {
@@ -97,44 +87,39 @@
     {
         "characterName" : "wódz",
         "characterId" : 201,
-        "team": "bandyci"
+        "team": "indianie"
     },
     {
         "characterName" : "szaman",
         "characterId" : 202,
-        "team": "bandyci"
+        "team": "indianie"
     },
     {
         "characterName" : "szamanka",
         "characterId" : 203,
-        "team": "bandyci"
+        "team": "indianie"
     },
     {
         "characterName" : "wojownik",
         "characterId" : 204,
-        "team": "bandyci"
+        "team": "indianie"
     },
     {
         "characterName" : "samotny kojot",
         "characterId" : 205,
-        "team": "bandyci"
+        "team": "indianie"
     },
     {
         "characterName" : "płonący szał",
         "characterId" : 206,
-        "team": "bandyci"
+        "team": "indianie"
     },
     {
         "characterName" : "lornecie oko",
         "characterId" : 207,
-        "team": "bandyci"
-    },
-    {
-        "characterName" : "cicha stopa",
-        "characterId" : 208,
-        "team": "bandyci"
+        "team": "indianie"
     }
-    
+
 
 
 ]

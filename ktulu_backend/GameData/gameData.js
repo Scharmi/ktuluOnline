@@ -9,10 +9,14 @@ exports.gameDataGenerator = function() {
         "szeryf", 
         "pastor", 
         "bandyciSendInfo", 
+        "bandyciChatEnable",
         "bandyciInspection", 
         "bandyciStatue", 
+        "bandyciChatDisable",
         "indianieSendInfo",
+        "indianieChatEnable",
         "indianieStatue",
+        "indianieChatDisable",
         "setDay",
         "duelsTurn",
         "chooseVoted",
@@ -27,11 +31,14 @@ exports.gameDataGenerator = function() {
       "kat",
       "hazardzista",
       "bandyciSendInfo", 
+      "bandyciChatEnable",
       "bandyciInspection", 
       "bandyciStatue", 
       "msciciel", 
       "zlodziej",
       "szuler", 
+      "bandyciChatDisable",
+      "indianieChatEnable",
       "indianieSendInfo",
       "indianieStatue",
       "indianieKilling",
@@ -40,6 +47,7 @@ exports.gameDataGenerator = function() {
       "wojownik",
       "samotnyKojot",
       "lornecieOko",
+      "indianieChatDisable",
       "setDay",
       "duelsTurn",
       "chooseVoted",
@@ -75,7 +83,21 @@ exports.gameDataGenerator = function() {
     gameData.voteResults = [];
     gameData.disclosed = [];
     gameData.duel = false;
+    gameData.nextVote = false;
+    gameData.chat = "";
     gameData.isGameOver = false;
+    gameData.gameStage = "preGame"
+    gameData.bandyciMessages = [];
+    gameData.indianieMessages = [];
+    gameData.activePlayerName = "";
+    gameData.simulatePlayer = "";
+    gameData.isVote = false;
+    gameData.alertIsHanging = false;
+    gameData.voteOptions = [];
+    gameData.allowedPlayers = [];
+    gameData.playersVoted = [];
+    gameData.voteType = "";
+    gameData.counter = 0;
     gameData.members = function(team) {
         let newArr = [];
         for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
@@ -226,7 +248,12 @@ exports.gameDataGenerator = function() {
           isHanging: "głosowanie nad tym czy wieszamy",
           hanging: "głosowanie nad tym kogo wieszamy", 
           setNight: "",
-          setDay: ""
+          setDay: "",
+          bandyciChatEnable: "",
+          bandyciChatDisable: "",
+          indianieChatEnable: "",
+          indianieChatDisable: ""
+
       }
         gameData.isCharacter = function(text) {
             for(let i = 0; i < gameData.characters.length; i++) {
@@ -243,6 +270,10 @@ exports.gameDataGenerator = function() {
         gameData.isTurnPlaying = function(turnName) {
           let nonActionTurns = [
             "bandyciSendInfo", 
+            "bandyciChatEnable",
+            "indianieChatEnable",
+            "bandyciChatDisable",
+            "indianieChatDisable",
             "isHanging", 
             "hanging", 
             "inspection", 

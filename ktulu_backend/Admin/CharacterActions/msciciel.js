@@ -7,6 +7,9 @@ exports.msciciel = function(socket, io, gameData) {
         }
         let characterName = gameData.allFullInfoPlayers[playerIndex].characterName
         gameData.kill(characterName);
+        if(characterName === gameData.statue) {
+            gameData.setStatueTeam(gameData.playingCharacter)
+        }
         if(characterName !== gameData.prison)
         gameData.usedSkills.push(gameData.playingCharacter);
     }

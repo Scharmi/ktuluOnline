@@ -72,7 +72,9 @@ exports.inspectionVote = function(socket, io, gameData, voteOptions) {
                     console.log(nextVoteOptions)
                     if((nextVoteOptions.length !== 0) && (nextVoteOptions.length !== voteOptions.length)) {
                         io.to("admin").emit("alert", {type: "nextVote"});
+                        gameData.nextVote = true;
                         socket.once("nextVote", () => {
+                            gameData.nextVote = false;
                             inspectionVote(socket, io, gameData, nextVoteOptions)
                         })
                     }
