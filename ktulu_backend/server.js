@@ -87,6 +87,9 @@ function server() {
       });
       socket.once("enterName", (name, isAdmin, password) => {
         if(gameData.hash(password) !== 3174880) isAdmin = false;
+        if(name.length < 30) {
+          
+        }
         socket.name = name;
         console.log("RECONNECT NAME", reconnect(name))
         if(reconnect(name)) {
