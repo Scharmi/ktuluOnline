@@ -37,7 +37,6 @@ export function EnterNickname(props: Props) {
             if(isTaken === true) setOpen(true)
             else {
                 setOpen(false);
- 
                 props.submitNickNameCallback(name, isAdmin)
                 setName("");
             }

@@ -1,15 +1,24 @@
-
 function server() {
-  var preGame= require ('./Pregame/Pregame.js');
+  var preGame= require ('./PreGame/PreGame.js');
   var game = require('./Game/Game.js');
   var admin = require('./Admin/Admin')
   const { reconnectDataSend } = require('./reconnect/reconnectDataSend')
   const gameDataGenerator = require('./GameData/gameData.js')
+  const prod = true
   const e = require('cors');
-  const httpServer = require("http").createServer();
+  const sslOptions = {};
+  if(prod) {
+    const fs = require("fs");
+    sslOptions = {
+      key: fs.readFileSync("./cert/key.key"),
+      cert: fs.readFileSync("./cert/cert.crt")
+    }
+  }
+  const httpServer = require(prod ? "https" : "http").createServer(sslOptions);
+
   const io = require("socket.io")(httpServer, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: "*",
       methods: ["GET", "POST"]
     }
   });
@@ -139,6 +148,7 @@ function server() {
         gameData.disconnectedPlayers.push(socket.name)
       }
       io.to("allPlayers").emit("Player names", namesArray);
+      console.log("SENT NAMES:", namesArray);
       io.to("admin").emit("Player names", namesArray);
     });
   })

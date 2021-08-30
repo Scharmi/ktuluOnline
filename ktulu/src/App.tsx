@@ -5,7 +5,9 @@ import { Paper } from '@material-ui/core'
 import { PreGame } from './PreGame/PreGame'
 import { AdminView } from './Game/AdminView'
 import { io } from 'socket.io-client';
-const socket = io("http://localhost:8080",{
+let prod = "https://rjpg.pl:8080"
+let test = "http://localhost:8080"
+const socket = io(test ,{
   query: {
     name: '1242'
   }
