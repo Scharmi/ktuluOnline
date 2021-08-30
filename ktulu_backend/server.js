@@ -4,15 +4,13 @@ function server() {
   var admin = require('./Admin/Admin')
   const { reconnectDataSend } = require('./reconnect/reconnectDataSend')
   const gameDataGenerator = require('./GameData/gameData.js')
-  const prod = true
+  const prod = false
   const e = require('cors');
   const sslOptions = {};
   if(prod) {
     const fs = require("fs");
-    sslOptions = {
-      key: fs.readFileSync("./cert/key.key"),
-      cert: fs.readFileSync("./cert/cert.crt")
-    }
+    sslOptions.key = fs.readFileSync("./cert/key.key");
+    sslOptions.cert = fs.readFileSync("./cert/cert.crt")
   }
   const httpServer = require(prod ? "https" : "http").createServer(sslOptions);
 
@@ -147,9 +145,7 @@ function server() {
       if(gameData.gameStage === "game") {
         gameData.disconnectedPlayers.push(socket.name)
       }
-      io.to("allPlayers").emit("Player names", namesArray);
-      console.log("SENT NAMES:", namesArray);
-      io.to("admin").emit("Player names", namesArray);
+      io.to("everyone").emit("Player names", gameData.namesArray);
     });
   })
   process.on("uncaughtException", error => {
