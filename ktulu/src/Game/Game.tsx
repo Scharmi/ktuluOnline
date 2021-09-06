@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { AlivePlayer, DeadPlayer, Player, FullInfoPlayer } from '../interfaces/interfaces'
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import { templatePlayers, 
         templateVoteResult, 
         templatePlayer, 
@@ -15,7 +16,7 @@ import { PlayerTable } from './PlayerTable/PlayerTable'
 import { RequestAlert } from './RequestAlert/RequestAlert'
 import { RequestAlertList } from './RequestAlert/RequestAlertList'
 import { GameState } from './GameState/GameState'
-import { Paper, Divider } from '@material-ui/core'
+import { Paper, Divider, Snackbar } from '@material-ui/core'
 import { Button } from '@material-ui/core'
 import { io } from "socket.io-client"
 import { dziwka } from './PlayerActions/dziwka'
@@ -98,11 +99,15 @@ export function Game(props:Props) {
     function blank() {
         return [];
     }
-
+    function Alert(props: AlertProps) {
+        return <MuiAlert elevation={6} variant="filled" {...props} />;
+    }   
     const [myData, setMyData] = useState(templateFullInfoPlayer);
     const [allPlayers, setAllPlayers] = useState<Array<any>>([]);
     const [voteFunctionName, setVoteFunctionName] = useState<string>("MyTeamFree")
     const [fullInfoPlayers, setFullInfoPlayers] = useState<Array<any>>([]);
+    const [snackbarText, setSnackbarText] = useState("");
+    const [snackbarType, setSnackbarType] = useState<"success" | "info" | "warning" | "error">("success");
     function myTeamFree() {
         let newArr = [];
         for(let i = 0; i < fullInfoPlayers.length; i++) {
@@ -238,6 +243,16 @@ export function Game(props:Props) {
         })
         return () => {
             socket.off("Player data")
+        }
+    }, [])
+    useEffect(() => {
+        props.socket.on("snackbar", (type: "success" | "info" | "warning" | "error", text: string) => {
+            console.log("SNACKBAR", text)
+            setSnackbarType(type);
+            setSnackbarText(text);
+        })
+        return () => {
+            socket.off("snackbar")
         }
     }, [])
     useEffect(() => {
@@ -511,6 +526,11 @@ export function Game(props:Props) {
                     drunk={drunk}
                     szulered={szulered}
                 />
+                <Snackbar open={snackbarText === "" ? false : true} autoHideDuration={6000} onClose={() => {}}>
+                    <Alert onClose={() => setSnackbarText("")} severity={snackbarType}>
+                        {snackbarText}
+                    </Alert>
+                </Snackbar>
         </div> 
     )
 }
