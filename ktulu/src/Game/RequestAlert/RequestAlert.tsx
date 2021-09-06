@@ -58,7 +58,7 @@ export function RequestAlert(props: Props) {
         return "UNKNOWN TYPE"
     }
     function bottomText() {
-        if(props.alertProps.type === "duelInvite") return "Z racji tego że szyeryf jest żywy możesz odmówić"
+        if(props.alertProps.type === "duelInvite") return "Z racji tego że szeryf jest żywy możesz odmówić"
         if(props.alertProps.type === "dziwkaActive") return "Gracz ten należy do frakcji " + props.alertProps.player.team + " a jego postać to " + props.alertProps.player.characterName
         if(props.alertProps.type === "dziwkaPassive") return "Dziwką okazał się gracz " + props.alertProps.player.name;
         if(props.alertProps.type === "pastor") return "Pochodzi on z frakcji " + props.alertProps.team;

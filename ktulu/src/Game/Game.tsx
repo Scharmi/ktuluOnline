@@ -400,6 +400,7 @@ export function Game(props:Props) {
     },[gameData])
     useEffect(() => {
         socket.on("prison", (player: string) => {
+            console.log("PRISON", player)
             setPrison(player);
         })
         return () => {

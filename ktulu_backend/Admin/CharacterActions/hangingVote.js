@@ -15,7 +15,8 @@ exports.hangingVote = function(socket, io, gameData, voteOptions) {
                 function burmistrzAction(name, obj) {
                     console.log("OBJ:", obj)
                     if(name === "burmistrz") {
-                        if(obj.player.id === 1) gameData.hanged = "";
+                        console.log(obj, "BURMISTRZ")
+                        if(obj.player[0].id === 1) gameData.hanged = "";
                     }
                     else {
                         console.log("WRONG NAME");

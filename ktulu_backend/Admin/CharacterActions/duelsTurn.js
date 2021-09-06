@@ -23,6 +23,7 @@ exports.duelsTurn = function(socket, io, gameData) {
         let player1Props = gameData.playerProps(player1);
         let player2Props = gameData.playerProps(player2);
         if(gameData.usedDuels < gameData.duelsLimit) {
+            console.log("SZERYF:", gameData.szeryfAlive())
             if(!gameData.szeryfAlive()) {
                 if((player1Props.isAlive) && (player2Props.isAlive)) {
                     duel(socket, io, gameData, player1, player2);

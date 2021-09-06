@@ -1,9 +1,9 @@
 exports.reconnectDataSend = function(socket, io, gameData) {
     if(!socket.admin) {
         let me = socket.myData.characterName;
-        io.to(me).emit("prison", gameData.prison);
-        io.to(me).emit("drunk", gameData.drunkPlayer);
-        io.to(me).emit("szulered", gameData.szulered);
+        io.to(me).emit("prison", gameData.characterNick(gameData.prison));
+        io.to(me).emit("drunk", gameData.characterNick(gameData.drunkPlayer));
+        io.to(me).emit("szulered", gameData.characterNick(gameData.szulered));
         io.to(me).emit("setTime", gameData.dayNumber, gameData.dayTime);
         io.to(me).emit("turnInfo", gameData.turnInfo[gameData.stageName])
         io.to(me).emit("Player data", socket.myData)

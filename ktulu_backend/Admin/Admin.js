@@ -33,7 +33,6 @@ const { indianieChatEnable } = require("./CharacterActions/indianieChatEnable");
 const { bandyciChatEnable } = require("./CharacterActions/bandyciChatEnable");
 const { indianieChatDisable } = require("./CharacterActions/indianieChatDisable");
 const { bandyciChatDisable  } = require("./CharacterActions/bandyciChatDisable");
-
 exports.admin = function(socket, io, gameData, server) {
     for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
         if(gameData.allFullInfoPlayers[i].characterName === "pijany sędzia") {
@@ -204,7 +203,7 @@ exports.admin = function(socket, io, gameData, server) {
                 function endListener(arg) {
                     console.log("END", arg)
                     if(arg === stageName) {
-                        if(stageName === "duelTurn") {
+                        if(stageName === "duelsTurn") {
                             socket.removeAllListeners("duelInvite");
                             socket.removeAllListeners("duelDecline");
                             socket.removeAllListeners("duelAccept");

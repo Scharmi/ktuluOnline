@@ -365,7 +365,7 @@ exports.gameDataGenerator = function() {
         gameData.szeryfAlive = function() {
             for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
                 if(gameData.allFullInfoPlayers[i].characterName === "szeryf") {
-                    return true;
+                  if(gameData.allFullInfoPlayers[i].isAlive === true) return true;
                 }
             }
             return false;

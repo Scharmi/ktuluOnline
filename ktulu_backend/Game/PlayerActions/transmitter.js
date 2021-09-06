@@ -45,11 +45,17 @@ exports.transmitter = function(socket, io, gameData) {
     socket.on("message", (sender, text) => {
         if(socket.myData.characterName === sender) {
             if(socket.myData.team === gameData.chat) {
-                let activeMembers = gameData.activeMembers(socket.myData.team);
-                for(let i = 0; i < activeMembers.length; i++) {
-                    io.to(activeMembers[i].characterName).emit("message", gameData.characterNick(sender), text);
+                if(text.length < 500) {
+                    let activeMembers = gameData.activeMembers(socket.myData.team);
+                    for(let i = 0; i < activeMembers.length; i++) {
+                        io.to(activeMembers[i].characterName).emit("message", gameData.characterNick(sender), text);
+                    }
+                    io.to("admin").emit("message", gameData.characterNick(sender), text);
                 }
-                io.to("admin").emit("message", gameData.characterNick(sender), text);
+                else {
+                    io.to(sender).emit("alert", {type: "default", header: "Wiadomość zbyt długa"})
+                }
+
             }
 
         }
