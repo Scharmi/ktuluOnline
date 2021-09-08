@@ -165,7 +165,6 @@ function server() {
     io.close();
     process.exit();
   });
-
   httpServer.listen(8080);
 }
 server();

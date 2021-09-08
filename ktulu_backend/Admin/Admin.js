@@ -155,7 +155,10 @@ exports.admin = function(socket, io, gameData, server) {
                 socket.once("action", (str, obj) => {
                     if((str === activePlayer) && (obj.turn  === gameData.turn)) {
                         gameData.actionObject = {...obj};
+                        if(obj.player !== undefined)
                         playerActions[stageName](socket, io, gameData);
+                        else
+                        socket.emit("end", gameData.stageName);
                     }
                     else {
                         console.log("BAD ACTION", str, obj, activePlayer, gameData.turn);
@@ -166,7 +169,7 @@ exports.admin = function(socket, io, gameData, server) {
             function listenToEnd() {
                 socket.once("turnSkip", (turn,player) => {
                     if((player === simulatePlayer) && (turn === gameData.turn)) {
-                        socket.emit("end", gameData.stageName)
+                        socket.emit("end", gameData.stageName);
                     }
                     else {
                         console.log("WRONG TURNSKIP", turn, player)

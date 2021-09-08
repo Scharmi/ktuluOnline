@@ -23,6 +23,7 @@ exports.callVote = function(socket, io, gameData, type, allowedPlayers, voteOpti
             if(allowedPlayers.includes(user)) {
                 if(!playersVoted.includes(user)) {
                     playersVoted.push(user);
+                    io.to("everyone").emit("votesNumber", playersVoted.length, allowedPlayers.length);
                     for(let i = 0; i < votes.length; i++) {
                         for(let j = 0; j < chosenOptions.length; j++) {
                             if(votes[i].option.id === chosenOptions[j].id) {

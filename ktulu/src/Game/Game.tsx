@@ -102,6 +102,7 @@ export function Game(props:Props) {
     function Alert(props: AlertProps) {
         return <MuiAlert elevation={6} variant="filled" {...props} />;
     }   
+    const [votesNumber, setVotesNumber] = useState({votes: 0, allVotes:0 })
     const [myData, setMyData] = useState(templateFullInfoPlayer);
     const [allPlayers, setAllPlayers] = useState<Array<any>>([]);
     const [voteFunctionName, setVoteFunctionName] = useState<string>("MyTeamFree")
@@ -256,6 +257,14 @@ export function Game(props:Props) {
         }
     }, [])
     useEffect(() => {
+        props.socket.on("votesNumber", (votes: number, allVotes: number) => {
+            setVotesNumber({votes: votes, allVotes: allVotes});
+        })
+        return () => {
+            socket.off("votesNumber");
+        }
+    }, [])
+    useEffect(() => {
         props.socket.on("message", (sender: string, text:string) => {
             setMessages((prevMessages) => {
                 let newArr = [...prevMessages];
@@ -289,7 +298,6 @@ export function Game(props:Props) {
             
             function voteCallBack(options:any) {
                 socket.emit("vote", gameData.myData.characterName, id, options);
-                gameData.setIsVote(false);
             }
             setIsVote(true);
             setVoteFunctionName("voteProps")
@@ -492,8 +500,8 @@ export function Game(props:Props) {
                 optionList = {voteProps.optionList}
                 votedObjects = {s}
                 type={voteProps.type}
-                votes={voteProps.votes}
-                allVotes={voteProps.allVotes}
+                votes={votesNumber.votes}
+                allVotes={votesNumber.allVotes}
                 minChosen={voteProps.minChosen}
                 maxChosen={voteProps.maxChosen}
                 callBack={voteProps.callBack}
