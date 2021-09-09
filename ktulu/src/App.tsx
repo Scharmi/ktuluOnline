@@ -7,7 +7,7 @@ import { AdminView } from './Game/AdminView'
 import { io } from 'socket.io-client';
 let prod = "https://rjpg.pl:8080"
 let test = "http://localhost:8080"
-const socket = io(test ,{
+const socket = io(prod ,{
   query: {
     name: '1242'
   }

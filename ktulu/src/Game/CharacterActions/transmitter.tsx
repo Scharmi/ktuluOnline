@@ -1,14 +1,11 @@
-export function transmitter(socket: any, gameData?: any) {
+export function transmitter(socket: any, endListener:any, gameData?: any) {
     socket.on("action", (str: any,obj: Object) => {
         socket.emit("action", str, obj)
     })
     socket.on("turnSkip", (turn: any, player: any) => {
         socket.emit("turnSkip", turn, player)
     })
-    socket.on("end", (arg: any) => {
-        console.log("END", arg)
-        socket.emit("end", arg)
-    })
+    socket.on("end", endListener)
     socket.on("duelInvite", (p1: string, p2: string) => {
         socket.emit("duelInvite", p1, p2)
     })
@@ -26,9 +23,6 @@ export function transmitter(socket: any, gameData?: any) {
     })
     socket.on("disclose", (name: string) => {
         socket.emit("disclose", name);
-    })
-    socket.on("inspectionEnd", () => {
-        socket.emit("inspectionEnd");
     })
     socket.on("GAME OVER", () => {
         socket.emit("GAME OVER");

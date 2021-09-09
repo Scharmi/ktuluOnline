@@ -37,6 +37,9 @@ export function AdminView(props:Props) {
     const [whoseTurn, setWhoseTurn] = useState("");
     const [gameTime, setGameTime] = useState({dayTime: "night", dayNumber: 2})
     const [statueTeam, setStatueTeam] = useState("XD");
+    const [votesNumber, setVotesNumber] = useState({votes: 0, allVotes:0 })
+    const [remainingVoters, setRemainingVoters] = useState<Array<string>>([]);
+    const [voteState, setVoteState] = useState("choosing");
     const [voteProps, setVoteProps] = useState({
         type: "duel",
         optionList: [],
@@ -44,7 +47,6 @@ export function AdminView(props:Props) {
         votes: 21,
         allVotes: 37,
         minChosen: 1,
-        voteState: "choosing",
         maxChosen: 2,
         callBack: (arg:any) => {}
     });
@@ -79,6 +81,28 @@ export function AdminView(props:Props) {
         })
 
     }, [socket])
+    useEffect(() => {
+        props.socket.on("allowedVoters", (voters: Array<string>) => {
+            console.log("GOT VOTERS")
+            setRemainingVoters(voters);
+            setVoteState("adminRemainingVoters");
+            setIsVote(true);
+        })
+        return () => {
+            socket.off("allowedVoters");
+        }
+    }, [])
+    useEffect(() => {
+        props.socket.on("playerVoted", (player: string) => {
+            setRemainingVoters((prevPlayers: Array<string>) => {
+                let newArr = [...prevPlayers];
+                for(let i = 0; i < newArr.length; i++) {
+                    if(newArr[i] === player) newArr.splice(i, 1);
+                }
+                return newArr;
+            })
+        })
+    })
     useEffect(() => {
         socket.on("turnInfo", (arg:string) => {
             if(arg.substring(0,15) !== "Tura pojedynków") {
@@ -123,24 +147,25 @@ export function AdminView(props:Props) {
         }
     }, [socket])
     useEffect(() => {
-        transmitter(socket);
+        function endListener(arg: any) {
+            socket.emit("end", arg);
+        }
+        transmitter(socket, endListener);
         return (() => {
             socket.off("action");
-            socket.off("end");
+            socket.off("end", endListener);
             socket.off("duelInvite");
             socket.off("duelAccept");
             socket.off("duelDecline");
             socket.off("vote");
             socket.off("voteEnd");
-            socket.off("disclose");
-            socket.off("inspectionEnd");
             socket.off("hangingEnd");
             socket.off("herbsKill");
             socket.off("GAME OVER")
         })
     }, [gameData])
     useEffect(() => {
-        socket.on("end", (turn:string) => {
+        function listener(turn:string) {
             if(turn === "duelsTurn") {
                 setAlertArray((prevArr) => {
                     let newArr = [...prevArr];
@@ -150,6 +175,10 @@ export function AdminView(props:Props) {
                     return newArr;
                 });
             }
+        }
+        socket.on("end", listener)  
+        return (() => {
+            socket.off("end", listener)
         })
     }, [socket])
     useEffect(() => {
@@ -245,7 +274,8 @@ export function AdminView(props:Props) {
                 }
                 return newArr;
             });
-            setIsVote(true)
+            setIsVote(true);
+            setVoteState("gotResults");
             setVoteProps({
                 type: type,
                 optionList: results,
@@ -254,7 +284,6 @@ export function AdminView(props:Props) {
                 allVotes: 0,
                 minChosen: 1,
                 maxChosen: 1,
-                voteState: "gotResults",
                 callBack: (arg:any) => {socket.emit("votedPlayers", arg)},
             })
             
@@ -266,7 +295,8 @@ export function AdminView(props:Props) {
     useEffect(() => {
         socket.on("chooseVoted", () => {
             setIsVote(true)
-            setVoteFunctionName("allPlayers")
+            setVoteFunctionName("alivePlayers")
+            setVoteState("choosing");
             setVoteProps({
                 type: "inspection",
                 optionList: [],
@@ -275,7 +305,6 @@ export function AdminView(props:Props) {
                 allVotes: 0,
                 minChosen: 1,
                 maxChosen: 500,
-                voteState: "choosing",
                 callBack: (arg:any) => {socket.emit("votedPlayers", arg); setIsVote(false)},
             })
         })
@@ -300,14 +329,19 @@ export function AdminView(props:Props) {
     function timeChangeCallback(arg: Object) {
         console.log(arg);
     }
-    function vote(voteState: boolean) {
+    function vote(isVote: boolean) {
         let s:any = []        
         if(voteFunctionName === "voteProps") s = voteProps.votedObjects
         if(voteFunctionName === "allPlayers") {
             s = players;
             console.log("FUNC", s)
         } 
-        if(voteState === true) return (
+        if(voteFunctionName === "alivePlayers") {
+            for(let i = 0; i < players.length; i++) {
+                if(players[i].isAlive === true) s.push({...players[i]})
+            }
+        }
+        if(isVote === true) return (
             <VotingInterface 
                 optionList = {voteProps.optionList}
                 votedObjects = {s}
@@ -319,7 +353,8 @@ export function AdminView(props:Props) {
                 callBack={voteProps.callBack}
                 fullInfoPlayers={players}
                 setIsVote={setIsVote}
-                voteState={voteProps.voteState}
+                voteState={voteState}
+                remainingVoters={remainingVoters}
             />
         )
         else {

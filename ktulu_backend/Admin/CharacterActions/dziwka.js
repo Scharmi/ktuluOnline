@@ -1,4 +1,5 @@
 exports.dziwka = function(socket, io, gameData) {
+    console.log("Dziwka")
     let playerIndex = 0;
     let dziwkaIndex = 0;
     for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {

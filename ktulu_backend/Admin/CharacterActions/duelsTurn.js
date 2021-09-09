@@ -33,6 +33,7 @@ exports.duelsTurn = function(socket, io, gameData) {
             }
             else {
                 if((!gameData.inviteExists(player1, player2)) && (!gameData.duel)){
+                    if((player1Props.isAlive) && (player2Props.isAlive))
                     io.to(player1Props.characterName).emit("snackbar", "success", "Wyzwano gracza na pojedynek")
                     if(gameData.inviteExists(player2, player1)) {
                         if((player1Props.isAlive) && (player2Props.isAlive)) {

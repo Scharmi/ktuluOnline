@@ -47,6 +47,7 @@ export function RequestAlert(props: Props) {
         if(props.alertProps.type === "duelsTurnEnd") return "Jeśli chcesz zakończyć turę pojedynków kliknij przycisk poniżej";
         if(props.alertProps.type === "duelEnd") return "Zakończył się pojedynek graczy " + props.alertProps.p1 + " i " + props.alertProps.p2;
         if(props.alertProps.type === "hangingEnd") return "Powieszony ma zostać " + props.alertProps.p1;
+        if(props.alertProps.type === "inspectionEnd") return "Zakończono głosowanie nad przeszukaniem"
         if(props.alertProps.type === "herbsKill") return "Graczowi " + props.alertProps.player + " zostały podłożone ziółka";
         if(props.alertProps.type === "voteEnd") {
             let s = "";
@@ -70,13 +71,14 @@ export function RequestAlert(props: Props) {
         if(props.alertProps.type === "duelsTurnEnd") return "Zrób to jeśli gracze nie chcą wykorzystać dziennego limitu pojedynków, w innym wypadku tura skończy się automatycznie po jego wyczrpaniu";
         if(props.alertProps.type === "isHangingEnd") return "Daj graczom czas na zapoznanie się z wynikiem głosowania a następnie kliknij przycisk poniżej";
         if(props.alertProps.type === "herbsKill") return "Aby go zabić kliknij poniższy przycisk w odpowiednim momencie";
+        if(props.alertProps.type === "inspectionEnd") return "Daj graczom czas na zapoznanie się z wynikami głosowania, a następnie kliknij przycisk poniżej"
         if(props.alertProps.type === "hangingEnd") return "Kliknij żeby zakończyć zapoznawanie się graczy z wynikami głosowania oraz 5 sekund dla burmistrza";
         if(props.alertProps.type === "default") return props.alertProps.bottomText;
         if(props.alertProps.type === "nonClosing") return props.alertProps.bottomText;
         return ""
     }
     function closeAlert() {
-        let notClosing = ["nonClosing", "duelInvite", "isAction", "duelEnd", "nextVote", "isHangingEnd", "herbsKill", "duelsTurnEnd"]
+        let notClosing = ["nonClosing", "duelInvite", "isAction", "duelEnd", "nextVote", "isHangingEnd", "herbsKill", "duelsTurnEnd", "voteEnd"]
         if(!notClosing.includes(props.alertProps.type))
         return (<Button onClick={() => {
             props.setAlertArray(props.id)
@@ -133,6 +135,15 @@ export function RequestAlert(props: Props) {
             <div className="buttonsWrapper">
                 <div className="buttonWrapper">
                     <Button variant="contained" color="primary" onClick={() => {props.socket.emit("hangingEnd"); props.setAlertArray(props.id)}}>Zakończ wieszanie</Button>
+                </div>
+            </div>
+            </div>
+        )
+        if(props.alertProps.type === "inspectionEnd") return (
+            <div className="buttonsWrapper2">
+            <div className="buttonsWrapper">
+                <div className="buttonWrapper">
+                    <Button variant="contained" color="primary" onClick={() => {props.socket.emit("inspectionEnd"); props.setAlertArray(props.id)}}>Zakończ przeszukiwanie</Button>
                 </div>
             </div>
             </div>

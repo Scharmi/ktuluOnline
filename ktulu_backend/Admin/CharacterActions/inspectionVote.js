@@ -11,7 +11,7 @@ exports.inspectionVote = function(socket, io, gameData, voteOptions) {
             let newArr = [...gameData.inspected];
             newArr = [...newArr, ...voteOptions];
             gameData.inspected = [...newArr];
-            io.to("admin").emit("inspectionEnd");
+            io.to("admin").emit("alert", {type: "inspectionEnd"});
         }
         else {
             for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
@@ -79,7 +79,7 @@ exports.inspectionVote = function(socket, io, gameData, voteOptions) {
                         })
                     }
                     else {
-                        io.to("admin").emit("inspectionEnd");
+                        io.to("admin").emit("alert", {type: "inspectionEnd"});
                     }
                 }
                 else {

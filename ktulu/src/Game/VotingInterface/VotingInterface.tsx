@@ -19,6 +19,7 @@ interface Props {
     fullInfoPlayers: any;
     voteState: string;
     setIsVote: Function;
+    remainingVoters?: Array<string>;
 }
 function VotingCard (props:Props) {
     let voteState = props.voteState
@@ -51,6 +52,21 @@ function VotingCard (props:Props) {
     }
     if(voteState === "closed") {
         return <div></div>
+    }
+    if(voteState === "adminRemainingVoters") {
+        let remainingVoters:Array<string> = [""];
+        if(props.remainingVoters !== undefined) {
+            remainingVoters = [...props.remainingVoters];
+        }
+        let remainingVotersMap = remainingVoters.map((voter: string) => {
+            return <div>{voter}</div>
+        })
+        return (
+            <div>
+                <h2>Nie zagłosowali jeszcze gracze:</h2>
+                {remainingVotersMap}
+            </div>
+        )
     }
     return (<h2>{voteState}, {props.type}, {props.optionList}</h2>)
 }

@@ -1,5 +1,10 @@
 exports.callVote = function(socket, io, gameData, type, allowedPlayers, voteOptions) {
     console.log("VOTE CALLED", voteOptions);
+    let allowedNicks = [];
+    for(let i = 0; i < allowedPlayers.length; i++) {
+        allowedNicks.push(gameData.characterNick(allowedPlayers[i]));
+    }
+    io.to("admin").emit("allowedVoters", allowedNicks);
     gameData.voteId++;
     for(let i = 0; i < allowedPlayers.length; i++) {
         io.to(allowedPlayers[i]).emit("callVote", gameData.voteId, type, voteOptions, gameData.inspectedNumber - gameData.inspected.length);
@@ -22,6 +27,7 @@ exports.callVote = function(socket, io, gameData, type, allowedPlayers, voteOpti
         if(sentID === gameData.voteId) {
             if(allowedPlayers.includes(user)) {
                 if(!playersVoted.includes(user)) {
+                    io.to("admin").emit("playerVoted", gameData.characterNick(user));
                     playersVoted.push(user);
                     io.to("everyone").emit("votesNumber", playersVoted.length, allowedPlayers.length);
                     for(let i = 0; i < votes.length; i++) {
