@@ -6,7 +6,7 @@ exports.hazardzistaKilling = function(socket, io, gameData) {
     }
     let player = gameData.allFullInfoPlayers[playerIndex];
     if(player.team !== "miastowi") {
-        if(player.characterName !== prison)
+        if(player.characterName !== gameData.prison)
         gameData.kill(player.characterName);
         gameData.shiftTurn("hazardzistaKilling");
         if(player.characterName === gameData.statue) gameData.setStatueTeam(gameData.playingCharacter);
