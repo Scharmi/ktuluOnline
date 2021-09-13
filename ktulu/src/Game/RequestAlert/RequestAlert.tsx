@@ -78,7 +78,7 @@ export function RequestAlert(props: Props) {
         return ""
     }
     function closeAlert() {
-        let notClosing = ["nonClosing", "duelInvite", "isAction", "duelEnd", "nextVote", "isHangingEnd", "herbsKill", "duelsTurnEnd", "voteEnd"]
+        let notClosing = ["nonClosing", "duelInvite", "isAction", "duelEnd", "nextVote", "isHangingEnd", "herbsKill", "duelsTurnEnd", "voteEnd", "inspectionEnd"]
         if(!notClosing.includes(props.alertProps.type))
         return (<Button onClick={() => {
             props.setAlertArray(props.id)

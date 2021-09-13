@@ -316,6 +316,9 @@ export function AdminView(props:Props) {
         socket.on("callVote", (id: number, type: string, votedObjects: any) => {
             setAlertArray((prevArr) => {
                 let newArr = [...prevArr];
+                for(let i = 0; i < newArr.length; i++) {
+                    if(newArr[i].type === "voteEnd") newArr.splice(i,1);
+                }
                 newArr.push({type: "voteEnd", callback: () => {socket.emit("voteEnd", id)}, voteType: type, votedObjects: votedObjects});
                 return newArr;
             });

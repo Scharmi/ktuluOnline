@@ -116,7 +116,7 @@ exports.admin = function(socket, io, gameData, server) {
     gameData.setStatueTeam = function(characterName) {
         gameData.statue = characterName;
         io.to("everyone").emit("statueTeam", gameData.statueTeam())
-        io.to("everyone").emit("alert", {type: "default", header: gameData.capitalizeFirstLetter(gameData.statueTeam()) + " przejęli posążek"})
+        io.to("everyone").emit("snackbar", "warning", gameData.statueTeam() + " przejęli posążek")
         if(gameData.statueTeam() === "indianie") {
             gameData.shiftTurn("plonacySzal")
         }
@@ -162,11 +162,16 @@ exports.admin = function(socket, io, gameData, server) {
             function listenToAction() {
                 socket.once("action", (str, obj) => {
                     if((str === activePlayer) && (obj.turn  === gameData.turn)) {
+                        console.log("ACTION", activePlayer, obj)
                         gameData.actionObject = {...obj};
-                        if(obj.player !== undefined)
-                        playerActions[stageName](socket, io, gameData);
-                        else
-                        socket.emit("end", gameData.stageName);
+                        if((obj.player !== undefined) || (activePlayer === "hazardzista")) {
+                            playerActions[stageName](socket, io, gameData);
+                        }
+                        else {
+                            socket.emit("end", gameData.stageName);
+                            console.log("UNDEFINED PLAYER, ", obj, activePlayer)
+                        }
+ 
                     }
                     else {
                         console.log("BAD ACTION", str, obj, activePlayer, gameData.turn);

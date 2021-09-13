@@ -5,9 +5,9 @@ import { Paper } from '@material-ui/core'
 import { PreGame } from './PreGame/PreGame'
 import { AdminView } from './Game/AdminView'
 import { io } from 'socket.io-client';
-let prod = "https://rjpg.pl:8080"
-let test = "http://localhost:8080"
-const socket = io(prod ,{
+const prod = true;
+let address = prod ? "https://rjpg.pl:8080" : "http://localhost:8080"
+const socket = io(address ,{
   query: {
     name: '1242'
   }

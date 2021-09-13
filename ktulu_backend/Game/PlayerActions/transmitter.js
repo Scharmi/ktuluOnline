@@ -43,7 +43,7 @@ exports.transmitter = function(socket, io, gameData) {
         else console.log("TRANSMISSION BLOCKED", socket.myData.characterName, name)
     })
     socket.on("message", (sender, text) => {
-        if(socket.myData.characterName === sender) {
+        if((socket.myData.characterName === sender) && (socket.myData.isAlive)) {
             if(socket.myData.team === gameData.chat) {
                 if(text.length < 500) {
                     let activeMembers = gameData.activeMembers(socket.myData.team);

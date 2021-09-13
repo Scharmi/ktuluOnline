@@ -350,7 +350,7 @@ exports.gameDataGenerator = function() {
             let members = gameData.members(team);
             let newArr = [];
             for(let i = 0; i < members.length; i++) {
-                if((members[i].characterName !== gameData.prison) && (!gameData.drunk.includes(members[i].characterName)))
+                if((members[i].isAlive) && (members[i].characterName !== gameData.prison) && (!gameData.drunk.includes(members[i].characterName)))
                 newArr.push(members[i]);
             }
             return newArr;

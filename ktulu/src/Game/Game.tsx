@@ -187,6 +187,7 @@ export function Game(props:Props) {
                     team = fullInfoPlayers[j].team;
                 }
             }
+            if(myData.name === allPlayers[i].name) team = myData.team;
             if((team !== myData.team) && (prison !== allPlayers[i].name) && (allPlayers[i].isAlive === true)) newArr.push(allPlayers[i]);
         }
         return newArr;
