@@ -1,6 +1,6 @@
 export function hazardzistaKilling(socket: any, io: any, gameData: any) {
         gameData.setIsVote(true);
-        gameData.setVoteFunctionName("aliveExceptMe")
+        gameData.setVoteFunctionName("killableExceptTeam")
         gameData.setVoteProps({
             type: "killing",
             optionList: [],

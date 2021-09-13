@@ -137,6 +137,14 @@ exports.admin = function(socket, io, gameData, server) {
         }
         if(counter < gameData.gameStages.length) {
             io.to("admin").emit("statueTeam", gameData.statue)
+            for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
+                if((gameData.allFullInfoPlayers[i].team === gameData.statueTeam()) && (gameData.knowsTeammates.includes(gameData.allFullInfoPlayers[i].characterName))) {
+                    io.to(gameData.allFullInfoPlayers[i].characterName).emit("statueTeam", gameData.characterNick(gameData.statue))
+                }
+                else {
+                    io.to(gameData.allFullInfoPlayers[i].characterName).emit("statueTeam", gameData.statueTeam())
+                }
+            }
             if(counter === gameData.gameStages.length - 1) {
                 gameData.gameStages = [...gameData.gameStages, ...gameData.stageCycle]
             }
@@ -177,7 +185,9 @@ exports.admin = function(socket, io, gameData, server) {
                     }
                 })
             }
- 
+            function forceEnd() {
+                io.to("admin").emit("end", gameData.stageName);
+            }
             if(gameData.isTurnPlaying(stageName) === "play") {
                 gameData.activePlayerName = activePlayer;
                 io.to(activePlayer).emit("All players", gameData.playersArray);
@@ -202,10 +212,12 @@ exports.admin = function(socket, io, gameData, server) {
                 runStage(counter, gameData);
             }
             else {
+                socket.once("forceEnd", forceEnd);
                 io.to("everyone").emit("turnInfo", gameData.turnInfo[stageName])
                 function endListener(arg) {
                     console.log("END", arg)
                     if(arg === stageName) {
+                        socket.off("forceEnd", forceEnd);
                         if(stageName === "duelsTurn") {
                             socket.removeAllListeners("duelInvite");
                             socket.removeAllListeners("duelDecline");

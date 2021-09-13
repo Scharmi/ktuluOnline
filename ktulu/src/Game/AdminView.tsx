@@ -383,8 +383,8 @@ export function AdminView(props:Props) {
                     szulered={szulered}
                 />
             </Paper>
-            
-            <div className="endGame"><Button variant="contained" color="primary" onClick={() => {props.socket.emit("GAME OVER")}}>Wymuś koniec gry</Button></div>
+            <div className="endGame"><Button variant="contained" color="primary" onClick={() => {props.socket.emit("forceEnd")}}>Wymuś koniec kolejki</Button></div>
+            <div className="endGame"><Button variant="contained" color="primary" onClick={() => {props.socket.emit("GAME OVER")}}>Wymusś koniec gry</Button></div>
         </div>
     )
 }

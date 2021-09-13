@@ -9,7 +9,7 @@ export function szuler(socket: any, io: any, gameData: any) {
                 },
                 callBackYes: () => {
                     gameData.setIsVote(true);
-                    gameData.setVoteFunctionName("aliveExceptMe")
+                    gameData.setVoteFunctionName("killableExceptTeam")
                     gameData.setVoteProps({
                         type: "playing",
                         optionList: [],

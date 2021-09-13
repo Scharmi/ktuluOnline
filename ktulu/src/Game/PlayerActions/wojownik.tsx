@@ -9,10 +9,10 @@ export function wojownik(socket: any, io: any, gameData: any) {
                 },
                 callBackYes: () => {
                     gameData.setIsVote(true);
-                    gameData.setVoteFunctionName("aliveExceptMe")
+                    gameData.setVoteFunctionName("killableExceptTeam")
                     gameData.setVoteProps({
                         type: "killing",
-                        optionList: [],
+                        optionList: [], 
                         votedObjects: gameData.killableExceptTeam(),
                         votes: 0,
                         allVotes: 0,
