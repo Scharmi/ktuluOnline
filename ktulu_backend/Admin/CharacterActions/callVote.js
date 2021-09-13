@@ -27,9 +27,9 @@ exports.callVote = function(socket, io, gameData, type, allowedPlayers, voteOpti
         if(sentID === gameData.voteId) {
             if(allowedPlayers.includes(user)) {
                 if(!playersVoted.includes(user)) {
-                    io.to("admin").emit("playerVoted", gameData.characterNick(user));
+                    //io.to("admin").emit("playerVoted", gameData.characterNick(user));
                     playersVoted.push(user);
-                    io.to("everyone").emit("votesNumber", playersVoted.length, allowedPlayers.length);
+                    //io.to("everyone").emit("votesNumber", playersVoted.length, allowedPlayers.length);
                     for(let i = 0; i < votes.length; i++) {
                         for(let j = 0; j < chosenOptions.length; j++) {
                             if(votes[i].option.id === chosenOptions[j].id) {
