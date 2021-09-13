@@ -103,6 +103,9 @@ export function AdminView(props:Props) {
                 return newArr;
             })
         })
+        return () => {
+            socket.off("playerVoted")
+        }
     })
     useEffect(() => {
         socket.on("turnInfo", (arg:string) => {
@@ -307,7 +310,7 @@ export function AdminView(props:Props) {
             })
         })
         return () => {
-            socket.off("voteResults");
+            socket.off("chooseVoted");
         }
     }, [])
     useEffect(() => {
