@@ -259,6 +259,7 @@ export function Game(props:Props) {
     }, [])
     useEffect(() => {
         props.socket.on("votesNumber", (votes: number, allVotes: number) => {
+            console.log("GOT VOTES NUMBER")
             setVotesNumber({votes: votes, allVotes: allVotes});
         })
         return () => {

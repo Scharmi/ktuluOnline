@@ -94,6 +94,7 @@ export function AdminView(props:Props) {
     }, [])
     useEffect(() => {
         props.socket.on("playerVoted", (player: string) => {
+            console.log("GOT PLAYER VOTED", player);
             setRemainingVoters((prevPlayers: Array<string>) => {
                 let newArr = [...prevPlayers];
                 for(let i = 0; i < newArr.length; i++) {
@@ -105,6 +106,7 @@ export function AdminView(props:Props) {
     })
     useEffect(() => {
         socket.on("turnInfo", (arg:string) => {
+            console.log("GOT TURN INFO")
             if(arg.substring(0,15) !== "Tura pojedynków") {
                 setAlertArray((prevArr) => {
                     let newArr = [...prevArr];
@@ -122,6 +124,7 @@ export function AdminView(props:Props) {
     }, [])
     useEffect (() => {
         socket.on("setTime", (number:number, time: "time") => {
+            console.log("GOT SET TIME")
             setGameTime({dayTime: time, dayNumber: number});
         })
         return () => {
@@ -130,6 +133,7 @@ export function AdminView(props:Props) {
     })
     useEffect(() => {
         socket.on("statueTeam", (team: string) => {
+            console.log("GOT STATUE TEAM")
             const teams = ["bandyci", "indianie", "ufoki", "miastowi"]
             if(!teams.includes(team))
             setStatueTeam(team);
@@ -138,14 +142,6 @@ export function AdminView(props:Props) {
             socket.off("statueTeam");
         }
     }, [])
-    useEffect(() => {
-        socket.on("chooseVoted", () => {
-
-        })
-        return () => {
-            socket.off("chooseVoted")
-        }
-    }, [socket])
     useEffect(() => {
         function endListener(arg: any) {
             socket.emit("end", arg);
@@ -267,6 +263,7 @@ export function AdminView(props:Props) {
     }, [socket])
     useEffect(() => {
         socket.on("voteResults", (type: string, results: any) => {
+            console.log("GOT VOTE RESULTS", type, results);
             setAlertArray((prevArr) => {
                 let newArr = [...prevArr];
                 for(let i = 0; i < newArr.length; i++) {
@@ -284,7 +281,7 @@ export function AdminView(props:Props) {
                 allVotes: 0,
                 minChosen: 1,
                 maxChosen: 1,
-                callBack: (arg:any) => {socket.emit("votedPlayers", arg)},
+                callBack: (arg:any) => {},
             })
             
         })
@@ -294,6 +291,7 @@ export function AdminView(props:Props) {
     }, [socket])
     useEffect(() => {
         socket.on("chooseVoted", () => {
+            console.log("GOT CHOOSE VOTED")
             setIsVote(true)
             setVoteFunctionName("alivePlayers")
             setVoteState("choosing");
@@ -314,6 +312,7 @@ export function AdminView(props:Props) {
     }, [])
     useEffect(() => {
         socket.on("callVote", (id: number, type: string, votedObjects: any) => {
+            console.log("GOT CALLVOTE")
             setAlertArray((prevArr) => {
                 let newArr = [...prevArr];
                 for(let i = 0; i < newArr.length; i++) {
@@ -387,7 +386,7 @@ export function AdminView(props:Props) {
                 />
             </Paper>
             <div className="endGame"><Button variant="contained" color="primary" onClick={() => {props.socket.emit("forceEnd")}}>Wymuś koniec kolejki</Button></div>
-            <div className="endGame"><Button variant="contained" color="primary" onClick={() => {props.socket.emit("GAME OVER")}}>Wymusś koniec gry</Button></div>
+            <div className="endGame"><Button variant="contained" color="primary" onClick={() => {props.socket.emit("GAME OVER")}}>Wymuś koniec gry</Button></div>
         </div>
     )
 }
