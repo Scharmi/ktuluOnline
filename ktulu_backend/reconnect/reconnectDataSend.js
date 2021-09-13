@@ -50,11 +50,11 @@ exports.reconnectDataSend = function(socket, io, gameData) {
         }
     }
     else {
-        /*if(gameData.duel) io.to("admin").emit("alert", {type: "duelEnd", p1: gameData.duel1, p2: gameData.duel2});
+        if(gameData.duel) io.to("admin").emit("alert", {type: "duelEnd", p1: gameData.duel1, p2: gameData.duel2});
         if(gameData.gameStage === "duelsTurn") io.to("admin").emit("alert", { type: "duelsTurnEnd" })
         if((gameData.herbs !== "") && (gameData.dayTime === "day")) io.to("admin").emit("alert", {type: "herbsKill", player: gameData.characterNick(gameData.herbs)});
         if(gameData.nextVote) io.to("admin").emit("alert", {type: "nextVote"});
         if(gameData.alertIsHanging) io.to("admin").emit("alert", {type: "isHangingEnd"});
-        if(gameData.alertHanging) io.to("admin").emit("alert", {type: "hangingEnd", p1: gameData.hanged});*/
+        if(gameData.alertHanging) io.to("admin").emit("alert", {type: "hangingEnd", p1: gameData.hanged});
     }
 }
