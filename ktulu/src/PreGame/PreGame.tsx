@@ -1,22 +1,8 @@
 import { EnterNickname } from './EnterNickname/EnterNickname'
-import { templatePlayers, 
-    templateVoteResult, 
-    templatePlayer, 
-    templateCrewmates, 
-    templateDisclosed, 
-    templateActionButtons,
-    templateSpecialButtons,
-    templateGameState,
-    templateFullInfoPlayer
-} from '../Game/templates/templates'
 import { ConnectedPlayers } from './ConnectedPlayers/ConnectedPlayers'
 import { VotingInterface } from '../Game/VotingInterface/VotingInterface'
 import { TextField } from '@material-ui/core'
-import { Chat } from '../Game/Chat/Chat'
-import { Button } from '@material-ui/core'
-
 import { useEffect, useState } from 'react'
-import { bandyciStatue } from '../Game/PlayerActions/bandyciStatue'
 interface Props {
     socket: any;
     setGameState: Function;
@@ -26,16 +12,15 @@ interface Props {
 export function PreGame(props: Props) {
     
     const [choosePlayers, setChoosePlayers] = useState(false);
-    const [voteOptions, setVoteOptions] = useState([])
+    const [voteOptions, setVoteOptions] = useState([]);
     const [myName, setMyName] = useState("");
-    const [playerNames, setPlayerNames] = useState(["Ładowanie..."])
+    const [playerNames, setPlayerNames] = useState(["Ładowanie..."]);
     const [enteredName, setEnteredName] = useState(false);
-    const [adminSet, setAdminSet] = useState(false)
     const [adminState, setAdminState] = useState<boolean>(false);
     const [pojedynki, setPojedynki] = useState("2");
     const [bandyci, setBandyci] = useState("3");
     const [przeszukania, setPrzeszukania] = useState("2");
-    const [password, setPassword] = useState("")
+    const [password, setPassword] = useState("");
     const handlePojedynkiChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPojedynki(event.target.value);
     };
@@ -49,9 +34,6 @@ export function PreGame(props: Props) {
         setPassword(event.target.value);
     };
     console.log("PREGAME RENDER", adminState)
-    function St(arg:any) {
-        return JSON.stringify(arg);
-    }
     function submitName(name:string, isAdmin: boolean) {
         props.socket.emit("enterName", name, isAdmin, password);
         setMyName(name);
@@ -77,7 +59,9 @@ export function PreGame(props: Props) {
         });
 
         return () => {
-            props.socket.off("Player left")
+            props.socket.off("Player left");
+            props.socket.off("Player names");
+            props.socket.off("Choose characters");
         }
     }, []);
     useEffect(() => {

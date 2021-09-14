@@ -9,7 +9,7 @@ exports.preGame = function(socket, io, removeName, gameData) {
       }
     socket.on("isTaken",  (arg1, callback) => {
         callback({
-          status: gameData.namesArray.includes(arg1)
+          status: (gameData.namesArray.includes(arg1) || (arg1.length >= 32))
         });
       });
       socket.once("enterName", (arg, isAdmin, password) => {

@@ -259,7 +259,7 @@ export function Game(props:Props) {
     }, [])
     useEffect(() => {
         props.socket.on("votesNumber", (votes: number, allVotes: number) => {
-            console.log("GOT VOTES NUMBER")
+            console.log("GOT VOTES")
             setVotesNumber({votes: votes, allVotes: allVotes});
         })
         return () => {
@@ -299,6 +299,7 @@ export function Game(props:Props) {
             }
             
             function voteCallBack(options:any) {
+                console.log("VOTED", gameData.myData)
                 socket.emit("vote", gameData.myData.characterName, id, options);
             }
             setIsVote(true);
