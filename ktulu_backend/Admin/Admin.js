@@ -165,6 +165,9 @@ exports.admin = function(socket, io, gameData, server) {
                         console.log("ACTION", activePlayer, obj)
                         gameData.actionObject = {...obj};
                         if((obj.player !== undefined) || (activePlayer === "hazardzista")) {
+                            if(obj.player !== undefined) {
+                                io.to("admin").emit("message", "SYSTEM", gameData.stageName + " " + obj.player[0].text);
+                            }
                             playerActions[stageName](socket, io, gameData);
                         }
                         else {

@@ -16,6 +16,7 @@ import { Button } from '@material-ui/core'
 import { GameStateSetter } from './AdminViewComponents/GameStateSetter/GameStateSetter'
 import './AdminView.css'
 import { transmitter } from './CharacterActions/transmitter'
+import { Chat } from './Chat/Chat'
 //import { szeryf } from './CharacterActions/szeryf'
 //import { msciciel } from './CharacterActions/msciciel'
 
@@ -32,6 +33,7 @@ export function AdminView(props:Props) {
     const [allPlayers, setAllPlayers] = useState<Array<any>>([]);
     const [isVote, setIsVote] = useState(false)
     const [prison, setPrison] = useState("")
+    const [messages, setMessages] = useState<Array<any>>([]);
     const [drunk, setDrunk] = useState("")
     const [szulered, setSzulered] = useState("")
     const [whoseTurn, setWhoseTurn] = useState("");
@@ -50,6 +52,18 @@ export function AdminView(props:Props) {
         maxChosen: 2,
         callBack: (arg:any) => {}
     });
+    useEffect(() => {
+        props.socket.on("message", (sender: string, text:string) => {
+            setMessages((prevMessages) => {
+                let newArr = [...prevMessages];
+                newArr.push({sender: sender, text: text});
+                return newArr;
+            })
+        })
+        return () => {
+            socket.off("message")
+        }
+    }, [])
     const [voteFunctionName, setVoteFunctionName] = useState<string>("MyTeamFree")
     const [fullInfoPlayers, setFullInfoPlayers] = useState<Array<any>>([]);
     let gameData = {
@@ -372,6 +386,7 @@ export function AdminView(props:Props) {
                 <GameState whoseTurn={whoseTurn} gameTime={gameTime} whoHasStatue={statueTeam}/>
                 {vote(isVote)}
                 <RequestAlertList socket={socket} alertArray={alertArray} setAlertArray={setAlertArray} gameData={gameData}/>
+                <div><Chat messageList={messages} socket={socket} myName={""}/></div>
                 <h2>Gracze biorący udział w rozgrywce:</h2>
                 <PlayerTable
                     socket={socket}
