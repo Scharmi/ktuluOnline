@@ -13,9 +13,6 @@ exports.szamanka = function(socket, io, gameData) {
             gameData.herbs = "";
         })
         gameData.usedSkills.push(gameData.playingCharacter);
-        if(characterName === gameData.statue) {
-            gameData.setStatueTeam(gameData.playingCharacter)
-        }
     }
     io.to("admin").emit("end", gameData.stageName);
 }
