@@ -537,7 +537,7 @@ export function Game(props:Props) {
                     drunk={drunk}
                     szulered={szulered}
                 />
-                <Snackbar open={snackbarText === "" ? false : true} autoHideDuration={6000} onClose={() => {}}>
+                <Snackbar open={snackbarText === "" ? false : true} autoHideDuration={3000} onClose={() => setSnackbarText("")}>
                     <Alert onClose={() => setSnackbarText("")} severity={snackbarType}>
                         {snackbarText}
                     </Alert>

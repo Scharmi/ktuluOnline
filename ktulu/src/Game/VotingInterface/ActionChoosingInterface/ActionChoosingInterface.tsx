@@ -83,7 +83,7 @@ export function ActionChoosingInterface (props: Props) {
     if (typeof(props.minChosen) != "undefined") minChosen = props.minChosen;
     function upperText(type: string, vote: number, votes?: number, allVotes?: number) {
         if (vote === 1) {
-            if((type === "duel") || (type === "isHanging") || (type === "hanging") || (type === "dailyinspection") || (type === "dailyinspection")){
+            if((type === "duel") || (type === "isHanging") || (type === "hanging") || (type === "dailyInspection") || (type === "dailyinspection")){
                 return "Oczekiwanie na resztę graczy, zagłosowało " + votes + "/" + allVotes + " uprawnionych";
             }
             return "Pomyślnie dokonano wyboru";
