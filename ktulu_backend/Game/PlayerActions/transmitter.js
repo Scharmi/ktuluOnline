@@ -36,7 +36,7 @@ exports.transmitter = function(socket, io, gameData) {
         else console.log("TRANSMISSION BLOCKED", socket.myData.characterName, name, id, options)
     })
     socket.on("disclose", (name) => {
-        if((name === socket.myData.characterName) && (!gameData.disclosed.includes(name) && gameData.dayTime === "day")) {
+        if((name === socket.myData.characterName) && (!gameData.disclosed.includes(name) && gameData.dayTime === "day") && (socket.myData.isAlive)) {
             gameData.disclosed.push(name);
             io.to("admin").emit("disclose", name);
         }
