@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, useRef, useEffect} from 'react'
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -16,6 +16,11 @@ interface Props {
 }
 export function Chat(props: Props) {
     const [text, setText] = useState("");
+    const messagesEndRef = useRef<any>(null);
+    const scrollToBottom = () => {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    };
+    useEffect(scrollToBottom, [props.messageList]);
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         console.log(text)
         setText(event.target.value);
@@ -43,7 +48,9 @@ export function Chat(props: Props) {
                     <List>
                         {MessageList(props.messageList)}
                     </List>
+                    <div ref={messagesEndRef} />
                 </div>
+                
             </div>
             <div className="textField">
                 <TextField

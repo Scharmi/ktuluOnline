@@ -45,7 +45,7 @@ exports.transmitter = function(socket, io, gameData) {
     socket.on("message", (sender, text) => {
         if((socket.myData.characterName === sender) && (socket.myData.isAlive)) {
             if(socket.myData.team === gameData.chat) {
-                if(text.length < 500) {
+                if((text.length < 500) && (gameData.checkString(text))) {
                     let activeMembers = gameData.activeMembers(socket.myData.team);
                     for(let i = 0; i < activeMembers.length; i++) {
                         io.to(activeMembers[i].characterName).emit("message", gameData.characterNick(sender), text);
@@ -53,7 +53,7 @@ exports.transmitter = function(socket, io, gameData) {
                     io.to("admin").emit("message", gameData.characterNick(sender), text);
                 }
                 else {
-                    io.to(sender).emit("alert", {type: "default", header: "Wiadomość zbyt długa"})
+                    io.to(sender).emit("snackbar", "error", "Wiadomość jest zbyt długa lub zawiera niedozwolone znaki");
                 }
 
             }

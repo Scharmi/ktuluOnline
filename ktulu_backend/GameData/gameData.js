@@ -181,7 +181,12 @@ exports.gameDataGenerator = function() {
         gameData.szuleredPlayer = "";
         gameData.drunkPlayer = "";
         gameData.opojOnce = false;
-
+        gameData.checkString = function(str) {
+          for(let i = 0; i < str.length; i++) {
+            if(str.charCodeAt(i) > 127) return false;
+          }
+          return true;
+        }
 
         gameData.shiftTurn = function(turn) {
             gameData.gameStages.splice(gameData.counter + 1, 0 , turn);
