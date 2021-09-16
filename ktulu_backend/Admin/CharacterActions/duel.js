@@ -120,7 +120,9 @@ exports.duel = function(socket, io, gameData, player1, player2) {
             gameData.duel1 = player1;
             gameData.duel2 = player2;
             socket.once("disclose", discloseAction);
+            if(!gameData.disclosed.includes("sędzia"))
             io.to("sędzia").emit("snackbar", "warning", "Jeśli chcesz zmienić wynik pojedynku, ujawnij się teraz");
+            if(!gameData.disclosed.includes("pijany sędzia"))
             io.to("pijany sędzia").emit("snackbar", "warning", "Jeśli chcesz zmienić wynik pojedynku, ujawnij się teraz");
             io.to("admin").emit("alert", {type: "duelEnd", p1: player1, p2: player2});
             socket.once("duelEnd", () => {

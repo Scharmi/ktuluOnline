@@ -42,6 +42,7 @@ exports.hangingVote = function(socket, io, gameData, voteOptions) {
         if(numberOfChosen === voteOptions.length) {
             gameData.hanged = voteOptions[0].name;
             socket.once("disclose", discloseAction);
+            if(!gameData.disclosed.includes("burmistrz"))
             io.to("burmistrz").emit("snackbar", "warning", "Jeśli chcesz ułaskawić wieszanego gracza, ujawnij się teraz");
             io.to("admin").emit("alert", {type: "hangingEnd", p1: gameData.hanged});
             gameData.alertHanging = true;
@@ -111,6 +112,7 @@ exports.hangingVote = function(socket, io, gameData, voteOptions) {
                     }
                     else {
                         socket.once("disclose", discloseAction);
+                        if(!gameData.disclosed.includes("burmistrz"))
                         io.to("burmistrz").emit("snackbar", "warning", "Jeśli chcesz ułaskawić wieszanego gracza, ujawnij się teraz");
                         io.to("admin").emit("alert", {type: "hangingEnd", p1: gameData.hanged});
                         gameData.alertHanging = true;
