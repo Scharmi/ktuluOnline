@@ -65,7 +65,7 @@ export function EnterNickname(props: Props) {
             </div>
             <Snackbar open={open} autoHideDuration={6000} onClose={() => {}}>
                 <Alert onClose={handleClose2} severity="error">
-                    Ta nazwa użytkownika jest zajęta
+                    Ta nazwa użytkownika jest zajęta lub jest nieprawidłowa
                 </Alert>
             </Snackbar>
         </div>

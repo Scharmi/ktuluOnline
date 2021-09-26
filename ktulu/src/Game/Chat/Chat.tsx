@@ -18,7 +18,7 @@ export function Chat(props: Props) {
     const [text, setText] = useState("");
     const messagesEndRef = useRef<any>(null);
     const scrollToBottom = () => {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
     };
     useEffect(scrollToBottom, [props.messageList]);
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,14 +43,16 @@ export function Chat(props: Props) {
     console.log("XD", MessageList(props.messageList));
     return (
         <div className="wrapper">
-            <div className="chat">
-                <div className="list">
-                    <List>
-                        {MessageList(props.messageList)}
-                    </List>
-                    <div ref={messagesEndRef} />
+            <div>
+                <div className="chat">
+                    <div className="list">
+                        <List>
+                            {MessageList(props.messageList)}
+                            <div ref={messagesEndRef} />
+                        </List>
+                    </div>
+                    
                 </div>
-                
             </div>
             <div className="textField">
                 <TextField

@@ -23,7 +23,7 @@ function server() {
   let gameData = gameDataGenerator.gameDataGenerator();
   let namesArray = [];
 
-  io.setMaxListeners(100);
+  io.setMaxListeners(500);
   function reconnect(name) {
     if(gameData.disconnectedPlayers.includes(name)) return true;
     return false;

@@ -182,8 +182,9 @@ exports.gameDataGenerator = function() {
         gameData.drunkPlayer = "";
         gameData.opojOnce = false;
         gameData.checkString = function(str) {
+          let polish = ['ą', 'ę', 'ł', 'ó', 'ć', 'ó', 'ś', 'ź', 'ż']
           for(let i = 0; i < str.length; i++) {
-            if(str.charCodeAt(i) > 127) return false;
+            if((str.charCodeAt(i) > 127) && (!polish.includes(str[i].toLowerCase()))) return false;
           }
           return true;
         }
