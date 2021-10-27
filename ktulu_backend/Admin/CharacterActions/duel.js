@@ -1,6 +1,9 @@
 
 const { callVote } = require('./callVote') 
 exports.duel = function(socket, io, gameData, player1, player2) {  
+    for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
+        io.to(gameData.allFullInfoPlayers[i].characterName).emit("snackbar", "warning", "Gracze " + player1 + " i " + player2 + " będą się pojedynkować");
+    }
     gameData.duel = true;
     gameData.usedDuels++;
     gameData.deleteDuel(player1, player2);

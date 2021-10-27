@@ -38,16 +38,21 @@ exports.duelsTurn = function(socket, io, gameData) {
                     if(gameData.inviteExists(player2, player1)) {
                         if((player1Props.isAlive) && (player2Props.isAlive)) {
                             if(gameData.usedDuels < gameData.duelsLimit) {
-                                duel(socket, io, gameData, player1, player2)
+                                duel(socket, io, gameData, player1, player2);
                             }
                         }
                         
                     }
                     else {
-                    
                         if((player1Props.isAlive) && (player2Props.isAlive)) {
                             gameData.duelInvites.push([player1,player2]);
-                            io.to(player2Props.characterName).emit("alert", {type: "duelInvite", player: player1})
+                            io.to(player2Props.characterName).emit("alert", {type: "duelInvite", player: player1});
+                            io.to("admin").emit("snackbar", "info", "Gracz " + player1 + " wyzwał gracza " + player2 + " na pojedynek");
+                            for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
+                                if((gameData.allFullInfoPlayers[i].characterName !== player1Props.characterName) && (gameData.allFullInfoPlayers[i].characterName !== player1Props.characterName)) {
+                                    io.to(gameData.allFullInfoPlayers[i].characterName).emit("snackbar", "info", "Gracz " + player1 + " wyzwał gracza " + player2 + " na pojedynek");
+                                }
+                            }
                         }
                         
                         
