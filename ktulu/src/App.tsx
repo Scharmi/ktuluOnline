@@ -21,7 +21,6 @@ function App() {
         <Paper elevation={4}>
           <PreGame setGameState={setGameState} socket={socket} gameState={gameState}/>
         </Paper>
-        
       </div>
     )
     if(gameState === "game") {

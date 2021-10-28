@@ -82,6 +82,7 @@ exports.admin = function(socket, io, gameData, server) {
         console.log("GAME OVER1", team)
         if(gameData.isGameOver === false) {
             console.log("GAME OVER", team)
+            io.to("everyone").emit("fullInfoPlayers", gameData.allFullInfoPlayers);
             io.to("everyone").emit("alert", {type:"default", header: team + " wygrali"})
             gameData.isGameOver = true;
             io.to("admin").emit("GAME OVER")
