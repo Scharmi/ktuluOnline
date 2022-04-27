@@ -1,4 +1,3 @@
-import { Player } from '../../interfaces/interfaces'
 import { Button } from '@material-ui/core'
 import Clear from '@material-ui/icons/Clear'
 import './RequestAlert.css'
@@ -230,6 +229,4 @@ export function RequestAlert(props: Props) {
         </div>
         </div>
     )
-    return <div></div>
-
 }

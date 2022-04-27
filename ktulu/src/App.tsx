@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { Game } from './Game/Game'
 import { Paper } from '@material-ui/core'
 import { PreGame } from './PreGame/PreGame'
 import { AdminView } from './Game/AdminView'
 import { io } from 'socket.io-client';
-const prod = true;
+const prod = false;
 let address = prod ? "https://rjpg.pl:8080" : "http://localhost:8080"
 const socket = io(address ,{
   query: {

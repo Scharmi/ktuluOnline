@@ -1,12 +1,9 @@
-import { useState } from 'react'
 import { OptionArray } from "./VotingResults/VotingResults"
-import { Player } from "../../interfaces/interfaces"
 import { VotingResults } from "./VotingResults/VotingResults";
 import { Button, Divider } from "@material-ui/core"
 import { Close } from "@material-ui/icons"
 import { ActionChoosingInterface } from "./ActionChoosingInterface/ActionChoosingInterface";
 import './VotingInterface.css'
-import { useEffect } from 'react';
 interface Props {
     optionList?: Array <OptionArray>;
     type?: string

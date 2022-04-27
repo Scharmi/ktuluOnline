@@ -63,7 +63,7 @@ export function PreGame(props: Props) {
             props.socket.off("Player names");
             props.socket.off("Choose characters");
         }
-    }, []);
+    }, [playerNames, props.socket, voteOptions]);
     useEffect(() => {
         props.socket.on("Game started", () => {
             props.socket.emit("Game started response");
@@ -74,7 +74,7 @@ export function PreGame(props: Props) {
         return () => {
             props.socket.off("Game started")
         }
-    }, [adminState])
+    }, [adminState, props])
 
     function choosePlayersCallback(players: any) {
         props.socket.emit("Chosen characters", players)

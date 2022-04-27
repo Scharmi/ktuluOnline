@@ -1,7 +1,6 @@
 import {useState, useRef, useEffect} from 'react'
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import './Chat.css'

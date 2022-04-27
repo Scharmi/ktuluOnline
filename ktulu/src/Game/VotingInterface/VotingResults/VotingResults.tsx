@@ -27,7 +27,7 @@ export function VotingResults(props: Props) {
     for(let i = 0; i < props.optionList.length; i++) {
         newOpenArray.push(true);
     }
-    const [open, setOpen] = React.useState(newOpenArray);
+    const [open, setOpen] = useState(newOpenArray);
     function handleClick(i: number) {
         let newOpen = [...open];
         newOpen[i] = !newOpen[i];

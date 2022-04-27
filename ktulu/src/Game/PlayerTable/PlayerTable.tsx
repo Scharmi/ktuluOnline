@@ -1,6 +1,5 @@
 import { PlayerCard, ButtonProps } from './PlayerCard/PlayerCard'
 import { FullInfoPlayer, Player } from '../../interfaces/interfaces'
-import { templateFullInfoPlayer } from '../templates/templates'
 import './PlayerTable.css'
 interface SpecialOptions {
     extraButtons?: Array<ButtonProps>;

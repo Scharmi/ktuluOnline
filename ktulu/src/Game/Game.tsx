@@ -1,135 +1,43 @@
-import React, { useState } from 'react'
-import { AlivePlayer, DeadPlayer, Player, FullInfoPlayer } from '../interfaces/interfaces'
+import React, { useState, useMemo } from 'react'
+import { FullInfoPlayer, GameState } from '../interfaces/interfaces'
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
-import { templatePlayers, 
-        templateVoteResult, 
-        templatePlayer, 
-        templateCrewmates, 
-        templateDisclosed, 
-        templateActionButtons,
-        templateSpecialButtons,
-        templateGameState,
-        templateFullInfoPlayer
-} from './templates/templates'
 import { VotingInterface } from './VotingInterface/VotingInterface'
 import { PlayerTable } from './PlayerTable/PlayerTable'
-import { RequestAlert } from './RequestAlert/RequestAlert'
 import { RequestAlertList } from './RequestAlert/RequestAlertList'
-import { GameState } from './GameState/GameState'
-import { Paper, Divider, Snackbar } from '@material-ui/core'
-import { Button } from '@material-ui/core'
+import { GameInfo } from './GameInfo/GameInfo'
+import { Snackbar } from '@material-ui/core'
 import { io } from "socket.io-client"
-import { dziwka } from './PlayerActions/dziwka'
-import { szeryf } from './PlayerActions/szeryf'
-import { pastor } from './PlayerActions/pastor'
-import { uwodziciel } from './PlayerActions/uwodziciel'
-import { hazardzista } from './PlayerActions/hazardzista'
-import { opoj } from './PlayerActions/opoj'
-import { hazardzistaKilling } from './PlayerActions/hazardzistaKilling'
-import { bandyciInspection } from './PlayerActions/bandyciInspection'
-import { kat } from './PlayerActions/kat'
-import { bandyciStatue } from './PlayerActions/bandyciStatue'
-import { msciciel } from './PlayerActions/msciciel'
-import { zlodziej } from './PlayerActions/zlodziej'
-import { szuler } from './PlayerActions/szuler'
-import { wojownik } from './PlayerActions/wojownik'
-import { szantazysta } from './PlayerActions/szantazysta'
-import { szamanka } from './PlayerActions/szamanka'
-import { szaman } from './PlayerActions/szaman'
-import { indianieKilling } from './PlayerActions/indianieKilling'
-import { indianieStatue } from './PlayerActions/indianieStatue'
 import './Game.css'
 import { useEffect } from 'react'
-import { samotnyKojot } from './PlayerActions/samotnyKojot'
-import { lornecieOko } from './PlayerActions/lornecieOko'
-import { plonacySzal } from './PlayerActions/plonacySzal'
-import { sedzia } from './PlayerActions/sedzia'
-import { burmistrz } from './PlayerActions/burmistrz'
 import { Chat } from './Chat/Chat'
+import { gameStateMaker } from './gameUtils/gameStateMaker'
+import { gameFunctions } from './gameUtils/gameFunctions'
+import { playerButtons } from './gameUtils/playerButtons'
+import { playerActions, Actions } from './PlayerActions/playerActions'
 interface Props {
     socket: any;
 }
-
 export function Game(props:Props) {  
-    let playerActions:any = {
-        dziwka: dziwka,
-        pastor: pastor,
-        szeryf: szeryf,
-        opoj: opoj,
-        hazardzista: hazardzista,
-        hazardzistaKilling: hazardzistaKilling,
-        bandyciInspection: bandyciInspection,
-        bandyciStatue: bandyciStatue,
-        msciciel: msciciel,
-        zlodziej: zlodziej,
-        szuler: szuler,
-        wojownik: wojownik,
-        szamanka: szamanka,
-        szaman: szaman,
-        samotnyKojot: samotnyKojot,
-        lornecieOko: lornecieOko,
-        plonacySzal: plonacySzal,
-        indianieKilling: indianieKilling,
-        indianieStatue: indianieStatue,
-        szantazysta: szantazysta,
-        uwodziciel: uwodziciel,
-        kat: kat,
-        sedzia: sedzia,
-        burmistrz: burmistrz
-    }  
     let socket = props.socket;
-    function alivePlayers() {
-        let newArr = [];
-        for(let i = 0; i < allPlayers.length; i++) {
-            if(allPlayers[i].isAlive === true) newArr.push(allPlayers[i]);
-            
-        }
-        return newArr;
-    }
-    function aliveExceptMe() {
-        let newArr = [];
-        for(let i = 0; i < allPlayers.length; i++) {
-            if((allPlayers[i].isAlive === true) && (allPlayers[i].name !== myData.name)) newArr.push(allPlayers[i]);
-            
-        }
-        return newArr;
-
-    }
-    
-    function blank() {
-        return [];
-    }
     function Alert(props: AlertProps) {
         return <MuiAlert elevation={6} variant="filled" {...props} />;
     }   
+    const [gameState, setGameState] = useState(gameStateMaker);
     const [votesNumber, setVotesNumber] = useState({votes: 0, allVotes:0 })
-    const [myData, setMyData] = useState(templateFullInfoPlayer);
     const [allPlayers, setAllPlayers] = useState<Array<any>>([]);
     const [voteFunctionName, setVoteFunctionName] = useState<string>("MyTeamFree")
-    const [fullInfoPlayers, setFullInfoPlayers] = useState<Array<any>>([]);
     const [snackbarText, setSnackbarText] = useState("");
     const [snackbarType, setSnackbarType] = useState<"success" | "info" | "warning" | "error">("success");
-    function myTeamFree() {
-        let newArr = [];
-        for(let i = 0; i < fullInfoPlayers.length; i++) {
-            console.log("TEAM MEMBER:", fullInfoPlayers[i]);
-            if((fullInfoPlayers[i].isAlive === true) && (fullInfoPlayers[i].team === myData.team) && (fullInfoPlayers[i].name !== prison)) newArr.push(fullInfoPlayers[i]);
-        }
-        console.log("MY TEAM:", newArr)
-        return newArr;
-    }
-    const [isVote, setIsVote] = useState(false)
-    const [prison, setPrison] = useState("")
+    const [isVote, setIsVote] = useState(false);
     const [messages, setMessages] = useState<Array<any>>([]);
-    const [drunk, setDrunk] = useState("")
-    const [szulered, setSzulered] = useState("")
     const [whoseTurn, setWhoseTurn] = useState("");
     const [gameTime, setGameTime] = useState({dayTime: "night", dayNumber: 2})
     const [statueTeam, setStatueTeam] = useState("bandyci");
     const [chatActive, setChatActive] = useState(false);
+    const [alertArray, setAlertArray] = useState<Array<any>>([]);
     function renderChat() {
         if(chatActive) {
-            return <div><Chat messageList={messages} socket={socket} myName={myData.characterName}/></div>
+            return <div><Chat messageList={messages} socket={socket} myName={gameState.myData.characterName}/></div>
         }
         else return <></>
     }
@@ -144,91 +52,29 @@ export function Game(props:Props) {
         maxChosen: 2,
         callBack: (arg:any) => {}
     });
-    const [alertArray, setAlertArray] = useState<Array<any>>([]);
-    function actionButtons(){
-        if(whoseTurn === "Tura pojedynków")
-        return (
-            [{
-                text: "Wyzwij na pojedynek",
-                function: (name: string) => {socket.emit("duelInvite", myData.name, name); console.log("INVITE")},
-                isEnabled: true
-            }]
-        )
-        return (
-            [{
-                text: "Wyzwij na pojedynek",
-                function: (name: string) => {socket.emit("duelInvite", myData.name, name); console.log("INVITE")},
-                isEnabled: false
-            }]
-        )
-    } 
-    function specialButtons()  {
-        let specialButtons = []
-        if((myData.characterName === "sędzia") || (myData.characterName === "pijany sędzia") || (myData.characterName === "burmistrz")) {
-            specialButtons.push(
-                {
-                    id: myData.id,
-                    extraButtons: [{
-                        text: "Ujawnij się",
-                        function: (name: string) => {socket.emit("disclose", myData.characterName)},
-                        isEnabled: true
-                    }]
-                }
-            )
-        }
-        return specialButtons;
-    }
-    function killableExceptTeam() {
-        let newArr = [];
-        for(let i = 0; i < allPlayers.length; i++) {
-            let team = "X"
-            for(let j = 0; j < fullInfoPlayers.length; j++) {
-                if(fullInfoPlayers[j].name === allPlayers[i].name) {
-                    team = fullInfoPlayers[j].team;
-                }
-            }
-            if(myData.name === allPlayers[i].name) team = myData.team;
-            if((team !== myData.team) && (prison !== allPlayers[i].name) && (allPlayers[i].isAlive === true)) newArr.push(allPlayers[i]);
-        }
-        return newArr;
-    }
-    function aliveExceptTeam() {
-        let newArr = [];
-        for(let i = 0; i < allPlayers.length; i++) {
-            let team = ""
-            for(let j = 0; j < fullInfoPlayers.length; j++) {
-                if(fullInfoPlayers[j].name === allPlayers[i].name) {
-                    team = fullInfoPlayers[j].team;
-                }
-            }
-            if((team !== myData.team) && (allPlayers[i].isAlive === true)) newArr.push(allPlayers[i]);
-            return newArr;
-        }
-    }
-    let gameData = {
-        myData: myData,
-        setMyData: setMyData,
+    const gameData = useMemo(() => ({
+        myData: gameState.myData,
         allPlayers: allPlayers,
         setAllPlayers: setAllPlayers,
-        fullInfoPlayers: fullInfoPlayers,
-        setFullInfoPlayers: setFullInfoPlayers,
+        fullInfoPlayers: gameState.fullInfoPlayers,
         isVote: isVote,
         setIsVote: setIsVote,
         voteProps: voteProps,
         alertArray: alertArray,
         setAlertArray: setAlertArray,
         setVoteProps: setVoteProps,
-        alivePlayers: alivePlayers,
-        aliveExceptMe: aliveExceptMe,
-        myTeamFree: myTeamFree,
+        alivePlayers: gameFunctions.alivePlayers,
+        aliveExceptMe: gameFunctions.aliveExceptMe,
+        myTeamFree: gameFunctions.myTeamFree,
         voteFunctionName: voteFunctionName,
         setVoteFunctionName: setVoteFunctionName,
         turn: "",
         turnPlayer: "",
-        killableExceptTeam: killableExceptTeam,
-        aliveExceptTeam: aliveExceptTeam,
+        killableExceptTeam: gameFunctions.killableExceptTeam,
+        aliveExceptTeam: gameFunctions.aliveExceptTeam,
         actionCallBack: (arg:any) => {},
-    }
+    }), [gameState.myData, alertArray, allPlayers, gameState.fullInfoPlayers,
+         isVote, voteFunctionName, voteProps])
 
     gameData.actionCallBack = function (player:any) {
         if(player.length === 0) socket.emit("action", gameData.turnPlayer, {action: false, turn: gameData.turn})
@@ -240,15 +86,15 @@ export function Game(props:Props) {
     }
     useEffect(() => {
         socket.emit("Game loaded")
-        props.socket.on("Player data", (data: FullInfoPlayer) => {
-            setMyData(data);
+        socket.on("Player data", (data: FullInfoPlayer) => {
+            setGameState((prevState: GameState) => ({...prevState, myData: data}));
         })
         return () => {
             socket.off("Player data")
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
-        props.socket.on("snackbar", (type: "success" | "info" | "warning" | "error", text: string) => {
+        socket.on("snackbar", (type: "success" | "info" | "warning" | "error", text: string) => {
             console.log("SNACKBAR", text)
             setSnackbarType(type);
             setSnackbarText(text);
@@ -256,18 +102,18 @@ export function Game(props:Props) {
         return () => {
             socket.off("snackbar")
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
-        props.socket.on("votesNumber", (votes: number, allVotes: number) => {
+        socket.on("votesNumber", (votes: number, allVotes: number) => {
             console.log("GOT VOTES")
             setVotesNumber({votes: votes, allVotes: allVotes});
         })
         return () => {
             socket.off("votesNumber");
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
-        props.socket.on("message", (sender: string, text:string) => {
+        socket.on("message", (sender: string, text:string) => {
             setMessages((prevMessages) => {
                 let newArr = [...prevMessages];
                 newArr.push({sender: sender, text: text});
@@ -277,15 +123,15 @@ export function Game(props:Props) {
         return () => {
             socket.off("message")
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
-        props.socket.on("chatState", (state: boolean) => {
+        socket.on("chatState", (state: boolean) => {
             setChatActive(state);
         })
         return () => {
-            props.socket.off("chatState");
+            socket.off("chatState");
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
         socket.on("callVote", (id: string, type: string, voteData: any, chosenNumber?: any) => {
             if(type === "duel") {
@@ -322,7 +168,7 @@ export function Game(props:Props) {
         return () => {
             socket.off("callVote")
         }
-    })
+    }, [socket, gameData])
     useEffect(() => {
         socket.on("turnInfo", (arg:string) => {
             if(arg.substring(0,15) !== "Tura pojedynków") {
@@ -339,11 +185,11 @@ export function Game(props:Props) {
         return () => {
             socket.off("turnInfo")
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
         socket.on("fullInfoPlayers", (fullInfoArr: any) => {
-            setFullInfoPlayers((prevFull:any) => {
-                let newArr = [...prevFull];
+            setGameState((prevState: GameState) => {
+                let newArr = [...prevState.fullInfoPlayers];
                 for(let i = 0; i < fullInfoArr.length; i++) {
                     let newPlayer = {...fullInfoArr[i]};
                     let isUpdate = false;
@@ -356,13 +202,14 @@ export function Game(props:Props) {
                     }
                     if(isUpdate === false) newArr.push({...newPlayer});
                 }
-                return newArr;
-            });
+                console.log("NOWE FULLINFO", fullInfoArr);
+                return {...prevState, fullInfoPlayers: newArr};
+            })
         })
         return () => {
             socket.off("fullInfoPlayers")
         }
-    }, [])
+    }, [socket])
     useEffect (() => {
         socket.on("setTime", (number:number, time: "time") => {
             setGameTime({dayTime: time, dayNumber: number});
@@ -370,7 +217,7 @@ export function Game(props:Props) {
         return () => {
             socket.off("setTime");
         }
-    })
+    },[socket])
     useEffect(() => {
         socket.on("manualSkip", (turn:any, player:any) => {
             console.log("MANUAL SKIP")
@@ -383,7 +230,7 @@ export function Game(props:Props) {
         return () => {
             socket.off("manualSkip");
         }
-    },[alertArray,setAlertArray])
+    },[alertArray,setAlertArray, socket])
     useEffect(() => {
         socket.on("All players", (fullInfoArr: any) => {
             setAllPlayers((prevFull:any) => {
@@ -406,41 +253,41 @@ export function Game(props:Props) {
         return () => {
             socket.off("All players")
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
-            socket.on("start", (turn: string, player: string, data?: any) => {
+            socket.on("start", (turn: any, player: string, data?: any) => {
                 gameData.turn = turn;
                 gameData.turnPlayer = player;
                 console.log(turn, "TURN")
-                if(player === myData.characterName) {
+                if(player === gameState.myData.characterName) {
                     if(data === undefined)
-                    playerActions[turn](socket, io, gameData)
+                    playerActions[turn as keyof(Actions)](socket, io, gameData);
                     else 
-                    playerActions[turn](socket, io, gameData, data)
+                    playerActions[turn as keyof(Actions)](socket, io, gameData, data);
                 }
             })
             return () => {
                 socket.off("start");
             }
 
-    },[gameData])
+    },[gameData, socket, gameState.myData.characterName])
     useEffect(() => {
         socket.on("prison", (player: string) => {
             console.log("PRISON", player)
-            setPrison(player);
+            setGameState((prevState) => ({...prevState, prison: player}));
         })
         return () => {
             socket.off("prison");
         }
-    }, [prison, setPrison])
+    }, [gameState.prison, socket])
     useEffect(() => {
         socket.on("drunk", (player: string) => {
-            setDrunk(player);
+            setGameState((prevState) => ({...prevState, drunk: player}));
         })
         return () => {
             socket.off("drunk");
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
         socket.on("statueTeam", (team: string) => {
             setStatueTeam(team);
@@ -448,17 +295,17 @@ export function Game(props:Props) {
         return () => {
             socket.off("statueTeam");
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
         socket.on("szulered", (player: string) => {
-            setSzulered(player);
+            setGameState((prevState) => ({...prevState, szulered: player}));
         })
         return () => {
             socket.off("szulered");
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
-        props.socket.on("alert", (props: any) => {
+        socket.on("alert", (props: any) => {
             console.log("ALERT", props)
             setAlertArray((prevArr) => {
                 let newArr = [...prevArr];
@@ -467,9 +314,9 @@ export function Game(props:Props) {
             });
         })
         return () => {
-            props.socket.off("alert")
+            socket.off("alert")
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
         socket.on("voteResults", (type: string, results: any) => {
             console.log("GOT RESULTS")
@@ -489,15 +336,16 @@ export function Game(props:Props) {
         return () => {
             socket.off("voteResults");
         }
-    })
+    }, [socket, gameData])
 
     function vote(voteState: boolean) {
         let s:any = []        
-        if(voteFunctionName === "myTeamFree") s = myTeamFree()
+        if(voteFunctionName === "myTeamFree") s = gameFunctions.myTeamFree(gameState)
         if(voteFunctionName === "voteProps") s = voteProps.votedObjects
-        if(voteFunctionName === "aliveExceptMe") s = aliveExceptMe()
-        if(voteFunctionName === "killableExceptTeam") s = killableExceptTeam();
-        if(voteFunctionName === "aliveExceptTeam") s = aliveExceptTeam();
+        if(voteFunctionName === "aliveExceptMe") s = gameFunctions.aliveExceptMe(gameState);
+        if(voteFunctionName === "killableExceptTeam") s = gameFunctions.killableExceptTeam(gameState);
+        if(voteFunctionName === "aliveExceptTeam") s = gameFunctions.aliveExceptTeam(gameState);
+        console.log("FUNKCJA W VOTE", voteFunctionName, gameFunctions.myTeamFree(gameState), gameState.fullInfoPlayers);
         if(voteState === true) return (
             <VotingInterface 
                 optionList = {voteProps.optionList}
@@ -508,7 +356,7 @@ export function Game(props:Props) {
                 minChosen={voteProps.minChosen}
                 maxChosen={voteProps.maxChosen}
                 callBack={voteProps.callBack}
-                fullInfoPlayers={fullInfoPlayers}
+                fullInfoPlayers={gameState.fullInfoPlayers}
                 setIsVote={setIsVote}
                 voteState={voteProps.voteState}
             />
@@ -519,7 +367,7 @@ export function Game(props:Props) {
     }
     return (
         <div className="game">
-                <GameState whoseTurn={whoseTurn} gameTime={gameTime} whoHasStatue={statueTeam}/>
+                <GameInfo whoseTurn={whoseTurn} gameTime={gameTime} whoHasStatue={statueTeam}/>
                 <RequestAlertList socket={socket} alertArray={alertArray} setAlertArray={setAlertArray} gameData={gameData}/>
                 {renderChat()}
                 {vote(isVote)}
@@ -527,15 +375,15 @@ export function Game(props:Props) {
                     socket={socket}
                     players={allPlayers}
                     crewmates={[]}
-                    disclosedPlayers={fullInfoPlayers}
+                    disclosedPlayers={gameState.fullInfoPlayers}
                     duelFunction={() => {}}
                     inspectionFunction={() => {}}
-                    extraButtons={actionButtons()}
-                    specialButtons={specialButtons()}
-                    myData={myData}
-                    prison={prison}
-                    drunk={drunk}
-                    szulered={szulered}
+                    extraButtons={playerButtons.actionButtons(gameState, socket)}
+                    specialButtons={playerButtons.specialButtons(gameState, socket)}
+                    myData={gameState.myData}
+                    prison={gameState.prison}
+                    drunk={gameState.drunk}
+                    szulered={gameState.szulered}
                 />
                 <Snackbar open={snackbarText === "" ? false : true} autoHideDuration={3000} onClose={() => setSnackbarText("")}>
                     <Alert onClose={() => setSnackbarText("")} severity={snackbarType}>

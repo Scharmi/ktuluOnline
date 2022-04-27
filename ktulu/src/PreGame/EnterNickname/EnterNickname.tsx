@@ -17,9 +17,6 @@ export function EnterNickname(props: Props) {
     function Alert(props: AlertProps) {
         return <MuiAlert elevation={6} variant="filled" {...props} />;
       }      
-    function handleClose1() {
-        setOpen(false);
-    }
     function handleClose2() {
         setOpen(false);
     }

@@ -1,13 +1,5 @@
-import { useState } from 'react'
 import { RequestAlert } from './RequestAlert'
 import './RequestAlertList.css'
-import { Button } from '@material-ui/core'
-import { useEffect } from 'react';
-interface requestAlertProps {
-    alertProps: any;
-    callbackYes?: Function;
-    callBackNo?: Function;
-}
 interface Props {
     socket: any;
     alertArray: any;

@@ -4,16 +4,16 @@ import { FullInfoPlayer } from '../interfaces/interfaces'
 import { 
         templateCrewmates, 
         templateAdminActionButtons,
-        templateGameState,
+        templateGameInfo,
         templateAdminData
 } from './templates/templates'
 import { VotingInterface } from './VotingInterface/VotingInterface'
 import { PlayerTable } from './PlayerTable/PlayerTable'
 import { RequestAlertList } from './RequestAlert/RequestAlertList'
-import { GameState } from './GameState/GameState'
+import { GameInfo } from './GameInfo/GameInfo'
 import { Paper } from '@material-ui/core'
 import { Button } from '@material-ui/core'
-import { GameStateSetter } from './AdminViewComponents/GameStateSetter/GameStateSetter'
+import { GameInfoSetter } from './AdminViewComponents/GameInfoSetter/GameInfoSetter'
 import './AdminView.css'
 import { transmitter } from './CharacterActions/transmitter'
 import { Chat } from './Chat/Chat'
@@ -383,7 +383,7 @@ export function AdminView(props:Props) {
     return (
         <div className="adminView">
             <Paper elevation={4}>
-                <GameState whoseTurn={whoseTurn} gameTime={gameTime} whoHasStatue={statueTeam}/>
+                <GameInfo whoseTurn={whoseTurn} gameTime={gameTime} whoHasStatue={statueTeam}/>
                 {vote(isVote)}
                 <RequestAlertList socket={socket} alertArray={alertArray} setAlertArray={setAlertArray} gameData={gameData}/>
                 <div><Chat messageList={messages} socket={socket} myName={""}/></div>

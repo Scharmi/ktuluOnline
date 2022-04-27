@@ -4,7 +4,7 @@ function server() {
   var admin = require('./Admin/Admin')
   const { reconnectDataSend } = require('./reconnect/reconnectDataSend')
   const gameDataGenerator = require('./GameData/gameData.js')
-  const prod = true
+  const prod = false
   const e = require('cors');
   const sslOptions = {};
   if(prod) {

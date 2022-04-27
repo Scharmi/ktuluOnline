@@ -1,5 +1,3 @@
-import { truncate } from "fs";
-
 export const templateCrewmates = [
     {
         id: 23,
@@ -290,7 +288,7 @@ export const templateSpecialButtons = [
         ]
     }
 ]
-export const templateGameState = {
+export const templateGameInfo = {
     gameTime: {
         dayNumber: 3,
         dayTime: "night",

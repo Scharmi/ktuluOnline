@@ -37,7 +37,7 @@ export function PlayerCard(props: Props) {
     function szuleredIcon() {
         if(props.szulered !== undefined) {
             if(props.szulered === true) {
-                return <img src={szulerImage}  className="szuler"/>
+                return <img src={szulerImage} alt="Szuler" className="szuler"/>
             }
             return "";
         }
