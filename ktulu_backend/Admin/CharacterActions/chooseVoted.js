@@ -1,5 +1,5 @@
 exports.chooseVoted = function(socket, io, gameData) {
-    io.to("admin").emit("fullInfoPlayers", gameData.allFullInfoPlayers);
+    io.sendData("admin", "fullInfoPlayers", gameData.allFullInfoPlayers)
     io.to("admin").emit("chooseVoted");
     socket.on("votedPlayers", (votedPlayers) => {
         gameData.votedPlayers = votedPlayers;

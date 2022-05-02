@@ -36,7 +36,6 @@ export function GameInfoSetter(props: Props) {
         let newState = {...state};
         newState.gameTime = JSON.parse(event.target.value as string)
         setState(newState)
-        console.log(newState);
     };        
     let dayOrNight = (props.GameInfo.gameTime.dayTime === "day") ? 1 : 0;
     let timeValue = 2 * props.GameInfo.gameTime.dayNumber + dayOrNight;

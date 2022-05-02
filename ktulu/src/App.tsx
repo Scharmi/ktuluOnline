@@ -14,7 +14,6 @@ const socket = io(address ,{
 });
 function App() {
   const [gameState, setGameState] = useState("pregame")
-  console.log("APP RENDER", gameState)
     if(gameState === "pregame")
     return (
       <div className="App">

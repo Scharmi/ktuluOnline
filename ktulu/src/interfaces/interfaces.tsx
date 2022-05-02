@@ -1,17 +1,4 @@
 import React from 'react'
-export interface AlivePlayer {
-    username: String;
-    userId?: Number;
-    playerId: Number;
-    exposedCharacter?: String;
-}
-export interface DeadPlayer {
-    username: String;
-    userId?: Number;
-    characterId: Number;
-    name: String;
-    team: String;
-}
 export interface Player {
     id: number;
     name: string;
@@ -30,7 +17,6 @@ export interface GameState {
     drunk: string;
     szulered: string;
     voteFunctionName: string;
-    allPlayers: Array<any>
     myData: FullInfoPlayer;
     isVote: boolean;
     messages: Array<any>
@@ -39,4 +25,16 @@ export interface GameState {
     votesNumber: any;
     chatActive: boolean;
     whoseTurn: string;
+    allPlayers: Array<Player>;
+    alerts: Array<any>;
+    statueTeam: string;
+}
+export interface HandlebackendData {
+    fullInfoPlayers: Function;
+    allPlayers: Function;
+    prison: Function;
+    szulered: Function;
+    drunk: Function;
+    alert: Function;
+    manualSkip: Function;
 }

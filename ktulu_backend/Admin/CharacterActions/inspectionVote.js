@@ -11,7 +11,7 @@ exports.inspectionVote = function(socket, io, gameData, voteOptions) {
             let newArr = [...gameData.inspected];
             newArr = [...newArr, ...voteOptions];
             gameData.inspected = [...newArr];
-            io.to("admin").emit("alert", {type: "inspectionEnd"});
+            io.sendData("admin", "alert", {type: "inspectionEnd"});
         }
         else {
             for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
@@ -71,7 +71,7 @@ exports.inspectionVote = function(socket, io, gameData, voteOptions) {
                     io.to("everyone").emit("voteResults", "inspection", sendVotes);
                     console.log(nextVoteOptions)
                     if((nextVoteOptions.length !== 0) && (nextVoteOptions.length !== voteOptions.length)) {
-                        io.to("admin").emit("alert", {type: "nextVote"});
+                        io.sendData("admin", "alert", {type: "nextVote"});
                         gameData.nextVote = true;
                         socket.once("nextVote", () => {
                             gameData.nextVote = false;
@@ -79,7 +79,7 @@ exports.inspectionVote = function(socket, io, gameData, voteOptions) {
                         })
                     }
                     else {
-                        io.to("admin").emit("alert", {type: "inspectionEnd"});
+                        io.sendData("admin", "alert", {type: "inspectionEnd"});
                     }
                 }
                 else {

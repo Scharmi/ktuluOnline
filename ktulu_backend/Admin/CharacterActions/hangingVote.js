@@ -44,7 +44,7 @@ exports.hangingVote = function(socket, io, gameData, voteOptions) {
             socket.once("disclose", discloseAction);
             if(!gameData.disclosed.includes("burmistrz"))
             io.to("burmistrz").emit("snackbar", "warning", "Jeśli chcesz ułaskawić wieszanego gracza, ujawnij się teraz");
-            io.to("admin").emit("alert", {type: "hangingEnd", p1: gameData.hanged});
+            io.sendData("admin", "alert", {type: "hangingEnd", p1: gameData.hanged});
             gameData.alertHanging = true;
         }
         else {
@@ -103,7 +103,7 @@ exports.hangingVote = function(socket, io, gameData, voteOptions) {
                     io.to("everyone").emit("voteResults", "hanging", sendVotes);
                     console.log(nextVoteOptions)
                     if((nextVoteOptions.length !== 0) && (nextVoteOptions.length !== voteOptions.length)) {
-                        io.to("admin").emit("alert", {type: "nextVote"});
+                        io.sendData("admin", "alert", {type: "nextVote"});
                         gameData.nextVote = true;
                         socket.once("nextVote", () => {
                             gameData.nextVote = false;
@@ -114,7 +114,7 @@ exports.hangingVote = function(socket, io, gameData, voteOptions) {
                         socket.once("disclose", discloseAction);
                         if(!gameData.disclosed.includes("burmistrz"))
                         io.to("burmistrz").emit("snackbar", "warning", "Jeśli chcesz ułaskawić wieszanego gracza, ujawnij się teraz");
-                        io.to("admin").emit("alert", {type: "hangingEnd", p1: gameData.hanged});
+                        io.sendData("admin", "alert", {type: "hangingEnd", p1: gameData.hanged});
                         gameData.alertHanging = true;
                     }
                 }

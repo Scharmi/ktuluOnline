@@ -38,7 +38,7 @@ export function AdminView(props:Props) {
     const [szulered, setSzulered] = useState("")
     const [whoseTurn, setWhoseTurn] = useState("");
     const [gameTime, setGameTime] = useState({dayTime: "night", dayNumber: 2})
-    const [statueTeam, setStatueTeam] = useState("XD");
+    const [statueTeam, setStatueTeam] = useState("");
     const [votesNumber, setVotesNumber] = useState({votes: 0, allVotes:0 })
     const [remainingVoters, setRemainingVoters] = useState<Array<string>>([]);
     const [voteState, setVoteState] = useState("choosing");
@@ -385,7 +385,7 @@ export function AdminView(props:Props) {
             <Paper elevation={4}>
                 <GameInfo whoseTurn={whoseTurn} gameTime={gameTime} whoHasStatue={statueTeam}/>
                 {vote(isVote)}
-                <RequestAlertList socket={socket} alertArray={alertArray} setAlertArray={setAlertArray} gameData={gameData}/>
+                <RequestAlertList socket={socket} alertArray={alertArray} setGameState={setAlertArray} gameData={gameData}/>
                 <div><Chat messageList={messages} socket={socket} myName={""}/></div>
                 <h2>Gracze biorący udział w rozgrywce:</h2>
                 <PlayerTable

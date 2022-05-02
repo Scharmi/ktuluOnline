@@ -4,7 +4,7 @@ export function szeryf(socket: any, io: any, gameData: any) {
         gameData.setVoteProps({
             type: "szeryf",
             optionList: [],
-            votedObjects: gameData.aliveExceptMe(),
+            votedObjects: gameData.aliveExceptMe(gameData.gameState),
             votes: 0,
             allVotes: 0,
             minChosen: 1, voteState: "choosing",

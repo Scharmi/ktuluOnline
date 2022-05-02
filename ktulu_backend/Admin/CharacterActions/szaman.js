@@ -13,7 +13,7 @@ exports.szaman = function(socket, io, gameData) {
             if(indianie[i].characterName !== gameData.prison)
                 if(!gameData.drunk.includes(indianie[i].characterName))
                     if(indianie[i].isAlive === true)
-                        io.to(indianie[i].characterName).emit("alert", {type:"default", header: "Szaman sprawdził kartę gracza " + playerName, bottomText: "Jego postać to " + characterName})
+                        io.sendData(indianie[i].characterName, "alert", {type:"default", header: "Szaman sprawdził kartę gracza " + playerName, bottomText: "Jego postać to " + characterName});
         }
     }
     io.to("admin").emit("end", gameData.stageName);

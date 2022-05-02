@@ -39,7 +39,6 @@ export function Chat(props: Props) {
         props.socket.emit("message", props.myName, text)
         setText("")
     }
-    console.log("XD", MessageList(props.messageList));
     return (
         <div className="wrapper">
             <div>

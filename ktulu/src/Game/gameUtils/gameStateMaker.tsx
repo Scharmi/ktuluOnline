@@ -4,7 +4,6 @@ import * as Interfaces from '../../interfaces/interfaces'
 export const gameStateMaker = {
     drunk: "",
     szulered: "",
-    voteFunctionName: "MyTeamFree",
     allPlayers: [],
     myData: templateFullInfoPlayer,
     isVote: false,
@@ -13,5 +12,8 @@ export const gameStateMaker = {
     fullInfoPlayers: [],
     votesNumber: {votes: 0, allVotes: 0},
     chatActive: false,
-    whoseTurn: ""
+    voteFunctionName: "MyTeamFree",
+    whoseTurn: "",
+    alerts: [],
+    statueTeam: "bandyci"
 } as Interfaces.GameState;

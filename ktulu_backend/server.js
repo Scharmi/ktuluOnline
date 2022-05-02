@@ -65,6 +65,12 @@ function server() {
   };
   //hash: 3174880
   console.log(gameData.gameStage)
+  io.sendData = ((reciever, type, object) => {
+    console.log("Reciever: ", reciever);
+    console.log("Type: ", type);
+    console.log("Object: ",object);
+    io.to(reciever).emit("backendData", type, object);
+  });
   io.on("connection", (socket) => {
     socket.reconnect = false;
     socket.join("everyone")

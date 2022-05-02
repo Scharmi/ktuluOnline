@@ -1,29 +1,5 @@
 const { transmitter } = require("./PlayerActions/transmitter")
 exports.game = function(socket, io, gameData) {
-
-    /*function removePlayer(player) {
-        for( var i = 0; i < gameData.playersArray.length; i++){                
-            if ( playersArray[i].id === player) { 
-                playersArray.splice(i,1);
-                i--; 
-            }
-        }
-        for( var i = 0; i < gameData.allFullInfoPlayers.length; i++){                
-            if ( allFullInfoPlayers[i].id === player) { 
-                allFullInfoPlayers.splice(i,1);
-                i--; 
-            }
-        }
-    }
-    function removeCharacter(id) {
-        console.log("remove", gameData.chosenCharacters)
-        for( var i = 0; i < gameData.chosenCharacters.length; i++){                
-            if ( gameData.chosenCharacters[i].id === id) { 
-                gameData.chosenCharacters.splice(i,1);
-                i--; 
-            }
-        }
-    }*/
     socket.basicData = new Object();
     socket.basicData.name = socket.name
     socket.basicData.id = gameData.namesArray.indexOf(socket.name);
@@ -43,9 +19,9 @@ exports.game = function(socket, io, gameData) {
     io.to("admin").emit("reconnection", socket.name);
     if(!socket.reconnect)
     gameData.allFullInfoPlayers.push(socket.myData)
-    io.to(socket.myData.id).emit("Player data", socket.myData)
-    io.to(socket.myData.id).emit("prison", gameData.prison)
-    io.to("allPlayers").emit("All players", gameData.playersArray);
+    io.sendData(socket.myData.id, "myData", socket.myData);
+    io.sendData(socket.myData.id, "prison", gameData.prison);
+    io.sendData("everyone", "allPlayers", gameData.playersArray);
     io.to("admin").emit("Full Players Info", gameData.allFullInfoPlayers, gameData.namesArray);
     transmitter(socket, io, gameData);
 }

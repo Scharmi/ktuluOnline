@@ -3,6 +3,6 @@ exports.pastor = function(socket, io, gameData) {
             for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
                 if(gameData.allFullInfoPlayers[i].name === gameData.actionObject.player[0].text) playerIndex = i;
             }
-            io.to("pastor").emit("alert", {team: gameData.allFullInfoPlayers[playerIndex].team, name: gameData.allFullInfoPlayers[playerIndex].name, type: "pastor"});
+            io.sendData("pastor", "alert", {team: gameData.allFullInfoPlayers[playerIndex].team, name: gameData.allFullInfoPlayers[playerIndex].name, type: "pastor"})
             io.to("admin").emit("end", gameData.stageName);
 }

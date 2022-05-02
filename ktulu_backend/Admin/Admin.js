@@ -36,7 +36,6 @@ const { bandyciChatDisable  } = require("./CharacterActions/bandyciChatDisable")
 exports.admin = function(socket, io, gameData, server) {
     for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
         if(gameData.allFullInfoPlayers[i].characterName === "pijany sędzia") {
-            console.log("SĘDZIA PIJANY")
             gameData.turnCharacter.opoj = "pijany sędzia";
             gameData.turnInfo.opoj = "pijany sędzia";
         }
@@ -82,8 +81,8 @@ exports.admin = function(socket, io, gameData, server) {
         console.log("GAME OVER1", team)
         if(gameData.isGameOver === false) {
             console.log("GAME OVER", team)
-            io.to("everyone").emit("fullInfoPlayers", gameData.allFullInfoPlayers);
-            io.to("everyone").emit("alert", {type:"default", header: team + " wygrali"})
+            io.sendData("everyone", "fullInfoPlayers", gameData.allFullInfoPlayers);
+            io.sendData("everyone", "alert", {type:"default", header: team + " wygrali"});
             gameData.isGameOver = true;
             io.to("admin").emit("GAME OVER")
         }
@@ -94,16 +93,16 @@ exports.admin = function(socket, io, gameData, server) {
             for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
                 if( gameData.allFullInfoPlayers[i].characterName === characterName) {
                   gameData.allFullInfoPlayers[i].isAlive = false;
-                  io.to("everyone").emit("fullInfoPlayers", [gameData.allFullInfoPlayers[i]]);
+                  io.sendData("everyone", "fullInfoPlayers", [gameData.allFullInfoPlayers[i]]);
                 }
               }
               for(let i = 0; i < gameData.playersArray.length; i++) {
                 if( gameData.playersArray[i].name === gameData.characterNick(characterName)) {
                   gameData.playersArray[i].isAlive = false;
-                  io.to("everyone").emit("All players", [gameData.allFullInfoPlayers[i]]);
+                  io.sendData("everyone", "allPlayers", [gameData.allFullInfoPlayers[i]]);
                 }
               }
-              io.to(characterName).emit("fullInfoPlayers", gameData.allFullInfoPlayers)
+              io.sendData(characterName, "fullInfoPlayers", gameData.allFullInfoPlayers);
               let indiansWon = true;
               for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
                 if((gameData.allFullInfoPlayers[i].team !== "indianie") && (gameData.allFullInfoPlayers[i].isAlive)) indiansWon = false;
@@ -116,7 +115,7 @@ exports.admin = function(socket, io, gameData, server) {
     }
     gameData.setStatueTeam = function(characterName) {
         gameData.statue = characterName;
-        io.to("everyone").emit("statueTeam", gameData.statueTeam())
+        io.sendData("everyone", "statueTeam", gameData.statueTeam());
         io.to("everyone").emit("snackbar", "warning", gameData.statueTeam() + " przejęli posążek")
         if(gameData.statueTeam() === "indianie") {
             gameData.shiftTurn("plonacySzal")
@@ -129,7 +128,7 @@ exports.admin = function(socket, io, gameData, server) {
     socket.on("disclose", (character) => {
         let name = gameData.characterNick(character);
         let player = gameData.playerProps(name);
-        io.to("everyone").emit("fullInfoPlayers", [player])
+        io.sendData("everyone", "fullInfoPlayers", [player]);
     })
     io.to("admin").emit("Full Players Info", gameData.allFullInfoPlayers, gameData.namesArray);
     function runStage(counter, gameData) {
@@ -137,13 +136,13 @@ exports.admin = function(socket, io, gameData, server) {
             io.to("everyone").emit("callVote", -1 , "no", []);
         }
         if(counter < gameData.gameStages.length) {
-            io.to("admin").emit("statueTeam", gameData.statue)
+            io.sendData("admin", "statueTeam", gameData.statue)
             for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
                 if((gameData.allFullInfoPlayers[i].team === gameData.statueTeam()) && (gameData.knowsTeammates.includes(gameData.allFullInfoPlayers[i].characterName))) {
-                    io.to(gameData.allFullInfoPlayers[i].characterName).emit("statueTeam", gameData.characterNick(gameData.statue))
+                    io.sendData(gameData.allFullInfoPlayers[i].characterName, "statueTeam", gameData.characterNick(gameData.statue));
                 }
                 else {
-                    io.to(gameData.allFullInfoPlayers[i].characterName).emit("statueTeam", gameData.statueTeam())
+                    io.sendData(gameData.allFullInfoPlayers[i].characterName, "statueTeam", gameData.statueTeam());
                 }
             }
             if(counter === gameData.gameStages.length - 1) {
@@ -199,18 +198,18 @@ exports.admin = function(socket, io, gameData, server) {
             }
             if(gameData.isTurnPlaying(stageName) === "play") {
                 gameData.activePlayerName = activePlayer;
-                io.to(activePlayer).emit("All players", gameData.playersArray);
+                io.sendData(activePlayer, "allPlayers", gameData.playersArray);
                 io.to(activePlayer).emit("start", gameData.turn, activePlayer);
                 listenToAction();
             }
             if(gameData.isTurnPlaying(stageName) === "simulatePrison") {
                 gameData.simulatePlayer = simulatePlayer;
-                io.to(simulatePlayer).emit("manualSkip", gameData.turn, simulatePlayer);
+                io.sendData(simulatePlayer, "manualSkip", {turn: gameData.turn, player: simulatePlayer});
                 listenToEnd();
             }
             if(gameData.isTurnPlaying(stageName) === "simulateUsedSkill") {
                 gameData.simulatePlayer = simulatePlayer;
-                io.to(simulatePlayer).emit("manualSkip", gameData.turn, simulatePlayer);
+                io.sendData(simulatePlayer, "manualSkip", {turn: gameData.turn, player: simulatePlayer});
                 listenToEnd();
             }
             if(gameData.isTurnPlaying(stageName) === "nonActionTurn") {
@@ -257,7 +256,7 @@ exports.admin = function(socket, io, gameData, server) {
                 }
             }
             if(gameData.playingCharacter === player.characterName) {
-                io.to(player.characterName).emit("All players", gameData.playersArray);
+                io.sendData(player.characterName, "allPlayers", gameData.playersArray);
                 io.to(player.characterName).emit("start", gameData.turn, gameData.playingCharacter);
             }
 

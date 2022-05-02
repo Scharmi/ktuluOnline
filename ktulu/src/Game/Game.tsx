@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import { FullInfoPlayer, GameState } from '../interfaces/interfaces'
+import { GameState, HandlebackendData } from '../interfaces/interfaces'
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import { VotingInterface } from './VotingInterface/VotingInterface'
 import { PlayerTable } from './PlayerTable/PlayerTable'
@@ -13,6 +13,7 @@ import { Chat } from './Chat/Chat'
 import { gameStateMaker } from './gameUtils/gameStateMaker'
 import { gameFunctions } from './gameUtils/gameFunctions'
 import { playerButtons } from './gameUtils/playerButtons'
+import { handleBackendData } from './gameUtils/handleBackendData';
 import { playerActions, Actions } from './PlayerActions/playerActions'
 interface Props {
     socket: any;
@@ -22,9 +23,8 @@ export function Game(props:Props) {
     function Alert(props: AlertProps) {
         return <MuiAlert elevation={6} variant="filled" {...props} />;
     }   
-    const [gameState, setGameState] = useState(gameStateMaker);
+    const [gameState, setGameState] = useState<GameState>(gameStateMaker);
     const [votesNumber, setVotesNumber] = useState({votes: 0, allVotes:0 })
-    const [allPlayers, setAllPlayers] = useState<Array<any>>([]);
     const [voteFunctionName, setVoteFunctionName] = useState<string>("MyTeamFree")
     const [snackbarText, setSnackbarText] = useState("");
     const [snackbarType, setSnackbarType] = useState<"success" | "info" | "warning" | "error">("success");
@@ -32,9 +32,7 @@ export function Game(props:Props) {
     const [messages, setMessages] = useState<Array<any>>([]);
     const [whoseTurn, setWhoseTurn] = useState("");
     const [gameTime, setGameTime] = useState({dayTime: "night", dayNumber: 2})
-    const [statueTeam, setStatueTeam] = useState("bandyci");
     const [chatActive, setChatActive] = useState(false);
-    const [alertArray, setAlertArray] = useState<Array<any>>([]);
     function renderChat() {
         if(chatActive) {
             return <div><Chat messageList={messages} socket={socket} myName={gameState.myData.characterName}/></div>
@@ -53,15 +51,14 @@ export function Game(props:Props) {
         callBack: (arg:any) => {}
     });
     const gameData = useMemo(() => ({
+        gameState: gameState,
         myData: gameState.myData,
-        allPlayers: allPlayers,
-        setAllPlayers: setAllPlayers,
+        allPlayers: gameState.allPlayers,
         fullInfoPlayers: gameState.fullInfoPlayers,
         isVote: isVote,
         setIsVote: setIsVote,
         voteProps: voteProps,
-        alertArray: alertArray,
-        setAlertArray: setAlertArray,
+        alerts: gameState.alerts,
         setVoteProps: setVoteProps,
         alivePlayers: gameFunctions.alivePlayers,
         aliveExceptMe: gameFunctions.aliveExceptMe,
@@ -73,7 +70,7 @@ export function Game(props:Props) {
         killableExceptTeam: gameFunctions.killableExceptTeam,
         aliveExceptTeam: gameFunctions.aliveExceptTeam,
         actionCallBack: (arg:any) => {},
-    }), [gameState.myData, alertArray, allPlayers, gameState.fullInfoPlayers,
+    }), [gameState,
          isVote, voteFunctionName, voteProps])
 
     gameData.actionCallBack = function (player:any) {
@@ -86,16 +83,9 @@ export function Game(props:Props) {
     }
     useEffect(() => {
         socket.emit("Game loaded")
-        socket.on("Player data", (data: FullInfoPlayer) => {
-            setGameState((prevState: GameState) => ({...prevState, myData: data}));
-        })
-        return () => {
-            socket.off("Player data")
-        }
     }, [socket])
     useEffect(() => {
         socket.on("snackbar", (type: "success" | "info" | "warning" | "error", text: string) => {
-            console.log("SNACKBAR", text)
             setSnackbarType(type);
             setSnackbarText(text);
         })
@@ -105,7 +95,6 @@ export function Game(props:Props) {
     }, [socket])
     useEffect(() => {
         socket.on("votesNumber", (votes: number, allVotes: number) => {
-            console.log("GOT VOTES")
             setVotesNumber({votes: votes, allVotes: allVotes});
         })
         return () => {
@@ -135,15 +124,14 @@ export function Game(props:Props) {
     useEffect(() => {
         socket.on("callVote", (id: string, type: string, voteData: any, chosenNumber?: any) => {
             if(type === "duel") {
-                setAlertArray((prevArr) => {
-                    let newArr = [...prevArr];
+                setGameState((prevState) => {
+                    let newArr = [...prevState.alerts];
                     for(let i = 0; i < newArr.length; i++) {
                         if(newArr[i].type === "duelInvite") newArr.splice(i,1);
                     }
-                    return newArr;
+                    return {...prevState, alerts: newArr};
                 })
             }
-            
             function voteCallBack(options:any) {
                 console.log("VOTED", gameData.myData)
                 socket.emit("vote", gameData.myData.characterName, id, options);
@@ -172,13 +160,14 @@ export function Game(props:Props) {
     useEffect(() => {
         socket.on("turnInfo", (arg:string) => {
             if(arg.substring(0,15) !== "Tura pojedynków") {
-                setAlertArray((prevArr) => {
-                    let newArr = [...prevArr];
+                setGameState((prevState) => {
+                    let newArr = [...prevState.alerts];
                     for(let i = 0; i < newArr.length; i++) {
                         if(newArr[i].type === "duelInvite") newArr.splice(i,1);
                     }
-                    return newArr;
+                    return {...prevState, alerts: newArr};
                 })
+                
             }
             setWhoseTurn(arg);
         })
@@ -187,29 +176,14 @@ export function Game(props:Props) {
         }
     }, [socket])
     useEffect(() => {
-        socket.on("fullInfoPlayers", (fullInfoArr: any) => {
-            setGameState((prevState: GameState) => {
-                let newArr = [...prevState.fullInfoPlayers];
-                for(let i = 0; i < fullInfoArr.length; i++) {
-                    let newPlayer = {...fullInfoArr[i]};
-                    let isUpdate = false;
-                    for(let j = 0; j < newArr.length; j++) {
-                        if(newArr[j].name === newPlayer.name) {
-                            isUpdate = true;
-                            newArr[j] = {...newPlayer};
-                            break;
-                        }
-                    }
-                    if(isUpdate === false) newArr.push({...newPlayer});
-                }
-                console.log("NOWE FULLINFO", fullInfoArr);
-                return {...prevState, fullInfoPlayers: newArr};
-            })
-        })
+        socket.on("backendData", (type: string, object: any) => {
+            console.log("GOT BACKEND INFO", type, object, gameState)
+            handleBackendData[type as keyof(HandlebackendData)](gameState, setGameState, object);
+        });
         return () => {
-            socket.off("fullInfoPlayers")
+            socket.off("backendData")
         }
-    }, [socket])
+    }, [socket, gameState])
     useEffect (() => {
         socket.on("setTime", (number:number, time: "time") => {
             setGameTime({dayTime: time, dayNumber: number});
@@ -218,42 +192,6 @@ export function Game(props:Props) {
             socket.off("setTime");
         }
     },[socket])
-    useEffect(() => {
-        socket.on("manualSkip", (turn:any, player:any) => {
-            console.log("MANUAL SKIP")
-            setAlertArray((prevArr:any) => {
-                let newArr = [...prevArr];
-                newArr.push({type:"turnSkip", name: player, turn: turn})
-                return newArr;
-            });
-        })
-        return () => {
-            socket.off("manualSkip");
-        }
-    },[alertArray,setAlertArray, socket])
-    useEffect(() => {
-        socket.on("All players", (fullInfoArr: any) => {
-            setAllPlayers((prevFull:any) => {
-                let newArr = [...prevFull];
-                for(let i = 0; i < fullInfoArr.length; i++) {
-                    let newPlayer = {...fullInfoArr[i]};
-                    let isUpdate = false;
-                    for(let j = 0; j < newArr.length; j++) {
-                        if(newArr[j].name === newPlayer.name) {
-                            isUpdate = true;
-                            newArr[j] = {...newPlayer};
-                            break;
-                        }
-                    }
-                    if(isUpdate === false) newArr.push({...newPlayer});
-                }
-                return newArr;
-            });
-        })
-        return () => {
-            socket.off("All players")
-        }
-    }, [socket])
     useEffect(() => {
             socket.on("start", (turn: any, player: string, data?: any) => {
                 gameData.turn = turn;
@@ -270,56 +208,9 @@ export function Game(props:Props) {
                 socket.off("start");
             }
 
-    },[gameData, socket, gameState.myData.characterName])
-    useEffect(() => {
-        socket.on("prison", (player: string) => {
-            console.log("PRISON", player)
-            setGameState((prevState) => ({...prevState, prison: player}));
-        })
-        return () => {
-            socket.off("prison");
-        }
-    }, [gameState.prison, socket])
-    useEffect(() => {
-        socket.on("drunk", (player: string) => {
-            setGameState((prevState) => ({...prevState, drunk: player}));
-        })
-        return () => {
-            socket.off("drunk");
-        }
-    }, [socket])
-    useEffect(() => {
-        socket.on("statueTeam", (team: string) => {
-            setStatueTeam(team);
-        })
-        return () => {
-            socket.off("statueTeam");
-        }
-    }, [socket])
-    useEffect(() => {
-        socket.on("szulered", (player: string) => {
-            setGameState((prevState) => ({...prevState, szulered: player}));
-        })
-        return () => {
-            socket.off("szulered");
-        }
-    }, [socket])
-    useEffect(() => {
-        socket.on("alert", (props: any) => {
-            console.log("ALERT", props)
-            setAlertArray((prevArr) => {
-                let newArr = [...prevArr];
-                newArr.push(props);
-                return newArr;
-            });
-        })
-        return () => {
-            socket.off("alert")
-        }
-    }, [socket])
+    },[gameData, socket, gameState])
     useEffect(() => {
         socket.on("voteResults", (type: string, results: any) => {
-            console.log("GOT RESULTS")
             gameData.setIsVote(true)
             gameData.setVoteProps({
                 type: type,
@@ -345,7 +236,6 @@ export function Game(props:Props) {
         if(voteFunctionName === "aliveExceptMe") s = gameFunctions.aliveExceptMe(gameState);
         if(voteFunctionName === "killableExceptTeam") s = gameFunctions.killableExceptTeam(gameState);
         if(voteFunctionName === "aliveExceptTeam") s = gameFunctions.aliveExceptTeam(gameState);
-        console.log("FUNKCJA W VOTE", voteFunctionName, gameFunctions.myTeamFree(gameState), gameState.fullInfoPlayers);
         if(voteState === true) return (
             <VotingInterface 
                 optionList = {voteProps.optionList}
@@ -365,15 +255,16 @@ export function Game(props:Props) {
             return <></>
         }
     }
+
     return (
         <div className="game">
-                <GameInfo whoseTurn={whoseTurn} gameTime={gameTime} whoHasStatue={statueTeam}/>
-                <RequestAlertList socket={socket} alertArray={alertArray} setAlertArray={setAlertArray} gameData={gameData}/>
+                <GameInfo whoseTurn={whoseTurn} gameTime={gameTime} whoHasStatue={gameState.statueTeam}/>
+                <RequestAlertList socket={socket} alertArray={gameState.alerts} setGameState={setGameState} gameData={gameData}/>
                 {renderChat()}
                 {vote(isVote)}
                 <PlayerTable
                     socket={socket}
-                    players={allPlayers}
+                    players={gameState.allPlayers}
                     crewmates={[]}
                     disclosedPlayers={gameState.fullInfoPlayers}
                     duelFunction={() => {}}

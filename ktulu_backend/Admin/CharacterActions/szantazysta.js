@@ -5,12 +5,12 @@ exports.szantazysta = function(socket, io, gameData) {
     }
     let player = gameData.allFullInfoPlayers[playerIndex];
     if(player.team === "bandyci") {
-        io.to(gameData.playingCharacter).emit("alert", {type:"default", header: "Wybrałeś bandytę, spróbuj ponownie"})
+        io.sendData(gameData.playingCharacter, "alert", {type:"default", header: "Wybrałeś bandytę, spróbuj ponownie"});
         gameData.shiftTurn("szantazysta")
     }
     else {
-        io.to(gameData.playingCharacter).emit("alert", {type:"default", header: "Zaszantażowałeś gracza " + player.name, bottomText: "Osoba ta nie może teraz działać na twoją niekorzyść"})
-        io.to(player.characterName).emit("alert", {type: "nonClosing", header: "Zaszantażował Cię gracz " + gameData.characterNick(gameData.playingCharacter), bottomText: "Nie możesz działać na jego niekorzyść"})
+        io.sendData(gameData.playingCharacter, "alert", {type:"default", header: "Zaszantażowałeś gracza " + player.name, bottomText: "Osoba ta nie może teraz działać na twoją niekorzyść"});
+        io.sendData(player.characterName, "alert", {type: "nonClosing", header: "Zaszantażował Cię gracz " + gameData.characterNick(gameData.playingCharacter), bottomText: "Nie możesz działać na jego niekorzyść"});
     }
     io.to("admin").emit("end", gameData.stageName);
 }

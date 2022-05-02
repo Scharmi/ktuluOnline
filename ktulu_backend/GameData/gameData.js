@@ -380,13 +380,13 @@ exports.gameDataGenerator = function() {
             for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
                 if( gameData.allFullInfoPlayers[i].characterName === characterName) {
                     gameData.allFullInfoPlayers[i].isAlive = false;
-                    io.to("everyone").emit("fullInfoPlayers", [gameData.allFullInfoPlayers[i]]);
+                    io.sendData("everyone", "fullInfoPlayers", [gameData.allFullInfoPlayers[i]]);
                 }
             }
             for(let i = 0; i < gameData.playersArray.length; i++) {
                 if( gameData.playersArray[i].name === gameData.characterNick(characterName)) {
                     gameData.playersArray[i].isAlive = false;
-                    io.to("everyone").emit("All players", [gameData.allFullInfoPlayers[i]]);
+                    io.sendData("everyone", "allPlayers", [gameData.allFullInfoPlayers[i]]);
                 }
             }
         }

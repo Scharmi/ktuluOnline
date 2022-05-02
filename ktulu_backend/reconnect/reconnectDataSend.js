@@ -1,14 +1,15 @@
 exports.reconnectDataSend = function(socket, io, gameData) {
     let me = socket.admin ? "admin" : socket.myData.characterName;
-    io.to(me).emit("prison", gameData.characterNick(gameData.prison));
-    io.to(me).emit("drunk", gameData.characterNick(gameData.drunkPlayer));
-    io.to(me).emit("szulered", gameData.characterNick(gameData.szulered));
+    io.sendData(me, "prison", gameData.characterNick(gameData.prison));
+    //TODO czy to powinno być wysyłane?
+    io.sendData(me, "drunk", gameData.characterNick(gameData.drunkPlayer));
+    io.sendData(me, "szulered", gameData.characterNick(gameData.szulered));
     io.to(me).emit("setTime", gameData.dayNumber, gameData.dayTime);
     io.to(me).emit("turnInfo", gameData.turnInfo[gameData.stageName])
     if(!socket.admin) {
-        io.to(me).emit("Player data", socket.myData)
+        io.sendData(me, "myData", socket.myData);
         if(gameData.playerProps(gameData.characterNick(me)).isAlive) {
-            io.to(me).emit("statueTeam", gameData.statueTeam());
+            io.sendData(me, "statueTeam", gameData.statueTeam());
             if(me !== gameData.prison) {
                 if(gameData.chat === socket.myData.team) io.to(me).emit("chatState", true);
             }
@@ -18,13 +19,13 @@ exports.reconnectDataSend = function(socket, io, gameData) {
                     let player = gameData.allFullInfoPlayers[i];
                     if(player.team === socket.myData.team) newArr.push(player);
                 }
-                io.to(me).emit("fullInfoPlayers", newArr);
+                io.sendData(me, "fullInfoPlayers", newArr);
             } 
             if(gameData.activePlayerName === me) {
                 io.to(me).emit("start", gameData.turn, gameData.activePlayerName);
             }
             if(gameData.simulateCharacter === me) {
-                io.to(me).emit("manualSkip", gameData.turn, simulatePlayer);
+                io.sendData(me, "manualSkip", {turn: gameData.turn, player: simulatePlayer});
             }
             if((gameData.isVote === true) && (gameData.allowedPlayers.includes(me)) && (!gameData.playersVoted.includes(me))) {
                 io.to(me).emit("callVote", gameData.voteId, gameData.voteType, gameData.voteOptions, gameData.inspectedNumber - gameData.inspected.length);
@@ -35,26 +36,28 @@ exports.reconnectDataSend = function(socket, io, gameData) {
                 for(let j = 0; j < gameData.allFullInfoPlayers.length; j++) {
                     if(gameData.allFullInfoPlayers[j].characterName === player) {
                         console.log("GOT PLAYER")
-                        io.to(me).emit("fullInfoPlayers", [gameData.allFullInfoPlayers[j]]);
+                        io.sendData(me, "fullInfoPlayers", [gameData.allFullInfoPlayers[j]]);
                     }
                 }
             }
             if(gameData.turn === "duelsTurn") {
                 for(let i = 0; i < gameData.duelInvites.length; i++) {
-                    if(gameData.duelInvites[i][1] === socket.myData.name) io.to(me).emit("alert", {type: "duelInvite", player: gameData.duelInvites[i][0]})
+                    if(gameData.duelInvites[i][1] === socket.myData.name) io.sendData(me, "alert", {type: "duelInvite", player: gameData.duelInvites[i][0]});
+                    
                 }
             }
         }
         else {
-            io.to(me).emit("fullInfoPlayers", gameData.allFullInfoPlayers);
+            io.sendData(me, "fullInfoPlayers", gameData.allFullInfoPlayers);
         }
     }
     else {
-        if(gameData.duel) io.to("admin").emit("alert", {type: "duelEnd", p1: gameData.duel1, p2: gameData.duel2});
-        if(gameData.gameStage === "duelsTurn") io.to("admin").emit("alert", { type: "duelsTurnEnd" })
-        if((gameData.herbs !== "") && (gameData.dayTime === "day")) io.to("admin").emit("alert", {type: "herbsKill", player: gameData.characterNick(gameData.herbs)});
-        if(gameData.nextVote) io.to("admin").emit("alert", {type: "nextVote"});
-        if(gameData.alertIsHanging) io.to("admin").emit("alert", {type: "isHangingEnd"});
-        if(gameData.alertHanging) io.to("admin").emit("alert", {type: "hangingEnd", p1: gameData.hanged});
+        
+        if(gameData.duel) io.sendData("admin", "alert", {type: "duelEnd", p1: gameData.duel1, p2: gameData.duel2});
+        if(gameData.gameStage === "duelsTurn") io.sendData("admin", "alert", { type: "duelsTurnEnd" });
+        if((gameData.herbs !== "") && (gameData.dayTime === "day")) io.sendData("admin", "alert", {type: "herbsKill", player: gameData.characterNick(gameData.herbs)});  
+        if(gameData.nextVote) io.sendData("admin", "alert", {type: "nextVote"});
+        if(gameData.alertIsHanging) io.sendData("admin", "alert", {type: "isHangingEnd"});
+        if(gameData.alertHanging) io.sendData("admin", "alert", {type: "hangingEnd", p1: gameData.hanged});
     }
 }

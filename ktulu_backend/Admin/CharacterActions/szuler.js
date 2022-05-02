@@ -12,11 +12,11 @@ exports.szuler = function(socket, io, gameData) {
         if(gameData.statue === characterName) {
             gameData.setStatueTeam(gameData.playingCharacter);
         }
-        io.to(characterName).emit("szulered", gameData.characterNick(characterName));
+        io.sendData(characterName, "szulered", gameData.characterNick(characterName));
         if(gameData.allFullInfoPlayers[playerIndex].team !== "miastowi") {
             let members = gameData.activeMembers(gameData.allFullInfoPlayers[playerIndex].team);
             for(let i = 0; i < members.length; i++) {
-                io.to(members[i].characterName).emit("szulered", gameData.characterNick(characterName));
+                io.sendData(members[i].characterName, "szulered", gameData.characterNick(characterName));
             }
         }
     }

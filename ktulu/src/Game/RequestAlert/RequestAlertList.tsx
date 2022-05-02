@@ -3,17 +3,18 @@ import './RequestAlertList.css'
 interface Props {
     socket: any;
     alertArray: any;
-    setAlertArray: any;
+    setGameState: any;
     gameData: any;
 }
 export function RequestAlertList(props: Props) {
     let alertArray = props.alertArray;
-    let setAlertArray = props.setAlertArray;
     function deleteAlert(index: any) {
-        let newArr = [...alertArray];
-        console.log("DELETED ALERT")
-        newArr.splice(index, 1);
-        setAlertArray(newArr)
+        props.setGameState((prevState:any) => {
+            console.log("DELETE@")
+            let newArr = [...prevState.alerts];
+            newArr.splice(index, 1);
+            return {...prevState, alerts: newArr};
+        })
     }
     let AlertList = alertArray.map((item: any) => {
         let callBackNo = (item.callBackNo === undefined) ? null : item.callBackNo 

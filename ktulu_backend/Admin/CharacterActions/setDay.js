@@ -5,7 +5,7 @@ exports.setDay = function(socket, io, gameData) {
     if(gameData.statueTeam() === "miastowi") gameData.gameOver("miastowi");
     io.to("everyone").emit("setTime", gameData.dayNumber, gameData.dayTime)
     if(gameData.herbs !== "") {
-        io.to("admin").emit("alert", {type: "herbsKill", player: gameData.characterNick(gameData.herbs)});
+        io.sendData("admin", "alert", {type: "herbsKill", player: gameData.characterNick(gameData.herbs)});
     }
     gameData.drunk = []; 
     gameData.prison = "";
@@ -16,8 +16,8 @@ exports.setDay = function(socket, io, gameData) {
     gameData.inspected = [];
     gameData.hanged = "";
     gameData.inspected = [];
-    io.to("everyone").emit("prison", "");
-    io.to("everyone").emit("drunk", "");
-    io.to("everyone").emit("szulered", "");
+    io.sendData("everyone", "prison", "");
+    io.sendData("everyone", "drunk", "");
+    io.sendData("everyone", "szulered", "");
     io.to("admin").emit("end", gameData.stageName)
 }

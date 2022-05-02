@@ -1,6 +1,6 @@
 const { duel } = require('./duel')
 exports.duelsTurn = function(socket, io, gameData) {
-    io.to("admin").emit("alert", { type: "duelsTurnEnd" })
+    io.sendData("admin", "alert", { type: "duelsTurnEnd" });
     gameData.pendingDuels = [];
     gameData.duelInvites = [];
     gameData.duel = false;
@@ -46,7 +46,7 @@ exports.duelsTurn = function(socket, io, gameData) {
                     else {
                         if((player1Props.isAlive) && (player2Props.isAlive)) {
                             gameData.duelInvites.push([player1,player2]);
-                            io.to(player2Props.characterName).emit("alert", {type: "duelInvite", player: player1});
+                            io.sendData(player2Props.characterName, "alert", {type: "duelInvite", player: player1});
                             io.to("admin").emit("snackbar", "info", "Gracz " + player1 + " wyzwał gracza " + player2 + " na pojedynek");
                             for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
                                 if((gameData.allFullInfoPlayers[i].characterName !== player1Props.characterName) && (gameData.allFullInfoPlayers[i].characterName !== player1Props.characterName)) {
@@ -61,7 +61,7 @@ exports.duelsTurn = function(socket, io, gameData) {
             }
         }
         else {
-            io.to(player1Props.characterName).emit("alert", {type: "default", header: "Wyczerpano limit pojedynków"})
+            io.sendData(player1Props.characterName, "alert", {type: "default", header: "Wyczerpano limit pojedynków"});
         }
     })
     socket.on("duelDecline", (player1, player2) => {
@@ -69,7 +69,7 @@ exports.duelsTurn = function(socket, io, gameData) {
         let player2Props = gameData.playerProps(player2);
         if(gameData.inviteExists(player2, player1)) {
             gameData.deleteDuel(player1, player2);
-            io.to(player2Props.characterName).emit("alert", {type: "default", header: "Gracz " + player1 + " odrzucił Twoje wyzwanie"});
+            io.sendData(player2Props.characterName, "alert", {type: "default", header: "Gracz " + player1 + " odrzucił Twoje wyzwanie"});
         }
         else {
             console.log("INVITE DOESN'T EXIST")

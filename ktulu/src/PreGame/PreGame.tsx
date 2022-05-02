@@ -42,11 +42,9 @@ export function PreGame(props: Props) {
     useEffect(() => { 
         props.socket.on("Player names", (arg:any) => {
                 setPlayerNames(arg);
-                console.log("NAMES",arg, playerNames);
         });
         props.socket.on("Player left", (arg:any) => {
                 setPlayerNames(arg);
-                console.log("left",arg);
         });
         props.socket.once("Choose characters", (playersNumber: number, characters: any) => {
             let voteOptionsArr:any = [];
