@@ -1,15 +1,14 @@
-export function indianieKilling(socket: any, io: any, gameData: any) {
-        gameData.setIsVote(true);
-        gameData.setVoteFunctionName("killableExceptTeam")
-        gameData.setVoteProps({
-            type: "killing",
-            optionList: [],
-            votedObjects: [...gameData.killableExceptTeam()],
-            votes: 0,
-            allVotes: 0,
-            minChosen: 1, voteState: "choosing",
-            maxChosen: 1,
-            callBack: gameData.actionCallBack
-        })
+import * as Interfaces from 'interfaces/interfaces'
 
+export function indianieKilling(socket: any,  gameData: any) {
+    gameData.setGameState((prevState:Interfaces.GameState) => ({
+        ...prevState,
+        isVote: true,
+        voteFunctionName: "killableExceptTeam",
+        voteProps: {
+            type: "killing",
+            votedObjects: gameData.killableExceptTeam(gameData.gameState),
+            callBack: gameData.actionCallBack
+        }
+    }))
 }

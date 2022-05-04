@@ -33,7 +33,6 @@ export function PreGame(props: Props) {
     const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(event.target.value);
     };
-    console.log("PREGAME RENDER", adminState)
     function submitName(name:string, isAdmin: boolean) {
         props.socket.emit("enterName", name, isAdmin, password);
         setMyName(name);
@@ -53,7 +52,6 @@ export function PreGame(props: Props) {
             }
             setChoosePlayers(true);
             setVoteOptions(voteOptionsArr);
-            console.log("GOT OPTIONS", voteOptions, voteOptionsArr)            
         });
 
         return () => {

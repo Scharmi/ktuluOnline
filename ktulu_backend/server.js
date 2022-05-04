@@ -4,7 +4,7 @@ function server() {
   var admin = require('./Admin/Admin')
   const { reconnectDataSend } = require('./reconnect/reconnectDataSend')
   const gameDataGenerator = require('./GameData/gameData.js')
-  const prod = false
+  const prod = true
   const e = require('cors');
   const sslOptions = {};
   if(prod) {
@@ -69,6 +69,7 @@ function server() {
     console.log("Reciever: ", reciever);
     console.log("Type: ", type);
     console.log("Object: ",object);
+    console.log("\n");
     io.to(reciever).emit("backendData", type, object);
   });
   io.on("connection", (socket) => {

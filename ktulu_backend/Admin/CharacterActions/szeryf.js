@@ -9,7 +9,7 @@ exports.szeryf = function(socket, io, gameData) {
         io.sendData("everyone", "prison", gameData.characterNick(characterName));
         if(characterName === gameData.statue) {
             gameData.statue = "szeryf"
-            io.to("everyone").emit("snackbar", "warning", "Szeryf przejął posążek");
+            io.sendData("everyone", "snackbar", {type: "warning", text:  "Szeryf przejął posążek"});
         }
         gameData.prison = characterName;
         io.sendData(gameData.allFullInfoPlayers[playerIndex].characterName, "alert", {type: "szeryfPassive"});

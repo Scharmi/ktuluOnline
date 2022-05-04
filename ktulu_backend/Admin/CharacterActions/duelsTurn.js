@@ -22,11 +22,11 @@ exports.duelsTurn = function(socket, io, gameData) {
     socket.on("duelInvite", (player1, player2) => {
         let player1Props = gameData.playerProps(player1);
         let player2Props = gameData.playerProps(player2);
-        if(gameData.inviteExists(player1, player2)) io.to(player1Props.characterName).emit("snackbar", "error", "Wyzwanie do tego gracza zostało już wysłane")
+        if(gameData.inviteExists(player1, player2)) io.sendData(player1Props.characterName, "snackbar", {type: "error", text:  "Wyzwanie do tego gracza zostało już wysłane"});
         if(gameData.usedDuels < gameData.duelsLimit) {
             console.log("SZERYF:", gameData.szeryfAlive())
             if(!gameData.szeryfAlive()) {
-                io.to(player1Props.characterName).emit("snackbar", "success", "Wyzwano gracza na pojedynek")
+                io.sendData(player1Props.characterName, "snackbar", {type: "success", text:  "Wyzwano gracza na pojedynek"});
                 if((player1Props.isAlive) && (player2Props.isAlive)) {
                     duel(socket, io, gameData, player1, player2);
                 }
@@ -34,7 +34,7 @@ exports.duelsTurn = function(socket, io, gameData) {
             else {
                 if((!gameData.inviteExists(player1, player2)) && (!gameData.duel)){
                     if((player1Props.isAlive) && (player2Props.isAlive))
-                    io.to(player1Props.characterName).emit("snackbar", "success", "Wyzwano gracza na pojedynek")
+                    io.sendData(player1Props.characterName, "snackbar", {type: "success", text:  "Wyzwano gracza na pojedynek"});
                     if(gameData.inviteExists(player2, player1)) {
                         if((player1Props.isAlive) && (player2Props.isAlive)) {
                             if(gameData.usedDuels < gameData.duelsLimit) {
@@ -47,10 +47,10 @@ exports.duelsTurn = function(socket, io, gameData) {
                         if((player1Props.isAlive) && (player2Props.isAlive)) {
                             gameData.duelInvites.push([player1,player2]);
                             io.sendData(player2Props.characterName, "alert", {type: "duelInvite", player: player1});
-                            io.to("admin").emit("snackbar", "info", "Gracz " + player1 + " wyzwał gracza " + player2 + " na pojedynek");
+                            io.sendData("admin", "snackbar", {type: "info", text:  "Gracz " + player1 + " wyzwał gracza " + player2 + " na pojedynek"});
                             for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
                                 if((gameData.allFullInfoPlayers[i].characterName !== player1Props.characterName) && (gameData.allFullInfoPlayers[i].characterName !== player1Props.characterName)) {
-                                    io.to(gameData.allFullInfoPlayers[i].characterName).emit("snackbar", "info", "Gracz " + player1 + " wyzwał gracza " + player2 + " na pojedynek");
+                                    io.sendData(gameData.allFullInfoPlayers[i].characterName, "snackbar", {type: "info", text:  "Gracz " + player1 + " wyzwał gracza " + player2 + " na pojedynek"});
                                 }
                             }
                         }

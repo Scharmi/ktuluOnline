@@ -39,7 +39,7 @@ exports.transmitter = function(socket, io, gameData) {
         if((name === socket.myData.characterName) && (!gameData.disclosed.includes(name) && gameData.dayTime === "day") && (socket.myData.isAlive)) {
             gameData.disclosed.push(name);
             io.to("admin").emit("disclose", name);
-            io.to(name).emit("snackbar", "success", "Twoja postać została ujawniona");
+            io.sendData(name, "snackbar", {type: "success", text:  "Twoja postać została ujawniona"});
         }
         else console.log("TRANSMISSION BLOCKED", socket.myData.characterName, name)
     })
@@ -49,11 +49,12 @@ exports.transmitter = function(socket, io, gameData) {
                 if((text.length < 500) && (gameData.checkString(text))) {
                     let activeMembers = gameData.activeMembers(socket.myData.team);
                     for(let i = 0; i < activeMembers.length; i++) {
-                        io.to(activeMembers[i].characterName).emit("message", gameData.characterNick(sender), text);
+                        io.sendData(activeMembers[i].characterName, "message", {sender:gameData.characterNick(sender), text: text})
                     }
-                    io.to("admin").emit("message", gameData.characterNick(sender), text);
+                    io.sendData("admin", "message", {sender:gameData.characterNick(sender), text: text})
                 }
                 else {
+                    io.sendData(sender, "snackbar", {type: "error", text:  "Wiadomość jest zbyt długa lub zawiera niedozwolone znaki"});
                     io.to(sender).emit("snackbar", "error", "Wiadomość jest zbyt długa lub zawiera niedozwolone znaki");
                 }
 

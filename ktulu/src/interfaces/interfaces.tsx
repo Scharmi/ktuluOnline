@@ -19,22 +19,21 @@ export interface GameState {
     voteFunctionName: string;
     myData: FullInfoPlayer;
     isVote: boolean;
-    messages: Array<any>
     prison: string;
     fullInfoPlayers: Array<any>;
     votesNumber: any;
-    chatActive: boolean;
     whoseTurn: string;
     allPlayers: Array<Player>;
     alerts: Array<any>;
     statueTeam: string;
-}
-export interface HandlebackendData {
-    fullInfoPlayers: Function;
-    allPlayers: Function;
-    prison: Function;
-    szulered: Function;
-    drunk: Function;
-    alert: Function;
-    manualSkip: Function;
+    gameTime: any;
+    snackbar: {
+        text: string;
+        type: "success" | "info" | "warning" | "error";
+    }
+    chat: {
+        messages: Array<any>;
+        isActive: boolean;
+    }
+    voteProps: any;
 }

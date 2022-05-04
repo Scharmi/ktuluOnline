@@ -1,7 +1,11 @@
-export function hazardzista(socket: any, io: any, gameData: any) {
-        gameData.setAlertArray((prevArray: any) => {
-            let newArr = [...prevArray];
-            newArr.push({
+import * as Interfaces from 'interfaces/interfaces'
+
+export function hazardzista(socket: any,  gameData: any) {
+    gameData.setGameState((prevState:Interfaces.GameState) => ({
+        ...prevState,
+        alerts: [
+            ...prevState.alerts,
+            {
                 type:"isAction", 
                 callBackNo: () => {
                     socket.emit("action", gameData.turnPlayer, {action: false, turn: gameData.turn})
@@ -9,8 +13,8 @@ export function hazardzista(socket: any, io: any, gameData: any) {
                 callBackYes: () => {
                     socket.emit("action", gameData.turnPlayer, {action: true, turn: gameData.turn})
                 }
-            })
-            return newArr;
-        })
-
+            }
+        ]
+        }
+    ))
 }

@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 
 import { FullInfoPlayer } from '../interfaces/interfaces'
 import { 
         templateCrewmates, 
         templateAdminActionButtons,
-        templateGameInfo,
         templateAdminData
 } from './templates/templates'
 import { VotingInterface } from './VotingInterface/VotingInterface'
@@ -13,12 +12,9 @@ import { RequestAlertList } from './RequestAlert/RequestAlertList'
 import { GameInfo } from './GameInfo/GameInfo'
 import { Paper } from '@material-ui/core'
 import { Button } from '@material-ui/core'
-import { GameInfoSetter } from './AdminViewComponents/GameInfoSetter/GameInfoSetter'
 import './AdminView.css'
 import { transmitter } from './CharacterActions/transmitter'
 import { Chat } from './Chat/Chat'
-//import { szeryf } from './CharacterActions/szeryf'
-//import { msciciel } from './CharacterActions/msciciel'
 
 interface Props {
     adminGameState: "started" | "notStarted";
@@ -39,7 +35,6 @@ export function AdminView(props:Props) {
     const [whoseTurn, setWhoseTurn] = useState("");
     const [gameTime, setGameTime] = useState({dayTime: "night", dayNumber: 2})
     const [statueTeam, setStatueTeam] = useState("");
-    const [votesNumber, setVotesNumber] = useState({votes: 0, allVotes:0 })
     const [remainingVoters, setRemainingVoters] = useState<Array<string>>([]);
     const [voteState, setVoteState] = useState("choosing");
     const [voteProps, setVoteProps] = useState({
@@ -53,7 +48,7 @@ export function AdminView(props:Props) {
         callBack: (arg:any) => {}
     });
     useEffect(() => {
-        props.socket.on("message", (sender: string, text:string) => {
+        socket.on("message", (sender: string, text:string) => {
             setMessages((prevMessages) => {
                 let newArr = [...prevMessages];
                 newArr.push({sender: sender, text: text});
@@ -63,10 +58,10 @@ export function AdminView(props:Props) {
         return () => {
             socket.off("message")
         }
-    }, [])
+    }, [socket])
     const [voteFunctionName, setVoteFunctionName] = useState<string>("MyTeamFree")
     const [fullInfoPlayers, setFullInfoPlayers] = useState<Array<any>>([]);
-    let gameData = {
+    let gameData = useMemo(() => ({
         myData: myData,
         setMyData: setMyData,
         allPlayers: allPlayers,
@@ -80,7 +75,7 @@ export function AdminView(props:Props) {
         turn: "",
         turnPlayer: "",
         actionCallBack: (arg:any) => {socket.emit("votedPlayers", arg)},
-    }
+    }),[alertArray, allPlayers, fullInfoPlayers, myData, socket, voteFunctionName])
     useEffect(() => {
         socket.emit("Game loaded")
         socket.on("Full Players Info", (fullInfo: Array<FullInfoPlayer>, namesArray: Array<string>) => {
@@ -96,7 +91,7 @@ export function AdminView(props:Props) {
 
     }, [socket])
     useEffect(() => {
-        props.socket.on("allowedVoters", (voters: Array<string>) => {
+        socket.on("allowedVoters", (voters: Array<string>) => {
             console.log("GOT VOTERS")
             setRemainingVoters(voters);
             setVoteState("adminRemainingVoters");
@@ -105,9 +100,9 @@ export function AdminView(props:Props) {
         return () => {
             socket.off("allowedVoters");
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
-        props.socket.on("playerVoted", (player: string) => {
+        socket.on("playerVoted", (player: string) => {
             console.log("GOT PLAYER VOTED", player);
             setRemainingVoters((prevPlayers: Array<string>) => {
                 let newArr = [...prevPlayers];
@@ -120,7 +115,7 @@ export function AdminView(props:Props) {
         return () => {
             socket.off("playerVoted")
         }
-    })
+    },[socket])
     useEffect(() => {
         socket.on("turnInfo", (arg:string) => {
             console.log("GOT TURN INFO")
@@ -138,7 +133,7 @@ export function AdminView(props:Props) {
         return () => {
             socket.off("turnInfo")
         }
-    }, [])
+    }, [socket])
     useEffect (() => {
         socket.on("setTime", (number:number, time: "time") => {
             console.log("GOT SET TIME")
@@ -147,7 +142,7 @@ export function AdminView(props:Props) {
         return () => {
             socket.off("setTime");
         }
-    })
+    },[socket])
     useEffect(() => {
         socket.on("statueTeam", (team: string) => {
             console.log("GOT STATUE TEAM")
@@ -158,7 +153,7 @@ export function AdminView(props:Props) {
         return () => {
             socket.off("statueTeam");
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
         function endListener(arg: any) {
             socket.emit("end", arg);
@@ -176,7 +171,7 @@ export function AdminView(props:Props) {
             socket.off("herbsKill");
             socket.off("GAME OVER")
         })
-    }, [gameData])
+    }, [socket, gameData])
     useEffect(() => {
         function listener(turn:string) {
             if(turn === "duelsTurn") {
@@ -257,7 +252,7 @@ export function AdminView(props:Props) {
         }
     }, [socket])
     useEffect(() => {
-        props.socket.on("alert", (props: any) => {
+        socket.on("alert", (props: any) => {
             if(props.type === "isHangingEnd") console.log("GOT HNG END")
             if((props.type === "duelEnd") || (props.type === "nextVote"))
                 setAlertArray((prevArr) => {
@@ -275,7 +270,7 @@ export function AdminView(props:Props) {
             });
         })
         return () => {
-            props.socket.off("alert")
+            socket.off("alert")
         }
     }, [socket])
     useEffect(() => {
@@ -326,7 +321,7 @@ export function AdminView(props:Props) {
         return () => {
             socket.off("chooseVoted");
         }
-    }, [])
+    }, [socket])
     useEffect(() => {
         socket.on("callVote", (id: number, type: string, votedObjects: any) => {
             console.log("GOT CALLVOTE")
@@ -342,12 +337,8 @@ export function AdminView(props:Props) {
         return () => {
             socket.off("callVote")
         }
-    }, [])
+    }, [socket])
 
-
-    function timeChangeCallback(arg: Object) {
-        console.log(arg);
-    }
     function vote(isVote: boolean) {
         let s:any = []        
         if(voteFunctionName === "voteProps") s = voteProps.votedObjects

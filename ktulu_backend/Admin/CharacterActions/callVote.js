@@ -7,9 +7,9 @@ exports.callVote = function(socket, io, gameData, type, allowedPlayers, voteOpti
     io.to("admin").emit("allowedVoters", allowedNicks);
     gameData.voteId++;
     for(let i = 0; i < allowedPlayers.length; i++) {
-        io.to(allowedPlayers[i]).emit("callVote", gameData.voteId, type, voteOptions, gameData.inspectedNumber - gameData.inspected.length);
+        io.sendData(allowedPlayers[i], "callVote", {id: gameData.voteId, type: type, votedObjects: voteOptions, chosenNumber: gameData.inspectedNumber - gameData.inspected.length});
     }
-    io.to("admin").emit("callVote", gameData.voteId, type, voteOptions);
+    io.sendData("admin", "callvote", {id: gameData.voteId, type: type, votedObjects: voteOptions});
     let playersVoted = [];
     gameData.voteType = type;
     gameData.allowedPlayers = allowedPlayers;
@@ -29,7 +29,7 @@ exports.callVote = function(socket, io, gameData, type, allowedPlayers, voteOpti
                 if(!playersVoted.includes(user)) {
                     io.to("admin").emit("playerVoted", gameData.characterNick(user));
                     playersVoted.push(user);
-                    io.to("everyone").emit("votesNumber", playersVoted.length, allowedPlayers.length);
+                    io.sendData("everyone", "votesNumber", {votes: playersVoted.length, allVotes: allowedPlayers.length});
                     for(let i = 0; i < votes.length; i++) {
                         for(let j = 0; j < chosenOptions.length; j++) {
                             if(votes[i].option.id === chosenOptions[j].id) {

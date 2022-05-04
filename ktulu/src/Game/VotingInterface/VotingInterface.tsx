@@ -65,8 +65,22 @@ function VotingCard (props:Props) {
             </div>
         )
     }
-    return (<h2>{voteState}, {props.type}, {props.optionList}</h2>)
+    return (<h2>{voteState}, {props.type}, {props.votedObjects} XD</h2>)
 }
 export function VotingInterface(props:Props) {
     return <div className={"votingInterface"}>{VotingCard(props)}</div>;
+}
+VotingInterface.defaultProps = {
+    optionList: [],
+    type: "killing",
+    votedObjects: [],
+    votes: 0,
+    allVotes: 0,
+    callBack: () => {},
+    maxChosen: 1,
+    minChosen: 1,
+    fullInfoPlayers: [],
+    voteState: "choosing",
+    setIsVote: () => {},
+    remainingVoters: []
 }

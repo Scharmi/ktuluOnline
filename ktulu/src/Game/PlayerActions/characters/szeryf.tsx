@@ -1,14 +1,14 @@
-export function szeryf(socket: any, io: any, gameData: any) {
-        gameData.setIsVote(true);
-        gameData.setVoteFunctionName("aliveExceptMe")
-        gameData.setVoteProps({
+import * as Interfaces from 'interfaces/interfaces'
+
+export function szeryf(socket: any,  gameData: any) {
+    gameData.setGameState((prevState:Interfaces.GameState) => ({
+        ...prevState,
+        isVote: true,
+        voteFunctionName: "aliveExceptMe",
+        voteProps: {
             type: "szeryf",
-            optionList: [],
-            votedObjects: gameData.aliveExceptMe(gameData.gameState),
-            votes: 0,
-            allVotes: 0,
-            minChosen: 1, voteState: "choosing",
-            maxChosen: 1,
-            callBack: gameData.actionCallBack
-        })
+            votedObjects: [...gameData.aliveExceptMe(gameData.gameState)],
+            callBack: gameData.actionCallBack,
+        }
+    }))
 }

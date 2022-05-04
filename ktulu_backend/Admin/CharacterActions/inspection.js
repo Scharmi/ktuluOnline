@@ -8,7 +8,7 @@ exports.inspection = function(socket, io, gameData) {
     for(let i = 0; i < votedPlayers.length; i++) {
         voteOptions.push({name: votedPlayers[i].text, id: votedPlayers[i].id})
     }
-    io.to("everyone").emit("turnInfo", "Wybieranie przeszukiwanych")
+    io.sendData("everyone", "turnInfo", "Wybieranie przeszukiwanych");
     console.log(votedPlayers)
     inspectionVote(socket, io, gameData, voteOptions)
     socket.once("inspectionEnd", () => {

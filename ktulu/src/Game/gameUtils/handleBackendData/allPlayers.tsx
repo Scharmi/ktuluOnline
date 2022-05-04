@@ -1,5 +1,5 @@
 import * as Interfaces from 'interfaces/interfaces'
-export const allPlayers = ((gameState:Interfaces.GameState, setGameState: Function, players: Array<Interfaces.Player>) => {
+export const allPlayers = ((gameData:any, setGameState: Function, players: Array<Interfaces.Player>) => {
     setGameState((prevState: Interfaces.GameState) => {
         let newArr = [...prevState.allPlayers];
         for(let i = 0; i < players.length; i++) {

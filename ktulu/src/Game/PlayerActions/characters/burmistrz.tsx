@@ -1,15 +1,14 @@
-export function burmistrz(socket: any, io: any, gameData: any, sentData: any) {
-        gameData.setIsVote(true);
-        gameData.setVoteFunctionName("voteProps")
-        gameData.setVoteProps({
-            type: "burmistrz",
-            optionList: [],
-            votedObjects: sentData,
-            votes: 0,
-            allVotes: 0,
-            minChosen: 1, voteState: "choosing",
-            maxChosen: 1,
-            callBack: gameData.actionCallBack
-        })
+import * as Interfaces from 'interfaces/interfaces'
 
+export function burmistrz(socket: any,  gameData: any, sentData: any) {
+    gameData.setGameState((prevState:Interfaces.GameState) => ({
+        ...prevState,
+        isVote: true,
+        voteFunctionName: "voteProps",
+        voteProps: {
+            type: "burmistrz",
+            votedObjects: sentData,
+            callBack: gameData.actionCallBack
+        }
+    }))
 }

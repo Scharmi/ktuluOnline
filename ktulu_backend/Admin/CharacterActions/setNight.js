@@ -1,6 +1,6 @@
 exports.setNight = function(socket, io, gameData) {  
     gameData.dayTime = "night";
-    io.to("everyone").emit("setTime", gameData.dayNumber, gameData.dayTime)
+    io.sendData("everyone", "setTime", {dayNumber: gameData.dayNumber, dayTime: gameData.dayTime});
     gameData.drunk = []; 
     gameData.prison = "";
     gameData.alertHanging = false;

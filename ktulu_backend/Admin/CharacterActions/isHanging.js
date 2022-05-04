@@ -53,7 +53,7 @@ exports.isHanging = function(socket, io, gameData) {
                 }
 
             }
-            io.to("everyone").emit("voteResults", "isHanging", sendVotes);
+            io.sendData("everyone", "voteResults", {type: "isHanging", results: sendVotes});
             io.sendData("admin", "alert", {type: "isHangingEnd"});
             gameData.alertIsHanging = true
             socket.once("isHangingEnd", () => {

@@ -1,27 +1,29 @@
-export function zlodziej(socket: any, io: any, gameData: any) {
-        gameData.setAlertArray((prevArray: any) => {
-            let newArr = [...prevArray];
-            newArr.push({
+import * as Interfaces from 'interfaces/interfaces'
+
+export function zlodziej(socket: any,  gameData: any) {
+    gameData.setGameState((prevState:Interfaces.GameState) => ({
+        ...prevState,
+        alerts: [
+            ...prevState.alerts,
+            {
                 type:"isAction", 
                 callBackNo: () => {
                     socket.emit("action", gameData.turnPlayer, {action: false, turn: gameData.turn})
                 },
                 callBackYes: () => {
-                    gameData.setIsVote(true);
-                    gameData.setVoteFunctionName("aliveExceptMe")
-                    gameData.setVoteProps({
-                        type: "inspection",
-                        optionList: [],
-                        votedObjects: gameData.aliveExceptMe(),
-                        votes: 0,
-                        allVotes: 0,
-                        minChosen: 1,
-                        voteState: "choosing",
-                        callBack: gameData.actionCallBack
-                    })
+                    gameData.setGameState((prevState:Interfaces.GameState) => ({
+                        ...prevState,
+                        isVote: true,
+                        voteFunctionName: "aliveExceptMe",
+                        voteProps: {
+                            type: "inspection",
+                            votedObjects: gameData.aliveExceptMe(gameData.gameState),
+                            callBack: gameData.actionCallBack
+                        }
+                    }))
                 }
-            })
-            return newArr;
-        })
-
+            }
+        ]
+        }
+    ))
 }

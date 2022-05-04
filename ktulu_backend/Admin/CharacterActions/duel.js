@@ -2,7 +2,7 @@
 const { callVote } = require('./callVote') 
 exports.duel = function(socket, io, gameData, player1, player2) {  
     for(let i = 0; i < gameData.allFullInfoPlayers.length; i++) {
-        io.to(gameData.allFullInfoPlayers[i].characterName).emit("snackbar", "warning", "Gracze " + player1 + " i " + player2 + " będą się pojedynkować");
+        io.sendData(gameData.allFullInfoPlayers[i].characterName, "snackbar", {type: "warning", text: "Gracze " + player1 + " i " + player2 + " będą się pojedynkować"});
     }
     gameData.duel = true;
     gameData.usedDuels++;
@@ -18,7 +18,7 @@ exports.duel = function(socket, io, gameData, player1, player2) {
     }
     voteOptions.push({name: player1, id: gameData.playerProps(player1).id});
     voteOptions.push({name: player2, id: gameData.playerProps(player2).id});
-    io.to("everyone").emit("turnInfo", "Pojedynek między graczami " + player1 + " i " + player2)
+    io.sendData("everyone", "turnInfo", "Pojedynek między graczami " + player1 + " i " + player2);
     callVote(socket, io, gameData, "duel", allowedPlayers, voteOptions);
     function voteEndFunction(id) {
         if(gameData.voteId === id) {
@@ -82,7 +82,7 @@ exports.duel = function(socket, io, gameData, player1, player2) {
                     playersToKill.push(gameData.playerProps(sendVotes[i].optionName).characterName);
                 }
             }
-            io.to("everyone").emit("voteResults", "duel", sendVotes);
+            io.sendData("everyone", "voteResults", {type: "duel", results: sendVotes});
             function discloseAction(character) {
                 if((character !== "sędzia") && (character !== "pijany sędzia")) {
                     console.log("WRONG DISCLOSE")
@@ -104,16 +104,24 @@ exports.duel = function(socket, io, gameData, player1, player2) {
                             socket.once("action", sedziaAction);
                         }
                     }
-                    io.to(character).emit("start", "sedzia", character, [
+                    io.sendData(
+                        character, 
+                        "start", 
                         {
-                            name: player1,
-                            id: 1
-                        },
-                        {
-                            name: player2,
-                            id: 2
+                            turn: gameData.turn, 
+                            player: "sedzia", 
+                            data: [
+                                {
+                                    name: player1,
+                                    id: 1
+                                },
+                                {
+                                    name: player2,
+                                    id: 2
+                                }
+                            ]
                         }
-                    ]);
+                    );
                     socket.once("action", sedziaAction);
                     socket.once("duelEnd", () => {
                         socket.off("action", sedziaAction);
@@ -124,9 +132,9 @@ exports.duel = function(socket, io, gameData, player1, player2) {
             gameData.duel2 = player2;
             socket.once("disclose", discloseAction);
             if(!gameData.disclosed.includes("sędzia"))
-            io.to("sędzia").emit("snackbar", "warning", "Jeśli chcesz zmienić wynik pojedynku, ujawnij się teraz");
+            io.sendData("sędzia", "snackbar", {type: "warning", text: "Jeśli chcesz zmienić wynik pojedynku, ujawnij się teraz"});
             if(!gameData.disclosed.includes("pijany sędzia"))
-            io.to("pijany sędzia").emit("snackbar", "warning", "Jeśli chcesz zmienić wynik pojedynku, ujawnij się teraz");
+            io.sendData("pijany sędzia", "snackbar", {type: "warning", text: "Jeśli chcesz zmienić wynik pojedynku, ujawnij się teraz"});
             io.sendData("admin", "alert", {type: "duelEnd", p1: player1, p2: player2});
             socket.once("duelEnd", () => {
                 if(gameData.usedDuels === gameData.duelsLimit) {
@@ -135,7 +143,7 @@ exports.duel = function(socket, io, gameData, player1, player2) {
                 }
                 
                 else
-                io.to("everyone").emit("turnInfo", "Tura pojedynków")
+                io.sendData("everyone", "turnInfo", "Tura pojedynków");
                 gameData.duel = false;
                 for(let i = 0; i < playersToKill.length; i++) {
                     if(playersToKill[i] === gameData.statue) gameData.gameOver("miastowi")

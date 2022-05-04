@@ -116,7 +116,7 @@ exports.admin = function(socket, io, gameData, server) {
     gameData.setStatueTeam = function(characterName) {
         gameData.statue = characterName;
         io.sendData("everyone", "statueTeam", gameData.statueTeam());
-        io.to("everyone").emit("snackbar", "warning", gameData.statueTeam() + " przejęli posążek")
+        io.sendData("everyone", "snackbar", {type: "warning", text: gameData.statueTeam() + " przejęli posążek"});
         if(gameData.statueTeam() === "indianie") {
             gameData.shiftTurn("plonacySzal")
         }
@@ -133,7 +133,7 @@ exports.admin = function(socket, io, gameData, server) {
     io.to("admin").emit("Full Players Info", gameData.allFullInfoPlayers, gameData.namesArray);
     function runStage(counter, gameData) {
         if(gameData.isVote) {
-            io.to("everyone").emit("callVote", -1 , "no", []);
+            io.sendData("everyone", "callVote", {id: -1, type: "no", votedObjects: []});
         }
         if(counter < gameData.gameStages.length) {
             io.sendData("admin", "statueTeam", gameData.statue)
@@ -166,7 +166,7 @@ exports.admin = function(socket, io, gameData, server) {
                         gameData.actionObject = {...obj};
                         if((obj.player !== undefined) || (activePlayer === "hazardzista")) {
                             if(obj.player !== undefined) {
-                                io.to("admin").emit("message", "SYSTEM", gameData.stageName + " " + obj.player[0].text);
+                                io.sendData("admin", "message", {sender:"SYSTEM", text: gameData.stageName + " " + obj.player[0].text});
                             }
                             playerActions[stageName](socket, io, gameData);
                         }
@@ -199,7 +199,7 @@ exports.admin = function(socket, io, gameData, server) {
             if(gameData.isTurnPlaying(stageName) === "play") {
                 gameData.activePlayerName = activePlayer;
                 io.sendData(activePlayer, "allPlayers", gameData.playersArray);
-                io.to(activePlayer).emit("start", gameData.turn, activePlayer);
+                io.sendData(activePlayer, "start", {turn: gameData.turn, player: activePlayer});
                 listenToAction();
             }
             if(gameData.isTurnPlaying(stageName) === "simulatePrison") {
@@ -221,7 +221,7 @@ exports.admin = function(socket, io, gameData, server) {
             }
             else {
                 socket.once("forceEnd", forceEnd);
-                io.to("everyone").emit("turnInfo", gameData.turnInfo[stageName])
+                io.sendData("everyone", "turnInfo", gameData.turnInfo[stageName]);
                 function endListener(arg) {
                     console.log("END", arg)
                     if(arg === stageName) {
@@ -257,7 +257,7 @@ exports.admin = function(socket, io, gameData, server) {
             }
             if(gameData.playingCharacter === player.characterName) {
                 io.sendData(player.characterName, "allPlayers", gameData.playersArray);
-                io.to(player.characterName).emit("start", gameData.turn, gameData.playingCharacter);
+                io.sendData(player.characterName, "start", {turn: gameData.turn, player: gameData.playingCharacter});
             }
 
         })

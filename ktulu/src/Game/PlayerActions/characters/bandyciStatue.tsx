@@ -1,15 +1,17 @@
-export function bandyciStatue(socket: any, io: any, gameData: any) {
-        gameData.setIsVote(true);
-        gameData.setVoteFunctionName("myTeamFree")
-        gameData.setVoteProps({
+import * as Interfaces from 'interfaces/interfaces'
+
+
+export function bandyciStatue(socket: any,  gameData: any) {
+    gameData.setGameState((prevState:Interfaces.GameState) => ({
+        ...prevState,
+        isVote: true,
+        voteFunctionName: "myTeamFree",
+        voteProps: {
             type: "giveStatue",
-            optionList: [],
-            votedObjects: [],
-            votes: 0,
-            allVotes: 0,
-            minChosen: 1, voteState: "choosing",
-            maxChosen: 1,
             callBack: gameData.actionCallBack
-        })
+        }
+    }))
+
+    
 
 }

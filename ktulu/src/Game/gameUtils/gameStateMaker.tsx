@@ -7,13 +7,34 @@ export const gameStateMaker = {
     allPlayers: [],
     myData: templateFullInfoPlayer,
     isVote: false,
-    messages: [],
     prison: "",
     fullInfoPlayers: [],
     votesNumber: {votes: 0, allVotes: 0},
-    chatActive: false,
     voteFunctionName: "MyTeamFree",
     whoseTurn: "",
     alerts: [],
-    statueTeam: "bandyci"
+    statueTeam: "bandyci",
+    gameTime: {
+        dayTime: "night",
+        dayNumber: 0
+    },
+    snackbar: {
+        text: "",
+        type: "success"
+    },
+    voteProps: {
+        type: "duel",
+        optionList: [],
+        votedObjects: [{}],
+        votes: 21,
+        allVotes: 37,
+        minChosen: 1,
+        voteState: "choosing",
+        maxChosen: 2,
+        callBack: (arg:any) => {}
+    },
+    chat: {
+        messages: [],
+        isActive: false
+    }
 } as Interfaces.GameState;

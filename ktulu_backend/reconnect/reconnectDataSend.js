@@ -1,17 +1,18 @@
 exports.reconnectDataSend = function(socket, io, gameData) {
     let me = socket.admin ? "admin" : socket.myData.characterName;
+    console.log("GDZIE JEST JARANIE KURWA", me, gameData.simulateCharacter);
     io.sendData(me, "prison", gameData.characterNick(gameData.prison));
     //TODO czy to powinno być wysyłane?
     io.sendData(me, "drunk", gameData.characterNick(gameData.drunkPlayer));
     io.sendData(me, "szulered", gameData.characterNick(gameData.szulered));
-    io.to(me).emit("setTime", gameData.dayNumber, gameData.dayTime);
-    io.to(me).emit("turnInfo", gameData.turnInfo[gameData.stageName])
+    io.sendData(me, "setTime", {dayNumber: gameData.dayNumber, dayTime: gameData.dayTime});
+    io.sendData(me, "turnInfo", gameData.turnInfo[gameData.stageName]);
     if(!socket.admin) {
         io.sendData(me, "myData", socket.myData);
         if(gameData.playerProps(gameData.characterNick(me)).isAlive) {
             io.sendData(me, "statueTeam", gameData.statueTeam());
             if(me !== gameData.prison) {
-                if(gameData.chat === socket.myData.team) io.to(me).emit("chatState", true);
+                if(gameData.chat === socket.myData.team) io.sendData(me, "chatState", true);
             }
             if(gameData.knowsTeammates.includes(me)) {
                 let newArr = []
@@ -22,12 +23,16 @@ exports.reconnectDataSend = function(socket, io, gameData) {
                 io.sendData(me, "fullInfoPlayers", newArr);
             } 
             if(gameData.activePlayerName === me) {
-                io.to(me).emit("start", gameData.turn, gameData.activePlayerName);
+                io.sendData(me, "start", {turn: gameData.turn, player: gameData.activePlayerName});
+            }
+            if(gameData.simulatePlayer === me) {
+                io.sendData(me, "manualSkip", {turn: gameData.turn, player: gameData.simulatePlayer});
             }
             if(gameData.simulateCharacter === me) {
-                io.sendData(me, "manualSkip", {turn: gameData.turn, player: simulatePlayer});
+                io.sendData(me, "manualSkip", {turn: gameData.turn, player: gameData.simulatePlayer});
             }
             if((gameData.isVote === true) && (gameData.allowedPlayers.includes(me)) && (!gameData.playersVoted.includes(me))) {
+                io.sendData(me, "callVote", {id: gameData.voteId, type: gameData.voteType, votedObjects: gameData.voteOptions, chosenNumber: gameData.inspectedNumber - gameData.inspected.length})
                 io.to(me).emit("callVote", gameData.voteId, gameData.voteType, gameData.voteOptions, gameData.inspectedNumber - gameData.inspected.length);
             }    
             console.log("DISCLOSED", gameData.disclosed)

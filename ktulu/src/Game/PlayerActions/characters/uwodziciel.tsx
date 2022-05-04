@@ -1,14 +1,14 @@
-export function uwodziciel(socket: any, io: any, gameData: any) {
-        gameData.setIsVote(true);
-        gameData.setVoteFunctionName("aliveExceptMe")
-        gameData.setVoteProps({
+import * as Interfaces from 'interfaces/interfaces'
+
+export function uwodziciel(socket: any,  gameData: any) {
+    gameData.setGameState((prevState:Interfaces.GameState) => ({
+        ...prevState,
+        isVote: true,
+        voteFunctionName: "aliveExceptMe",
+        voteProps: {
             type: "uwodziciel",
-            optionList: [],
-            votedObjects: gameData.aliveExceptMe(),
-            votes: 0,
-            allVotes: 0,
-            minChosen: 1, voteState: "choosing",
-            maxChosen: 1,
+            votedObjects: gameData.aliveExceptMe(gameData.gameState),
             callBack: gameData.actionCallBack
-        })
+        }
+    }))
 }

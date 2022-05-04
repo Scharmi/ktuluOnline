@@ -68,7 +68,7 @@ exports.inspectionVote = function(socket, io, gameData, voteOptions) {
                             sendVotes[i].isChosen = 0;
                         }
                     }
-                    io.to("everyone").emit("voteResults", "inspection", sendVotes);
+                    io.sendData("everyone", "voteResults", {type: "inspection", results: sendVotes});
                     console.log(nextVoteOptions)
                     if((nextVoteOptions.length !== 0) && (nextVoteOptions.length !== voteOptions.length)) {
                         io.sendData("admin", "alert", {type: "nextVote"});

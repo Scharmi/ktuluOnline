@@ -1,15 +1,14 @@
-export function sedzia(socket: any, io: any, gameData: any, sentData: any) {
-        gameData.setIsVote(true);
-        gameData.setVoteFunctionName("voteProps")
-        gameData.setVoteProps({
-            type: "killing",
-            optionList: [],
-            votedObjects: sentData,
-            votes: 0,
-            allVotes: 0,
-            minChosen: 1, voteState: "choosing",
-            maxChosen: 1,
-            callBack: gameData.actionCallBack
-        })
+import * as Interfaces from 'interfaces/interfaces'
 
+export function sedzia(socket: any,  gameData: any, sentData: any) {
+    gameData.setGameState((prevState:Interfaces.GameState) => ({
+        ...prevState,
+        isVote: true,
+        voteFunctionName: "killableExceptTeam",
+        voteProps: {
+            type: "killing",
+            votedObjects: sentData,
+            callBack: gameData.actionCallBack
+        }
+    }))
 }
