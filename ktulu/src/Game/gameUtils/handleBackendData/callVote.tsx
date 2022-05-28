@@ -4,7 +4,6 @@ export const callVote = ((gameData:any, setGameState: Function, data: any) => {
     setGameState((prevState: Interfaces.GameState) => {
         const isVote:boolean = (data.type !== "no");
         const voteCallBack = ((options:any) => {
-            console.log("VOTED", gameData.myData)
             gameData.socket.emit("vote", gameData.myData.characterName, data.id, options);
         })
         let chosen = 1;

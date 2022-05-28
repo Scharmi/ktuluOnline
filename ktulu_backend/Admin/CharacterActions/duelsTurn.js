@@ -24,7 +24,6 @@ exports.duelsTurn = function(socket, io, gameData) {
         let player2Props = gameData.playerProps(player2);
         if(gameData.inviteExists(player1, player2)) io.sendData(player1Props.characterName, "snackbar", {type: "error", text:  "Wyzwanie do tego gracza zostało już wysłane"});
         if(gameData.usedDuels < gameData.duelsLimit) {
-            console.log("SZERYF:", gameData.szeryfAlive())
             if(!gameData.szeryfAlive()) {
                 io.sendData(player1Props.characterName, "snackbar", {type: "success", text:  "Wyzwano gracza na pojedynek"});
                 if((player1Props.isAlive) && (player2Props.isAlive)) {

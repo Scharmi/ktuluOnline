@@ -10,7 +10,6 @@ export function RequestAlertList(props: Props) {
     let alertArray = props.alertArray;
     function deleteAlert(index: any) {
         props.setGameState((prevState:any) => {
-            console.log("DELETE@")
             let newArr = [...prevState.alerts];
             newArr.splice(index, 1);
             return {...prevState, alerts: newArr};

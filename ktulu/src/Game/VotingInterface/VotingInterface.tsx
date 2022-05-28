@@ -20,8 +20,6 @@ interface Props {
 }
 function VotingCard (props:Props) {
     let voteState = props.voteState
-    if(typeof(props.votedObjects) === "function") console.log("FUNKCJA")
-    console.log(typeof(props.votedObjects), props.votedObjects)
     if ((voteState === "gotResults") && (typeof(props.type) !== "undefined") && (typeof(props.optionList) !== "undefined")){
         return (
             <div>
@@ -31,7 +29,6 @@ function VotingCard (props:Props) {
         )
     }
     if ((voteState === "choosing") && (typeof(props.type) !== "undefined") && (typeof(props.votedObjects) !== "undefined") && (typeof(props.callBack) !== "undefined")) {
-        console.log(props.votedObjects, "S1")
         return (
             <div className="votingInterface">
                 <ActionChoosingInterface

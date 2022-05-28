@@ -1,6 +1,5 @@
 exports.reconnectDataSend = function(socket, io, gameData) {
     let me = socket.admin ? "admin" : socket.myData.characterName;
-    console.log("GDZIE JEST JARANIE KURWA", me, gameData.simulateCharacter);
     io.sendData(me, "prison", gameData.characterNick(gameData.prison));
     //TODO czy to powinno być wysyłane?
     io.sendData(me, "drunk", gameData.characterNick(gameData.drunkPlayer));
@@ -35,12 +34,10 @@ exports.reconnectDataSend = function(socket, io, gameData) {
                 io.sendData(me, "callVote", {id: gameData.voteId, type: gameData.voteType, votedObjects: gameData.voteOptions, chosenNumber: gameData.inspectedNumber - gameData.inspected.length})
                 io.to(me).emit("callVote", gameData.voteId, gameData.voteType, gameData.voteOptions, gameData.inspectedNumber - gameData.inspected.length);
             }    
-            console.log("DISCLOSED", gameData.disclosed)
             for(let i = 0; i < gameData.disclosed.length; i++) {
                 let player = gameData.disclosed[i];
                 for(let j = 0; j < gameData.allFullInfoPlayers.length; j++) {
                     if(gameData.allFullInfoPlayers[j].characterName === player) {
-                        console.log("GOT PLAYER")
                         io.sendData(me, "fullInfoPlayers", [gameData.allFullInfoPlayers[j]]);
                     }
                 }

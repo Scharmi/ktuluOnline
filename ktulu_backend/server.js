@@ -60,7 +60,6 @@ function server() {
       hash  = ((hash << 5) - hash) + chr;
       hash |= 0;
     }
-    console.log("HASH:", hash)
     return hash;
   };
   //hash: 3174880
@@ -98,14 +97,12 @@ function server() {
           
         }
         socket.name = name;
-        console.log("RECONNECT NAME", reconnect(name))
         if(reconnect(name)) {
           socket.reconnect = true;
           socket.admin = isAdmin;
           if(!isAdmin) {
             socket.join("allPlayers");
             socket.join("everyone");
-            console.log("RECONNECT")
             removeDisconnectedName(name);
             socket.emit("Game started")
           }

@@ -21,7 +21,6 @@ export function Chat(props: Props) {
     };
     useEffect(scrollToBottom, [props.messageList]);
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(text)
         setText(event.target.value);
     };
     const handleKeyDown = (event:any) => {
@@ -30,7 +29,6 @@ export function Chat(props: Props) {
         }
     }
     function MessageList(messages: Array<Message>) {
-        console.log(messages)
         return messages.map((item:any) => 
             <ListItem key = {item.sender + item.text}><span><b>{item.sender + ": "}</b>{item.text}</span></ListItem>
         );

@@ -5,14 +5,14 @@ const actionButtons = ((gameState: Interfaces.GameState, socket: any) => {
     return (
         [{
             text: "Wyzwij na pojedynek",
-            function: (name: string) => {socket.emit("duelInvite", gameState.myData.name, name); console.log("INVITE")},
+            function: (name: string) => {socket.emit("duelInvite", gameState.myData.name, name);},
             isEnabled: true
         }]
     )
     return (
         [{
             text: "Wyzwij na pojedynek",
-            function: (name: string) => {socket.emit("duelInvite", gameState.myData.name, name); console.log("INVITE")},
+            function: (name: string) => {socket.emit("duelInvite", gameState.myData.name, name);},
             isEnabled: false
         }]
     )

@@ -63,7 +63,6 @@ export function PreGame(props: Props) {
     useEffect(() => {
         props.socket.on("Game started", () => {
             props.socket.emit("Game started response");
-            console.log("ADMIN:", adminState)
             if(adminState) props.setGameState("adminPanel")
             else props.setGameState("game")
         });
