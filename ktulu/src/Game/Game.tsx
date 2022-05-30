@@ -71,7 +71,6 @@ export function Game(props:Props) {
             return <></>
         }
     }
-    
     return (
         <div className="game">
                 <GameInfo whoseTurn={gameState.whoseTurn} gameTime={gameState.gameTime} whoHasStatue={gameState.statueTeam}/>

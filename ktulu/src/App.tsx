@@ -31,7 +31,6 @@ function App() {
         </div>
       );
     }
-
     if(gameState === "adminPanel")
     return (
       <div className="App">

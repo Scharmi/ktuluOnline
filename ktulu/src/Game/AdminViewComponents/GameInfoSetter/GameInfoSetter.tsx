@@ -1,6 +1,6 @@
-import { useState, ChangeEvent } from 'react'
+import { useState } from 'react'
 import './GameInfoSetter.css'
-import { Button, Select, Dialog, MenuItem, FormControl, InputLabel } from '@material-ui/core'
+import { Button, Select, Dialog, FormControl, InputLabel } from '@material-ui/core'
 import { Close } from '@material-ui/icons'
 interface Time {
     dayTime: string;

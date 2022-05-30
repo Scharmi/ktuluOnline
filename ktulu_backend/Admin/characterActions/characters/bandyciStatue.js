@@ -9,6 +9,5 @@ exports.bandyciStatue = function(socket, io, gameData) {
     if((player.team === "bandyci") && (player.characterName !== gameData.prison))
     gameData.statue = player.characterName
     else
-    console.log("ZŁA OSOBA")
     io.to("admin").emit("end", "bandyciStatue");
 }

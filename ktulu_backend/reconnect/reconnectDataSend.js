@@ -1,7 +1,6 @@
 exports.reconnectDataSend = function(socket, io, gameData) {
     let me = socket.admin ? "admin" : socket.myData.characterName;
     io.sendData(me, "prison", gameData.characterNick(gameData.prison));
-    //TODO czy to powinno być wysyłane?
     io.sendData(me, "drunk", gameData.characterNick(gameData.drunkPlayer));
     io.sendData(me, "szulered", gameData.characterNick(gameData.szulered));
     io.sendData(me, "setTime", {dayNumber: gameData.dayNumber, dayTime: gameData.dayTime});

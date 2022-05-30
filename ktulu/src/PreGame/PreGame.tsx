@@ -10,7 +10,6 @@ interface Props {
 }
 
 export function PreGame(props: Props) {
-    
     const [choosePlayers, setChoosePlayers] = useState(false);
     const [voteOptions, setVoteOptions] = useState([]);
     const [myName, setMyName] = useState("");
@@ -70,7 +69,6 @@ export function PreGame(props: Props) {
             props.socket.off("Game started")
         }
     }, [adminState, props])
-
     function choosePlayersCallback(players: any) {
         props.socket.emit("Chosen characters", players)
         props.socket.emit("gameProps", pojedynki, bandyci, przeszukania)
@@ -153,8 +151,5 @@ export function PreGame(props: Props) {
                 </div>
             )
         }
-
-        
     }
-
 }
