@@ -15,7 +15,7 @@ exports.hanging = function(socket, io, gameData) {
                 "systemMessage",
                 {
                     sender:"",
-                    message: 
+                    text: 
                         gameData.playerProps(gameData.hanged).characterName + " został powieszony " +
                         "a jego rolą był(a) " + gameData.playerProps(gameData.hanged) + "."
 

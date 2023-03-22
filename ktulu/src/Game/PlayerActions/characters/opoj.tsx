@@ -1,6 +1,7 @@
 import * as Interfaces from 'interfaces/interfaces'
 
 export function opoj(socket: any,  gameData: any) {
+    console.log("OPUJ");
     gameData.setGameState((prevState:Interfaces.GameState) => ({
         ...prevState,
         alerts: [

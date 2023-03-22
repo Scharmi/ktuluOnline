@@ -43,7 +43,7 @@ export function Game(props:Props) {
     
     useEffect(() => {
         socket.on("backendData", (type: string, object: any) => {
-            //console.log("backendData", type, object)
+            console.log("backendData", type, object);
             handleBackendData[type as keyof(HandlebackendData)](gameData, setGameState, object);
         });
         return () => {

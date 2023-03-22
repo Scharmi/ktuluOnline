@@ -4,7 +4,7 @@ export const start = ((gameData:any, setGameState: Function, props: any) => {
     gameData.turnPlayer = props.player;
     let name = gameData.myData.characterName;
     if(gameData.myData.characterName === "sędzia") name = "sedzia";
-    if(gameData.myData.characterName === "pijany sędzia") name = "sedzia";
+    if((gameData.myData.characterName === "pijany sędzia") && (props.turn !== "opoj")) name = "sedzia";
     if((props.player === name)) {
         if(props.data === undefined) {
             playerActions[props.turn as keyof(Actions)](gameData.socket, gameData);
