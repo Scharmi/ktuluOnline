@@ -12,7 +12,7 @@ function server() {
     sslOptions.key = fs.readFileSync("./cert/key.key");
     sslOptions.cert = fs.readFileSync("./cert/cert.crt")
   }
-  const httpServer = require("http").createServer();
+  const httpServer = require(prod ? "https" : "http").createServer(sslOptions);
   const io = require("socket.io")(httpServer, {
     cors: {
       origin: "*",
