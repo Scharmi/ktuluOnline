@@ -6,7 +6,7 @@ export function sedzia(socket: any,  gameData: any, sentData: any) {
     gameData.setGameState((prevState:Interfaces.GameState) => ({
         ...prevState,
         isVote: true,
-        voteFunctionName: "killableExceptTeam",
+        voteFunctionName: "voteProps",
         voteProps: {
             type: "killing",
             votedObjects: sentData,
