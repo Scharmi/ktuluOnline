@@ -90,7 +90,7 @@ export function PreGame(props: Props) {
     if(enteredName === false) {
         return (
             <div className="preGame">
-                <EnterNickname submitNickNameCallback={submitName} socket={props.socket} setAdmin={setAdminState}/>
+                <EnterNickname password={password} submitNickNameCallback={submitName} socket={props.socket} setAdmin={setAdminState}/>
                 {passwordRender()}
             </div>
         )

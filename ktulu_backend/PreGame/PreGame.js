@@ -7,10 +7,17 @@ exports.preGame = function(socket, io, removeName, gameData) {
         }
         return result;
       }
-    socket.on("isTaken",  (arg1, callback) => {
+    socket.on("isTaken",  (name, password, admin, callback) => {
+      if((admin == true) && (gameData.hash(password) === 3174880)) {
         callback({
-          status: (gameData.namesArray.includes(arg1) || (arg1.length >= 32) || (!gameData.checkString(arg1)))
+          status: false
         });
+      }
+      else {
+        callback({
+          status: (gameData.namesArray.includes(name) || (name.length >= 32) || (!gameData.checkString(name)))
+        });
+      }
       });
       socket.once("enterName", (arg, isAdmin, password) => {
           if(gameData.hash(password) !== 3174880) isAdmin = false;

@@ -9,8 +9,8 @@ function server() {
   const sslOptions = {};
   if(prod) {
     const fs = require("fs");
-    sslOptions.key = fs.readFileSync("./cert/key.key");
-    sslOptions.cert = fs.readFileSync("./cert/cert.crt")
+    sslOptions.key = fs.readFileSync("./cert/privkey.pem");
+    sslOptions.cert = fs.readFileSync("./cert/fullchain.pem")
   }
   const httpServer = require(prod ? "https" : "http").createServer(sslOptions);
   const io = require("socket.io")(httpServer, {
@@ -84,7 +84,7 @@ function server() {
     }
     else {
       console.log("Reconnection Attempt", gameData.gameStage, socket.id)
-      socket.on("isTaken",  (name, callback) => {
+      socket.on("isTaken",  (name, password, isAdmin, callback) => {
         console.log("DISCONNECTED:", gameData.disconnectedPlayers)
         callback({
           status: !gameData.disconnectedPlayers.includes(name)

@@ -6,6 +6,7 @@ interface Props {
     submitNickNameCallback: Function;
     socket: any;
     setAdmin: Function;
+    password: string;
 }
 export function EnterNickname(props: Props) {
     const [name, setName] = useState("");
@@ -27,9 +28,9 @@ export function EnterNickname(props: Props) {
             return !prevState
         });
     }
-    function submitName(name: string, isAdmin: boolean) {
+    function submitName(name: string, password:string, isAdmin: boolean) {
         let isTaken = true;
-        props.socket.emit("isTaken", name, (response: any) => {
+        props.socket.emit("isTaken", name, password, isAdmin, (response: any) => {
             isTaken = response.status;
             if(isTaken === true) setOpen(true)
             else {
@@ -58,7 +59,7 @@ export function EnterNickname(props: Props) {
                 label="Admin"
             />
             <div className="confirmButton">
-                <Button onClick={() => {submitName(name, tickState)}}>Zatwierdź</Button>
+                <Button onClick={() => {submitName(name, props.password, tickState)}}>Zatwierdź</Button>
             </div>
             <Snackbar open={open} autoHideDuration={6000} onClose={() => {}}>
                 <Alert onClose={handleClose2} severity="error">
