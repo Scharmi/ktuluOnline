@@ -3,6 +3,7 @@ import { ConnectedPlayers } from './ConnectedPlayers/ConnectedPlayers'
 import { VotingInterface } from '../Game/VotingInterface/VotingInterface'
 import { TextField } from '@material-ui/core'
 import { useEffect, useState } from 'react'
+import './PreGame.css'
 interface Props {
     socket: any;
     setGameState: Function;

@@ -96,6 +96,7 @@ exports.duel = function(socket, io, gameData, player1, player2) {
                                 if(gameData.allFullInfoPlayers[i].name === obj.player[0].text) playerIndex = i;
                             }
                             let characterName = gameData.allFullInfoPlayers[playerIndex].characterName
+                            io.sendData("everyone", "systemMessage", {sender:"", text:"Sędzia zadecydował że zginie " + gameData.characterNick(characterName) + "."});
                             playersToKill = [characterName];
                         }
                         else {
@@ -107,7 +108,8 @@ exports.duel = function(socket, io, gameData, player1, player2) {
                         character, 
                         "start", 
                         {
-                            turn: gameData.turn, 
+                            //TODO potencjalnie zmienić na "duel"
+                            turn: "sedzia", 
                             player: "sedzia", 
                             data: [
                                 {

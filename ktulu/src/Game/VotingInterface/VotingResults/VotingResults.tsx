@@ -45,8 +45,8 @@ export function VotingResults(props: Props) {
             } 
         }
         if(type === "duel") {
-            if(chosenNumber === 1) return "W pojedynku zginąć ma " + chosenArray + " jeśli sędzia żyje to ma 5 sekund na ujawnienie się i zmianę wyniku pojedynku";
-            if(chosenNumber === 2) return "W pojedynku zginąć mają " + chosenArray + " jeśli sędzia żyje to ma 5 sekund na ujawnienie się i zmianę wyniku pojedynku";
+            if(chosenNumber === 1) return "W pojedynku zginąć ma " + chosenArray + ". Jeśli sędzia żyje to ma 5 sekund na ujawnienie się i zmianę wyniku pojedynku";
+            if(chosenNumber === 2) return "W pojedynku zginąć mają " + chosenArray + ". Jeśli sędzia żyje to ma 5 sekund na ujawnienie się i zmianę wyniku pojedynku";
         }
         if(type === "dailyRummage") {
             if(chosenNumber === 1) return "Przeszukany zostaje " + chosenArray;

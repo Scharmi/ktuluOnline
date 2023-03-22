@@ -309,25 +309,27 @@ export function AdminView(props:Props) {
     return (
         <div className="adminView">
             <Paper elevation={4}>
-                <GameInfo whoseTurn={gameState.whoseTurn} gameTime={gameState.gameTime} whoHasStatue={gameState.statueTeam}/>
-                {vote(gameState.isVote)}
-                <RequestAlertList socket={socket} alertArray={gameState.alerts} setGameState={setGameState} gameData={gameData}/>
-                <div><Chat sending={true} messageList={gameState.chat.messages} socket={socket} myName={""}/></div>
-                <h2>Gracze biorący udział w rozgrywce:</h2>
-                <PlayerTable
-                    socket={socket}
-                    players={gameState.fullInfoPlayers}
-                    crewmates={templateCrewmates}
-                    disclosedPlayers={gameState.fullInfoPlayers}
-                    duelFunction={() => {}}
-                    inspectionFunction={() => {}}
-                    extraButtons={templateAdminActionButtons}
-                    specialButtons={[]}
-                    myData={templateAdminData}
-                    prison={gameState.prison}
-                    drunk={gameState.drunk}
-                    szulered={gameState.szulered}
-                />
+                <div className="paperContainer">
+                    <GameInfo whoseTurn={gameState.whoseTurn} gameTime={gameState.gameTime} whoHasStatue={gameState.statueTeam}/>
+                    {vote(gameState.isVote)}
+                    <RequestAlertList socket={socket} alertArray={gameState.alerts} setGameState={setGameState} gameData={gameData}/>
+                    <div><Chat sending={true} messageList={gameState.chat.messages} socket={socket} myName={""}/></div>
+                    <h2>Gracze biorący udział w rozgrywce:</h2>
+                    <PlayerTable
+                        socket={socket}
+                        players={gameState.fullInfoPlayers}
+                        crewmates={templateCrewmates}
+                        disclosedPlayers={gameState.fullInfoPlayers}
+                        duelFunction={() => {}}
+                        inspectionFunction={() => {}}
+                        extraButtons={templateAdminActionButtons}
+                        specialButtons={[]}
+                        myData={templateAdminData}
+                        prison={gameState.prison}
+                        drunk={gameState.drunk}
+                        szulered={gameState.szulered}
+                    />
+                </div>
             </Paper>
             <div className="endGame"><Button variant="contained" color="primary" onClick={() => {props.socket.emit("forceEnd")}}>Wymuś koniec kolejki</Button></div>
             <div className="endGame"><Button variant="contained" color="primary" onClick={() => {props.socket.emit("GAME OVER")}}>Wymuś koniec gry</Button></div>

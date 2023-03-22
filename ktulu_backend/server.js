@@ -163,8 +163,9 @@ function server() {
   process.on('SIGINT', function() {
     console.log("SERVER CLOSED")
     httpServer.close()
-    io.removeAllListeners()
+    io.removeAllListeners();
     io.close();
+    io.exit()
     process.exit();
   });
   httpServer.listen(8080);

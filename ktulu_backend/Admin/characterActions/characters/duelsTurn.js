@@ -68,7 +68,7 @@ exports.duelsTurn = function(socket, io, gameData) {
         let player2Props = gameData.playerProps(player2);
         if(gameData.inviteExists(player2, player1)) {
             gameData.deleteDuel(player1, player2);
-            io.sendData(player2Props.characterName, "alert", {type: "default", header: "Gracz " + player1 + " odrzucił Twoje wyzwanie"});
+            io.sendData(player2Props.characterName, "snackbar", {type: "warning", text: "Gracz " + player1 + " odrzucił Twoje wyzwanie"});
         }
         else {
             console.log("INVITE DOESN'T EXIST")

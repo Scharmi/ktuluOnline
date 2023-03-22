@@ -1,6 +1,9 @@
 exports.transmitter = function(socket, io, gameData) {
     socket.on("action", (str,obj) => {
-        if(str === socket.myData.characterName)
+
+        let name = socket.myData.characterName;
+        console.log("ACTION", str, name, obj);
+        if(str === name)
         io.to("admin").emit("action", str, obj);
         else
         console.log("TRANSMISSION BLOCKED")
