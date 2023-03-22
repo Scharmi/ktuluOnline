@@ -55,6 +55,7 @@ exports.transmitter = function(socket, io, gameData) {
                 }
                 else {
                     io.sendData(sender, "snackbar", {type: "error", text:  "Wiadomość jest zbyt długa lub zawiera niedozwolone znaki"});
+                    //TODO stary format chyba
                     io.to(sender).emit("snackbar", "error", "Wiadomość jest zbyt długa lub zawiera niedozwolone znaki");
                 }
 

@@ -3,7 +3,7 @@ exports.setGameDataUtils = function setUtils(gameData) {
         console.log("GAME OVER");
         if(gameData.isGameOver === false) {
             io.sendData("everyone", "fullInfoPlayers", gameData.allFullInfoPlayers);
-            io.sendData("everyone", "alert", {type:"default", header: team + " wygrali"});
+            io.sendData("everyone", "systemMessage", {sender:"", text: team.toUpperCase() + " WYGRALI"});
             gameData.isGameOver = true;
             io.to("admin").emit("GAME OVER")
         }
@@ -36,6 +36,7 @@ exports.setGameDataUtils = function setUtils(gameData) {
     gameData.setStatueTeam = function(characterName) {
         gameData.statue = characterName;
         io.sendData("everyone", "statueTeam", gameData.statueTeam());
+        io.sendData("everyone", "systemMessage", {sender: "", text: gameData.statueTeam().toUpperCase() + " przejęli posążek"});
         io.sendData("everyone", "snackbar", {type: "warning", text: gameData.statueTeam() + " przejęli posążek"});
         if(gameData.statueTeam() === "indianie") {
             gameData.shiftTurn("plonacySzal")

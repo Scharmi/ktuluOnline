@@ -7,9 +7,11 @@ import './Chat.css'
 interface Message {
     sender: string;
     text: string;
+    system?: boolean;
 }
 interface Props {
-    messageList: Array<Message>
+    messageList: Array<Message>;
+    sending: boolean;
     myName: string;
     socket:any;
 }
@@ -29,13 +31,32 @@ export function Chat(props: Props) {
         }
     }
     function MessageList(messages: Array<Message>) {
-        return messages.map((item:any) => 
-            <ListItem key = {item.sender + item.text}><span><b>{item.sender + ": "}</b>{item.text}</span></ListItem>
+        return messages.map((item:any) => {
+            if((item.system === undefined) || (item.system === false))
+                return <ListItem key = {item.sender + item.text}><span><b>{item.sender + ": "}</b>{item.text}</span></ListItem>
+            return <ListItem key = {item.sender + item.text}><span className="systemMessage">{item.text}</span></ListItem>
+        }
         );
     }
     function sendMessage() {
         props.socket.emit("message", props.myName, text)
         setText("")
+    }
+    function renderSending() {
+        if(props.sending) return (
+            <div className="textField">
+            <TextField
+                fullWidth
+                variant="filled"
+                placeholder="Wyślij wiadomość do członków swojej drużyny"
+                value={text}
+                onChange={handleChange}     
+                onKeyDown={handleKeyDown}
+            />
+            <Button onClick={sendMessage}>Wyślij</Button>
+        </div>
+        )
+        else return <></>
     }
     return (
         <div className="wrapper">
@@ -47,19 +68,8 @@ export function Chat(props: Props) {
                             <div ref={messagesEndRef} />
                         </List>
                     </div>
-                    
                 </div>
-            </div>
-            <div className="textField">
-                <TextField
-                    fullWidth
-                    variant="filled"
-                    placeholder="Wyślij wiadomość do członków swojej drużyny"
-                    value={text}
-                    onChange={handleChange}     
-                    onKeyDown={handleKeyDown}
-                />
-                <Button onClick={sendMessage}>Wyślij</Button>
+                {renderSending()}
             </div>
         </div>
     )

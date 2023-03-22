@@ -29,3 +29,7 @@
     display: flex;
     margin-left: 20%;
 }
+.systemMessage {
+    color: red;
+    font-weight: bold;
+}

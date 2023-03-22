@@ -58,8 +58,13 @@ exports.isHanging = function(socket, io, gameData) {
             gameData.alertIsHanging = true
             socket.once("isHangingEnd", () => {
                 gameData.alertIsHanging = false
-                if(wieszamy === "Wieszamy")
-                gameData.shiftTurn("hanging");
+                if(wieszamy === "Wieszamy") {
+                    gameData.shiftTurn("hanging");
+                    io.sendData("everyone", "systemMessage", {message: "Miasto zdecydowało, że wieszamy."});
+                }
+                else {
+                    io.sendData("everyone", "systemMessage", {message: "Miasto zdecydowało, że nie wieszamy."});
+                }
                 io.to("admin").emit("end", "isHanging")
             })
         }

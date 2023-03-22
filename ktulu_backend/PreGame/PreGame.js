@@ -39,7 +39,7 @@ exports.preGame = function(socket, io, removeName, gameData) {
                 socket.on("Game start", () => {
                   io.to("admin").emit("Choose characters", gameData.namesArray.length, gameData.characters);
                   socket.on("gameProps", (duels, bandits, inspections) => {
-                    console.log("GOT GAME PROPS");
+                    //console.log("GOT GAME PROPS");
                     gameData.duelsLimit = parseInt(duels);
                     gameData.banditsWin = parseInt(bandits);
                     gameData.inspectedNumber = parseInt(inspections)

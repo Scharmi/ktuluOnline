@@ -8,6 +8,6 @@ exports.indianieStatue = function(socket, io, gameData) {
     let player = gameData.allFullInfoPlayers[playerIndex];
     if((player.team === "indianie") && (player.characterName !== gameData.prison))
     gameData.statue = player.characterName
-    else
+    //Potencjalnie potem wyrzucić
     io.to("admin").emit("end", "indianieStatue");
 }

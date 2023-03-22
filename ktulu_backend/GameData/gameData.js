@@ -183,6 +183,7 @@ exports.gameDataGenerator = function() {
         gameData.opojOnce = false;
         gameData.checkString = function(str) {
           let polish = ['ą', 'ę', 'ł', 'ó', 'ć', 'ó', 'ś', 'ź', 'ż']
+          if(str.length === 0) return false;
           for(let i = 0; i < str.length; i++) {
             if((str.charCodeAt(i) > 127) && (!polish.includes(str[i].toLowerCase()))) return false;
           }

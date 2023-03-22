@@ -77,7 +77,6 @@ exports.duel = function(socket, io, gameData, player1, player2) {
                 }
             }
             for(let i = 0; i < sendVotes.length; i++) {
-
                 if(sendVotes[i].isChosen === 1) {   
                     playersToKill.push(gameData.playerProps(sendVotes[i].optionName).characterName);
                 }
@@ -146,7 +145,31 @@ exports.duel = function(socket, io, gameData, player1, player2) {
                 io.sendData("everyone", "turnInfo", "Tura pojedynków");
                 gameData.duel = false;
                 for(let i = 0; i < playersToKill.length; i++) {
-                    if(playersToKill[i] === gameData.statue) gameData.gameOver("miastowi")
+                    let otherPlayer = (gameData.characterNick(playersToKill[i]) === player1 ? player2 : player1);
+                    io.sendData(
+                        "everyone",
+                        "systemMessage", 
+                        {
+                            sender:"", 
+                            text: "Gracz "+ 
+                            gameData.characterNick(playersToKill[i]) + 
+                            " został zabity podczas pojedynku z graczem " + otherPlayer +
+                            ", a jego rolą był(a) " + playersToKill[i],
+                        }
+                    );
+                    if(playersToKill[i] === gameData.statue) {
+                        io.sendData(
+                            "everyone",
+                            "systemMessage", 
+                            {
+                                sender:"", 
+                                text: "Gracz "+ 
+                                gameData.characterNick(playersToKill[i]) + 
+                                " był w posiadaniu posążka, więc miastowi wygrali!"
+                            }
+                        );
+                        gameData.gameOver("miastowi")
+                    }
                     gameData.kill(playersToKill[i]);
                 }
             })

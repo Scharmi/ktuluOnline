@@ -17,6 +17,7 @@ import { snackbar } from './handleBackendData/snackbar';
 import { message } from './handleBackendData/message';
 import { chatState } from './handleBackendData/chatState'
 import { start } from './handleBackendData/start'
+import { systemMessage } from './handleBackendData/systemMessage';
 
 export interface HandlebackendData {
     fullInfoPlayers: Function;
@@ -56,5 +57,6 @@ export const handleBackendData = {
     snackbar: snackbar,
     message: message,
     chatState: chatState,
-    start : start
+    start : start,
+    systemMessage: systemMessage
 } as HandlebackendData;

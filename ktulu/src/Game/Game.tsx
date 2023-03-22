@@ -26,10 +26,15 @@ export function Game(props:Props) {
     }   
 
     function renderChat() {
-        if(gameState.chat.isActive) {
-            return <div><Chat messageList={gameState.chat.messages} socket={socket} myName={gameState.myData.characterName}/></div>
-        }
-        else return <></>
+        return (
+            <div>
+                <Chat
+                sending={gameState.chat.isActive}
+                messageList={gameState.chat.messages} 
+                socket={socket} 
+                myName={gameState.myData.characterName}/>
+            </div>
+        )
     }
 
     useEffect(() => {
@@ -38,6 +43,7 @@ export function Game(props:Props) {
     
     useEffect(() => {
         socket.on("backendData", (type: string, object: any) => {
+            //console.log("backendData", type, object)
             handleBackendData[type as keyof(HandlebackendData)](gameData, setGameState, object);
         });
         return () => {

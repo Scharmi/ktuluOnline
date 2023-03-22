@@ -10,11 +10,13 @@ exports.opoj = function(socket, io, gameData) {
         gameData.drunk.push(characterName);
         gameData.drunkPlayer = characterName;
         gameData.opojOnce = true;
+        io.sendData(characterName, "drunk", gameData.characterNick(characterName));
         io.to(characterName).emit("drunk", gameData.characterNick(characterName));
         if(gameData.allFullInfoPlayers[playerIndex].team !== "miastowi") {
             let members = gameData.activeMembers(gameData.allFullInfoPlayers[playerIndex].team);
             console.log(members)
             for(let i = 0; i < members.length; i++) {
+                io.sendData(members[i].characterName, "drunk", gameData.characterNick(characterName));
                 io.to(members[i].characterName).emit("drunk", gameData.characterNick(characterName));
             }
         }

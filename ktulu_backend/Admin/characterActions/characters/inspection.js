@@ -18,8 +18,18 @@ exports.inspection = function(socket, io, gameData) {
             let player = gameData.playerProps(name);
             let characterName = player.characterName;
             if(characterName === gameData.statue) {
+                io.sendData("everyone", "systemMessage", {
+                    sender: "",
+                    text: "Gracz " + name + " został przeszukany i znaleziono u niego posążek, więc miastowi wygrali!"
+                });
                 gameData.gameOver("miastowi");
                 console.log("PRZESZUKANIE GAME OVER", characterName);
+            }
+            else {
+                io.sendData("everyone", "systemMessage", {
+                    sender: "",
+                    text: "Gracz " + name + " został przeszukany i nie znaleziono u niego posążka."
+                });
             }
             console.log("INSPECTION:", gameData.inspected)
         }

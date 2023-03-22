@@ -13,7 +13,6 @@ function server() {
     sslOptions.cert = fs.readFileSync("./cert/cert.crt")
   }
   const httpServer = require(prod ? "https" : "http").createServer(sslOptions);
-
   const io = require("socket.io")(httpServer, {
     cors: {
       origin: "*",
@@ -65,10 +64,10 @@ function server() {
   //hash: 3174880
   console.log(gameData.gameStage)
   io.sendData = ((reciever, type, object) => {
-    console.log("Reciever: ", reciever);
+    /*console.log("Reciever: ", reciever);
     console.log("Type: ", type);
     console.log("Object: ",object);
-    console.log("\n");
+    console.log("\n");*/
     io.to(reciever).emit("backendData", type, object);
   });
   io.on("connection", (socket) => {
@@ -146,8 +145,7 @@ function server() {
     socket.once("disconnect", (reason) => {
       delete socket;
       if(gameData.gameStage === "preGame") {
-        removeName(socket.name);
-        console.log("disconnected and removed name"+socket.name);     
+        removeName(socket.name); 
       }
       if(gameData.gameStage === "game") {
         gameData.disconnectedPlayers.push(socket.name)

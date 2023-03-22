@@ -18,6 +18,7 @@ exports.admin = function(socket, io, gameData, server) {
         let player = gameData.playerProps(name);
         io.sendData("everyone", "fullInfoPlayers", [player]);
     })
+    io.sendData("admin", "fullInfoPlayers", gameData.allFullInfoPlayers);
     io.to("admin").emit("Full Players Info", gameData.allFullInfoPlayers, gameData.namesArray);  
     socket.emit("Full Players Info", gameData.allFullInfoPlayers, gameData.namesArray)
     socket.once("allPlayersConnected", () => {

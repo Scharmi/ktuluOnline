@@ -22,6 +22,7 @@ exports.game = function(socket, io, gameData) {
     io.sendData(socket.myData.id, "myData", socket.myData);
     io.sendData(socket.myData.id, "prison", gameData.prison);
     io.sendData("everyone", "allPlayers", gameData.playersArray);
+    io.sendData("admin", "fullInfoPlayers", gameData.allFullInfoPlayers);
     io.to("admin").emit("Full Players Info", gameData.allFullInfoPlayers, gameData.namesArray);
     transmitter(socket, io, gameData);
 }

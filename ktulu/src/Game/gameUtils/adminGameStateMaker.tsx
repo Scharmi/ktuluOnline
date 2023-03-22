@@ -1,7 +1,7 @@
 import { templateFullInfoPlayer } from  '../templates/templates'
 import * as Interfaces from '../../interfaces/interfaces'
 
-export const gameStateMaker = {
+export const adminGameStateMaker = {
     drunk: "",
     szulered: "",
     allPlayers: [],
@@ -13,6 +13,7 @@ export const gameStateMaker = {
     voteFunctionName: "MyTeamFree",
     whoseTurn: "",
     alerts: [],
+    remainingVoters: [],
     statueTeam: "bandyci",
     gameTime: {
         dayTime: "night",
@@ -22,6 +23,7 @@ export const gameStateMaker = {
         text: "",
         type: "success"
     },
+    voteState: "choosing",
     voteProps: {
         type: "duel",
         optionList: [],
@@ -37,4 +39,4 @@ export const gameStateMaker = {
         messages: [],
         isActive: false
     }
-} as Interfaces.GameState;
+} as Interfaces.AdminGameState;

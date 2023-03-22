@@ -65,6 +65,7 @@ exports.runStage = function runStage(counter, gameData) {
         function forceEnd() {
             io.to("admin").emit("end", gameData.stageName);
         }
+        console.log("STAGE NAME" , stageName, gameData.isTurnPlaying(stageName));
         if(gameData.isTurnPlaying(stageName) === "play") {
             gameData.activePlayerName = activePlayer;
             io.sendData(activePlayer, "allPlayers", gameData.playersArray);

@@ -10,6 +10,7 @@ interface Props {
 }
 
 export function PreGame(props: Props) {
+    //
     const [choosePlayers, setChoosePlayers] = useState(false);
     const [voteOptions, setVoteOptions] = useState([]);
     const [myName, setMyName] = useState("");

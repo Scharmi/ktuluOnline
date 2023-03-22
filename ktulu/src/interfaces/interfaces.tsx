@@ -37,3 +37,30 @@ export interface GameState {
     }
     voteProps: any;
 }
+export interface AdminGameState {
+    drunk: string;
+    szulered: string;
+    voteFunctionName: string;
+    myData: FullInfoPlayer;
+    isVote: boolean;
+    prison: string;
+    fullInfoPlayers: Array<any>;
+    votesNumber: any;
+    whoseTurn: string;
+    allPlayers: Array<Player>;
+    alerts: Array<any>;
+    statueTeam: string;
+    gameTime: any;
+    voteState: string;
+    remainingVoters: Array<any>;
+    snackbar: {
+        text: string;
+        type: "success" | "info" | "warning" | "error";
+    }
+    chat: {
+        messages: Array<any>;
+        isActive: boolean;
+    }
+    voteProps: any;
+}
+
