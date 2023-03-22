@@ -4,7 +4,14 @@ function server() {
   var admin = require('./Admin/Admin')
   const { reconnectDataSend } = require('./reconnect/reconnectDataSend')
   const gameDataGenerator = require('./GameData/gameData.js')
+  const prod = true;
   const e = require('cors');
+  const sslOptions = {};
+  if(prod) {
+    const fs = require("fs");
+    sslOptions.key = fs.readFileSync("./cert/key.key");
+    sslOptions.cert = fs.readFileSync("./cert/cert.crt")
+  }
   const httpServer = require("http").createServer();
   const io = require("socket.io")(httpServer, {
     cors: {
