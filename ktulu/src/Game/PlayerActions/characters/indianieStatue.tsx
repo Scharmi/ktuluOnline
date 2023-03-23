@@ -6,7 +6,7 @@ export function indianieStatue(socket: any,  gameData: any) {
         isVote: true,
         voteFunctionName: "myTeamFree",
         voteProps: {
-            type: "killing",
+            type: "giveStatue",
             callBack: gameData.actionCallBack
         }
     }))
